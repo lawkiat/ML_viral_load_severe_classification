@@ -1,0 +1,1678 @@
+---
+title: "Random_forest"
+output: html_document
+---
+
+# Setup environment & load data
+```{r, Import libraries}
+library(foreach)
+library(doParallel)
+library(dplyr)
+library(purrr)
+library(randomForest)
+library(pROC)
+library(fastshap)
+library(shapviz)
+library(ggplot2)
+```
+
+```{r, Load data into environment}
+load(paste0(getwd(), "/Data_preparation.RData"))
+```
+
+# Fitting data with full dataframe
+## Fitting data without any VL information
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Full dataframe without VL information}
+rf_fil_list <- foreach(i = 1: 100, .packages = c("randomForest", "pROC", "fastshap", "shapviz", "ggplot2")) %dopar% {
+    split <- split_list_fil[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_fil <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_fil <- predict(rf_fil, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_fil <- table(prediction_rf_fil, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_fil) / sum(cfm_rf_fil))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_fil, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_fil_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_fil_train) / sum(cfm_rf_fil_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_fil["Severe", "Severe"]
+    FP <- cfm_rf_fil["Severe", "Non severe"]
+    TN <- cfm_rf_fil["Non severe", "Non severe"]
+    FN <- cfm_rf_fil["Non severe", "Severe"]
+
+    sensitivity_rf_fil <- TP / (TP + FN)
+    specificity_rf_fil <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_fil <- TP / (TP + FP)
+    f1_sc_rf_fil <- 2 * ((prec_rf_fil * sensitivity_rf_fil) / (prec_rf_fil + sensitivity_rf_fil))
+
+    # Compute & plot AUROC plot
+    pred_rf_fil_res <- ifelse(prediction_rf_fil == "Severe", 1, 0)
+    roc_rf_fil <- roc(test_df$outcome, pred_rf_fil_res)
+    auc_val_rf_fil <- auc(roc_rf_fil)
+
+    # Compute & plot SHAP values
+    xvars <- colnames(train_df)[-5]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_fil <- fastshap::explain(rf_fil, X = train_df[, -5], pred_wrapper = pfun_rf)
+    shp_rf_fil <- shapviz(shap_values_rf_fil, X = train_df[, -which(names(train_df) == "outcome")])
+
+    list(model = rf_fil, confusion_matrix = cfm_rf_fil, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_fil, specificity = specificity_rf_fil, precision = prec_rf_fil,
+          F1_score = f1_sc_rf_fil, AUC_value = auc_val_rf_fil, SHAP_values = shp_rf_fil, prediction = prediction_rf_fil)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_fil_metrics_df <- map_dfr(seq_along(rf_fil_list), function(i) {
+  result <- rf_fil_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_fil_metrics_df <- as.data.frame(rf_fil_metrics_df)
+
+rf_fil_metrics_summary <- rf_fil_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_fil_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_fil_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_fil_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_fil_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_fil_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_fil_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_fil_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_fil_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_fil_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_fil_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_fil_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_fil_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_fil_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_fil_metrics_df$AUC_value, 0.975)
+
+rf_fil_metrics_summary['low_acc_train'] <- low_acc_train
+rf_fil_metrics_summary['low_acc_test'] <- low_acc_test
+rf_fil_metrics_summary['low_sens'] <- low_sens
+rf_fil_metrics_summary['low_spec'] <- low_spec
+rf_fil_metrics_summary['low_prec'] <- low_prec
+rf_fil_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_fil_metrics_summary['low_auc'] <- low_auc
+
+rf_fil_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_fil_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_fil_metrics_summary['upp_sens'] <- upp_sens
+rf_fil_metrics_summary['upp_spec'] <- upp_spec
+rf_fil_metrics_summary['upp_prec'] <- upp_prec
+rf_fil_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_fil_metrics_summary['upp_auc'] <- upp_auc
+
+rf_fil_metrics_summary
+```
+
+## Fitting data with VL since symptom onset
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Full dataframe with VL since symptom onset}
+rf_vlsymp_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_vlsim_symp[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_vlsymp <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_vlsymp <- predict(rf_vlsymp, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vlsymp <- table(prediction_rf_vlsymp, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_vlsymp) / sum(cfm_rf_vlsymp))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_vlsymp, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vlsymp_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_vlsymp_train) / sum(cfm_rf_vlsymp_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_vlsymp["Severe", "Severe"]
+    FP <- cfm_rf_vlsymp["Severe", "Non severe"]
+    TN <- cfm_rf_vlsymp["Non severe", "Non severe"]
+    FN <- cfm_rf_vlsymp["Non severe", "Severe"]
+
+    sensitivity_rf_vlsymp <- TP / (TP + FN)
+    specificity_rf_vlsymp <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_vlsymp <- TP / (TP + FP)
+    f1_sc_rf_vlsymp <- 2 * ((prec_rf_vlsymp * sensitivity_rf_vlsymp) / (prec_rf_vlsymp + sensitivity_rf_vlsymp))
+
+    # Compute & plot AUROC plot
+    pred_rf_vlsymp_res <- ifelse(prediction_rf_vlsymp == "Severe", 1, 0)
+    roc_rf_vlsymp <- roc(test_df$outcome, pred_rf_vlsymp_res)
+    auc_val_rf_vlsymp <- auc(roc_rf_vlsymp)
+
+    rocplot_rf_vlsymp <- plot.roc(test_df$outcome, pred_rf_vlsymp_res, main = "ROC Curve for Random Forest Model",
+                              ci = TRUE, print.auc = TRUE, percent = TRUE, col = "blue")
+    
+    # Compute & plot SHAP values
+    xvars <- colnames(train_df)[-6]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_vlsymp <- fastshap::explain(rf_vlsymp, X = train_df[, -6], pred_wrapper = pfun_rf)
+    shp_rf_vlsymp <- shapviz(shap_values_rf_vlsymp, X = train_df[, -which(names(train_df) == "outcome")])
+
+    # Rename variable
+    shp_rf_vlsymp$X <- shp_rf_vlsymp$X %>% rename("Viral load at symptom onset" = "vl_sim_symp")
+    colnames(shp_rf_vlsymp$S) <- c("age", "gender", "vaccination", "comorbidity", "Viral load at symptom onset")
+
+    list(model = rf_vlsymp, confusion_matrix = cfm_rf_vlsymp, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_vlsymp, specificity = specificity_rf_vlsymp, precision = prec_rf_vlsymp,
+          F1_score = f1_sc_rf_vlsymp, AUC_value = auc_val_rf_vlsymp, SHAP_values = shp_rf_vlsymp, prediction = prediction_rf_vlsymp)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_vlsymp_metrics_df <- map_dfr(seq_along(rf_vlsymp_list), function(i) {
+  result <- rf_vlsymp_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_vlsymp_metrics_df <- as.data.frame(rf_vlsymp_metrics_df)
+
+rf_vlsymp_metrics_summary <- rf_vlsymp_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_vlsymp_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_vlsymp_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_vlsymp_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_vlsymp_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_vlsymp_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_vlsymp_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_vlsymp_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_vlsymp_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_vlsymp_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_vlsymp_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_vlsymp_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_vlsymp_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_vlsymp_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_vlsymp_metrics_df$AUC_value, 0.975)
+
+rf_vlsymp_metrics_summary['low_acc_train'] <- low_acc_train
+rf_vlsymp_metrics_summary['low_acc_test'] <- low_acc_test
+rf_vlsymp_metrics_summary['low_sens'] <- low_sens
+rf_vlsymp_metrics_summary['low_spec'] <- low_spec
+rf_vlsymp_metrics_summary['low_prec'] <- low_prec
+rf_vlsymp_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_vlsymp_metrics_summary['low_auc'] <- low_auc
+
+rf_vlsymp_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_vlsymp_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_vlsymp_metrics_summary['upp_sens'] <- upp_sens
+rf_vlsymp_metrics_summary['upp_spec'] <- upp_spec
+rf_vlsymp_metrics_summary['upp_prec'] <- upp_prec
+rf_vlsymp_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_vlsymp_metrics_summary['upp_auc'] <- upp_auc
+
+rf_vlsymp_metrics_summary
+```
+
+## Fitting data with VL at diagnosis
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Full dataframe with VL at diagnosis}
+rf_vldiag_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_vldiag[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_vldiag <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_vldiag <- predict(rf_vldiag, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vldiag <- table(prediction_rf_vldiag, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_vldiag) / sum(cfm_rf_vldiag))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_vldiag, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vldiag_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_vldiag_train) / sum(cfm_rf_vldiag_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_vldiag["Severe", "Severe"]
+    FP <- cfm_rf_vldiag["Severe", "Non severe"]
+    TN <- cfm_rf_vldiag["Non severe", "Non severe"]
+    FN <- cfm_rf_vldiag["Non severe", "Severe"]
+
+    sensitivity_rf_vldiag <- TP / (TP + FN)
+    specificity_rf_vldiag <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_vldiag <- TP / (TP + FP)
+    f1_sc_rf_vldiag <- 2 * ((prec_rf_vldiag * sensitivity_rf_vldiag) / (prec_rf_vldiag + sensitivity_rf_vldiag))
+
+    # Compute AUROC plot
+    pred_rf_vldiag_res <- ifelse(prediction_rf_vldiag == "Severe", 1, 0)
+    roc_rf_vldiag <- roc(test_df$outcome, pred_rf_vldiag_res)
+    auc_val_rf_vldiag <- auc(roc_rf_vldiag)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-6]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_vldiag <- fastshap::explain(rf_vldiag, X = train_df[, -6], pred_wrapper = pfun_rf)
+    shp_rf_vldiag <- shapviz(shap_values_rf_vldiag, X = train_df[, -which(names(train_df) == "outcome")])
+
+    # Rename variable
+    shp_rf_vldiag$X <- shp_rf_vldiag$X %>% rename("Viral load at diagnosis" = "vl_sim")
+    colnames(shp_rf_vldiag$S) <- c("age", "gender", "vaccination", "comorbidity", "Viral load at diagnosis")
+    
+    list(model = rf_vldiag, confusion_matrix = cfm_rf_vldiag, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_vldiag, specificity = specificity_rf_vldiag, precision = prec_rf_vldiag,
+          F1_score = f1_sc_rf_vldiag, AUC_value = auc_val_rf_vldiag, SHAP_values = shp_rf_vldiag, prediction = prediction_rf_vldiag)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_vldiag_metrics_df <- map_dfr(seq_along(rf_vldiag_list), function(i) {
+  result <- rf_vldiag_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_vldiag_metrics_df <- as.data.frame(rf_vldiag_metrics_df)
+
+rf_vldiag_metrics_summary <- rf_vldiag_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_vldiag_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_vldiag_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_vldiag_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_vldiag_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_vldiag_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_vldiag_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_vldiag_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_vldiag_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_vldiag_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_vldiag_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_vldiag_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_vldiag_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_vldiag_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_vldiag_metrics_df$AUC_value, 0.975)
+
+rf_vldiag_metrics_summary['low_acc_train'] <- low_acc_train
+rf_vldiag_metrics_summary['low_acc_test'] <- low_acc_test
+rf_vldiag_metrics_summary['low_sens'] <- low_sens
+rf_vldiag_metrics_summary['low_spec'] <- low_spec
+rf_vldiag_metrics_summary['low_prec'] <- low_prec
+rf_vldiag_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_vldiag_metrics_summary['low_auc'] <- low_auc
+
+rf_vldiag_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_vldiag_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_vldiag_metrics_summary['upp_sens'] <- upp_sens
+rf_vldiag_metrics_summary['upp_spec'] <- upp_spec
+rf_vldiag_metrics_summary['upp_prec'] <- upp_prec
+rf_vldiag_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_vldiag_metrics_summary['upp_auc'] <- upp_auc
+
+rf_vldiag_metrics_summary
+```
+
+# Fitting data excluding Comorbidity
+## Fitting data without any VL information
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Comorbidity & VL information}
+rf_wvlncom_list <- foreach(i = 1: 100, .packages = c("randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_wvlncom[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_wvlncom <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_wvlncom <- predict(rf_wvlncom, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_wvlncom <- table(prediction_rf_wvlncom, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_wvlncom) / sum(cfm_rf_wvlncom))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_wvlncom, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_wvlncom_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_wvlncom_train) / sum(cfm_rf_wvlncom_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_wvlncom["Severe", "Severe"]
+    FP <- cfm_rf_wvlncom["Severe", "Non severe"]
+    TN <- cfm_rf_wvlncom["Non severe", "Non severe"]
+    FN <- cfm_rf_wvlncom["Non severe", "Severe"]
+
+    sensitivity_rf_wvlncom <- TP / (TP + FN)
+    specificity_rf_wvlncom <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_wvlncom <- TP / (TP + FP)
+    f1_sc_rf_wvlncom <- 2 * ((prec_rf_wvlncom * sensitivity_rf_wvlncom) / (prec_rf_wvlncom + sensitivity_rf_wvlncom))
+
+    # Compute AUROC
+    pred_rf_wvlncom_res <- ifelse(prediction_rf_wvlncom == "Severe", 1, 0)
+    roc_rf_wvlncom <- roc(test_df$outcome, pred_rf_wvlncom_res)
+    auc_val_rf_wvlncom <- auc(roc_rf_wvlncom)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-4]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_wvlncom <- fastshap::explain(rf_wvlncom, X = train_df[, -4], pred_wrapper = pfun_rf)
+    shp_rf_wvlncom <- shapviz(shap_values_rf_wvlncom, X = train_df[, -which(names(train_df) == "outcome")])
+
+    list(model = rf_wvlncom, confusion_matrix = cfm_rf_wvlncom, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_wvlncom, specificity = specificity_rf_wvlncom, precision = prec_rf_wvlncom,
+          F1_score = f1_sc_rf_wvlncom, AUC_value = auc_val_rf_wvlncom, SHAP_values = shp_rf_wvlncom, prediction = prediction_rf_wvlncom)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_wvlncom_metrics_df <- map_dfr(seq_along(rf_wvlncom_list), function(i) {
+  result <- rf_wvlncom_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_wvlncom_metrics_df <- as.data.frame(rf_wvlncom_metrics_df)
+
+rf_wvlncom_metrics_summary <- rf_wvlncom_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_wvlncom_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_wvlncom_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_wvlncom_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_wvlncom_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_wvlncom_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_wvlncom_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_wvlncom_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_wvlncom_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_wvlncom_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_wvlncom_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_wvlncom_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_wvlncom_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_wvlncom_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_wvlncom_metrics_df$AUC_value, 0.975)
+
+rf_wvlncom_metrics_summary['low_acc_train'] <- low_acc_train
+rf_wvlncom_metrics_summary['low_acc_test'] <- low_acc_test
+rf_wvlncom_metrics_summary['low_sens'] <- low_sens
+rf_wvlncom_metrics_summary['low_spec'] <- low_spec
+rf_wvlncom_metrics_summary['low_prec'] <- low_prec
+rf_wvlncom_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_wvlncom_metrics_summary['low_auc'] <- low_auc
+
+rf_wvlncom_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_wvlncom_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_wvlncom_metrics_summary['upp_sens'] <- upp_sens
+rf_wvlncom_metrics_summary['upp_spec'] <- upp_spec
+rf_wvlncom_metrics_summary['upp_prec'] <- upp_prec
+rf_wvlncom_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_wvlncom_metrics_summary['upp_auc'] <- upp_auc
+
+rf_wvlncom_metrics_summary
+```
+
+## Fitting data with VL since symptom onset
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Comorbidity & with VL since symptom onset}
+rf_vlsymp_wcom_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_vlsim_symp_wcom[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_vlsymp_wcom <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_vlsymp_wcom <- predict(rf_vlsymp_wcom, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vlsymp_wcom <- table(prediction_rf_vlsymp_wcom, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_vlsymp_wcom) / sum(cfm_rf_vlsymp_wcom))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_vlsymp_wcom, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vlsymp_wcom_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_vlsymp_wcom_train) / sum(cfm_rf_vlsymp_wcom_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_vlsymp_wcom["Severe", "Severe"]
+    FP <- cfm_rf_vlsymp_wcom["Severe", "Non severe"]
+    TN <- cfm_rf_vlsymp_wcom["Non severe", "Non severe"]
+    FN <- cfm_rf_vlsymp_wcom["Non severe", "Severe"]
+
+    sensitivity_rf_vlsymp_wcom <- TP / (TP + FN)
+    specificity_rf_vlsymp_wcom <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_vlsymp_wcom <- TP / (TP + FP)
+    f1_sc_rf_vlsymp_wcom <- 2 * ((prec_rf_vlsymp_wcom * sensitivity_rf_vlsymp_wcom) / (prec_rf_vlsymp_wcom + sensitivity_rf_vlsymp_wcom))
+
+    # Compute AUROC
+    pred_rf_vlsymp_wcom_res <- ifelse(prediction_rf_vlsymp_wcom == "Severe", 1, 0)
+    roc_rf_vlsymp_wcom <- roc(test_df$outcome, pred_rf_vlsymp_wcom_res)
+    auc_val_rf_vlsymp_wcom <- auc(roc_rf_vlsymp_wcom)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-5]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_vlsymp_wcom <- fastshap::explain(rf_vlsymp_wcom, X = train_df[, -5], pred_wrapper = pfun_rf)
+    shp_rf_vlsymp_wcom <- shapviz(shap_values_rf_vlsymp_wcom, X = train_df[, -which(names(train_df) == "outcome")])
+
+    # Rename variable
+    shp_rf_vlsymp_wcom$X <- shp_rf_vlsymp_wcom$X %>% rename("Viral load at symptom onset" = "vl_sim_symp")
+    colnames(shp_rf_vlsymp_wcom$S) <- c("age", "gender", "vaccination", "Viral load at symptom onset")
+    
+    list(model = rf_vlsymp_wcom, confusion_matrix = cfm_rf_vlsymp_wcom, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_vlsymp_wcom, specificity = specificity_rf_vlsymp_wcom, precision = prec_rf_vlsymp_wcom,
+          F1_score = f1_sc_rf_vlsymp_wcom, AUC_value = auc_val_rf_vlsymp_wcom, SHAP_values = shp_rf_vlsymp_wcom, prediction = prediction_rf_vlsymp_wcom)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_vlsymp_wcom_metrics_df <- map_dfr(seq_along(rf_vlsymp_wcom_list), function(i) {
+  result <- rf_vlsymp_wcom_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_vlsymp_wcom_metrics_df <- as.data.frame(rf_vlsymp_wcom_metrics_df)
+
+rf_vlsymp_wcom_metrics_summary <- rf_vlsymp_wcom_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_vlsymp_wcom_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_vlsymp_wcom_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_vlsymp_wcom_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_vlsymp_wcom_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_vlsymp_wcom_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_vlsymp_wcom_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_vlsymp_wcom_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_vlsymp_wcom_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_vlsymp_wcom_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_vlsymp_wcom_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_vlsymp_wcom_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_vlsymp_wcom_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_vlsymp_wcom_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_vlsymp_wcom_metrics_df$AUC_value, 0.975)
+
+rf_vlsymp_wcom_metrics_summary['low_acc_train'] <- low_acc_train
+rf_vlsymp_wcom_metrics_summary['low_acc_test'] <- low_acc_test
+rf_vlsymp_wcom_metrics_summary['low_sens'] <- low_sens
+rf_vlsymp_wcom_metrics_summary['low_spec'] <- low_spec
+rf_vlsymp_wcom_metrics_summary['low_prec'] <- low_prec
+rf_vlsymp_wcom_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_vlsymp_wcom_metrics_summary['low_auc'] <- low_auc
+
+rf_vlsymp_wcom_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_vlsymp_wcom_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_vlsymp_wcom_metrics_summary['upp_sens'] <- upp_sens
+rf_vlsymp_wcom_metrics_summary['upp_spec'] <- upp_spec
+rf_vlsymp_wcom_metrics_summary['upp_prec'] <- upp_prec
+rf_vlsymp_wcom_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_vlsymp_wcom_metrics_summary['upp_auc'] <- upp_auc
+
+rf_vlsymp_wcom_metrics_summary
+```
+
+## Fitting data with VL at diagnosis
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Comorbidity & with VL at diagnosis}
+rf_vldiag_wcom_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_vldiag_wcom[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_vldiag_wcom <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_vldiag_wcom <- predict(rf_vldiag_wcom, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vldiag_wcom <- table(prediction_rf_vldiag_wcom, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_vldiag_wcom) / sum(cfm_rf_vldiag_wcom))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_vldiag_wcom, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vldiag_wcom_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_vldiag_wcom_train) / sum(cfm_rf_vldiag_wcom_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_vldiag_wcom["Severe", "Severe"]
+    FP <- cfm_rf_vldiag_wcom["Severe", "Non severe"]
+    TN <- cfm_rf_vldiag_wcom["Non severe", "Non severe"]
+    FN <- cfm_rf_vldiag_wcom["Non severe", "Severe"]
+
+    sensitivity_rf_vldiag_wcom <- TP / (TP + FN)
+    specificity_rf_vldiag_wcom <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_vldiag_wcom <- TP / (TP + FP)
+    f1_sc_rf_vldiag_wcom <- 2 * ((prec_rf_vldiag_wcom * sensitivity_rf_vldiag_wcom) / (prec_rf_vldiag_wcom + sensitivity_rf_vldiag_wcom))
+
+    # Compute AUROC
+    pred_rf_vldiag_wcom_res <- ifelse(prediction_rf_vldiag_wcom == "Severe", 1, 0)
+    roc_rf_vldiag_wcom <- roc(test_df$outcome, pred_rf_vldiag_wcom_res)
+    auc_val_rf_vldiag_wcom <- auc(roc_rf_vldiag_wcom)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-5]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_vldiag_wcom <- fastshap::explain(rf_vldiag_wcom, X = train_df[, -5], pred_wrapper = pfun_rf)
+    shp_rf_vldiag_wcom <- shapviz(shap_values_rf_vldiag_wcom, X = train_df[, -which(names(train_df) == "outcome")])
+
+    # Rename variable
+    shp_rf_vldiag_wcom$X <- shp_rf_vldiag_wcom$X %>% rename("Viral load at diagnosis" = "vl_sim")
+    colnames(shp_rf_vldiag_wcom$S) <- c("age", "gender", "vaccination", "Viral load at diagnosis")
+    
+    list(model = rf_vldiag_wcom, confusion_matrix = cfm_rf_vldiag_wcom, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_vldiag_wcom, specificity = specificity_rf_vldiag_wcom, precision = prec_rf_vldiag_wcom,
+          F1_score = f1_sc_rf_vldiag_wcom, AUC_value = auc_val_rf_vldiag_wcom, SHAP_values = shp_rf_vldiag_wcom, prediction = prediction_rf_vldiag_wcom)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_vldiag_wcom_metrics_df <- map_dfr(seq_along(rf_vldiag_wcom_list), function(i) {
+  result <- rf_vldiag_wcom_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_vldiag_wcom_metrics_df <- as.data.frame(rf_vldiag_wcom_metrics_df)
+
+rf_vldiag_wcom_metrics_summary <- rf_vldiag_wcom_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_vldiag_wcom_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_vldiag_wcom_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_vldiag_wcom_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_vldiag_wcom_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_vldiag_wcom_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_vldiag_wcom_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_vldiag_wcom_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_vldiag_wcom_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_vldiag_wcom_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_vldiag_wcom_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_vldiag_wcom_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_vldiag_wcom_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_vldiag_wcom_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_vldiag_wcom_metrics_df$AUC_value, 0.975)
+
+rf_vldiag_wcom_metrics_summary['low_acc_train'] <- low_acc_train
+rf_vldiag_wcom_metrics_summary['low_acc_test'] <- low_acc_test
+rf_vldiag_wcom_metrics_summary['low_sens'] <- low_sens
+rf_vldiag_wcom_metrics_summary['low_spec'] <- low_spec
+rf_vldiag_wcom_metrics_summary['low_prec'] <- low_prec
+rf_vldiag_wcom_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_vldiag_wcom_metrics_summary['low_auc'] <- low_auc
+
+rf_vldiag_wcom_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_vldiag_wcom_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_vldiag_wcom_metrics_summary['upp_sens'] <- upp_sens
+rf_vldiag_wcom_metrics_summary['upp_spec'] <- upp_spec
+rf_vldiag_wcom_metrics_summary['upp_prec'] <- upp_prec
+rf_vldiag_wcom_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_vldiag_wcom_metrics_summary['upp_auc'] <- upp_auc
+
+rf_vldiag_wcom_metrics_summary
+```
+
+# Fitting data excluding Age
+## Fitting data without any VL information
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Age & VL information}
+rf_wvlnage_list <- foreach(i = 1: 100, .packages = c("randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_wvlnage[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_wvlnage <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_wvlnage <- predict(rf_wvlnage, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_wvlnage <- table(prediction_rf_wvlnage, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_wvlnage) / sum(cfm_rf_wvlnage))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_wvlnage, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_wvlnage_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_wvlnage_train) / sum(cfm_rf_wvlnage_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_wvlnage["Severe", "Severe"]
+    FP <- cfm_rf_wvlnage["Severe", "Non severe"]
+    TN <- cfm_rf_wvlnage["Non severe", "Non severe"]
+    FN <- cfm_rf_wvlnage["Non severe", "Severe"]
+
+    sensitivity_rf_wvlnage <- TP / (TP + FN)
+    specificity_rf_wvlnage <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_wvlnage <- TP / (TP + FP)
+    f1_sc_rf_wvlnage <- 2 * ((prec_rf_wvlnage * sensitivity_rf_wvlnage) / (prec_rf_wvlnage + sensitivity_rf_wvlnage))
+
+    # Compute AUROC
+    pred_rf_wvlnage_res <- ifelse(prediction_rf_wvlnage == "Severe", 1, 0)
+    roc_rf_wvlnage <- roc(test_df$outcome, pred_rf_wvlnage_res)
+    auc_val_rf_wvlnage <- auc(roc_rf_wvlnage)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-4]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_wvlnage <- fastshap::explain(rf_wvlnage, X = train_df[, -4], pred_wrapper = pfun_rf)
+    shp_rf_wvlnage <- shapviz(shap_values_rf_wvlnage, X = train_df[, -which(names(train_df) == "outcome")])
+    
+    list(model = rf_wvlnage, confusion_matrix = cfm_rf_wvlnage, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_wvlnage, specificity = specificity_rf_wvlnage, precision = prec_rf_wvlnage,
+          F1_score = f1_sc_rf_wvlnage, AUC_value = auc_val_rf_wvlnage, SHAP_values = shp_rf_wvlnage, prediction = prediction_rf_wvlnage)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_wvlnage_metrics_df <- map_dfr(seq_along(rf_wvlnage_list), function(i) {
+  result <- rf_wvlnage_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_wvlnage_metrics_df <- as.data.frame(rf_wvlnage_metrics_df)
+
+rf_wvlnage_metrics_summary <- rf_wvlnage_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_wvlnage_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_wvlnage_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_wvlnage_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_wvlnage_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_wvlnage_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_wvlnage_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_wvlnage_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_wvlnage_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_wvlnage_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_wvlnage_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_wvlnage_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_wvlnage_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_wvlnage_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_wvlnage_metrics_df$AUC_value, 0.975)
+
+rf_wvlnage_metrics_summary['low_acc_train'] <- low_acc_train
+rf_wvlnage_metrics_summary['low_acc_test'] <- low_acc_test
+rf_wvlnage_metrics_summary['low_sens'] <- low_sens
+rf_wvlnage_metrics_summary['low_spec'] <- low_spec
+rf_wvlnage_metrics_summary['low_prec'] <- low_prec
+rf_wvlnage_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_wvlnage_metrics_summary['low_auc'] <- low_auc
+
+rf_wvlnage_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_wvlnage_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_wvlnage_metrics_summary['upp_sens'] <- upp_sens
+rf_wvlnage_metrics_summary['upp_spec'] <- upp_spec
+rf_wvlnage_metrics_summary['upp_prec'] <- upp_prec
+rf_wvlnage_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_wvlnage_metrics_summary['upp_auc'] <- upp_auc
+
+rf_wvlnage_metrics_summary
+```
+
+## Fitting data with VL since symptom onset
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Age & with VL since symptom onset}
+rf_vlsymp_wage_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_vlsim_symp_wage[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_vlsymp_wage <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_vlsymp_wage <- predict(rf_vlsymp_wage, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vlsymp_wage <- table(prediction_rf_vlsymp_wage, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_vlsymp_wage) / sum(cfm_rf_vlsymp_wage))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_vlsymp_wage, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vlsymp_wage_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_vlsymp_wage_train) / sum(cfm_rf_vlsymp_wage_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_vlsymp_wage["Severe", "Severe"]
+    FP <- cfm_rf_vlsymp_wage["Severe", "Non severe"]
+    TN <- cfm_rf_vlsymp_wage["Non severe", "Non severe"]
+    FN <- cfm_rf_vlsymp_wage["Non severe", "Severe"]
+
+    sensitivity_rf_vlsymp_wage <- TP / (TP + FN)
+    specificity_rf_vlsymp_wage <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_vlsymp_wage <- TP / (TP + FP)
+    f1_sc_rf_vlsymp_wage <- 2 * ((prec_rf_vlsymp_wage * sensitivity_rf_vlsymp_wage) / (prec_rf_vlsymp_wage + sensitivity_rf_vlsymp_wage))
+
+    # Compute AUROC
+    pred_rf_vlsymp_wage_res <- ifelse(prediction_rf_vlsymp_wage == "Severe", 1, 0)
+    roc_rf_vlsymp_wage <- roc(test_df$outcome, pred_rf_vlsymp_wage_res)
+    auc_val_rf_vlsymp_wage <- auc(roc_rf_vlsymp_wage)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-5]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_vlsymp_wage <- fastshap::explain(rf_vlsymp_wage, X = train_df[, -5], pred_wrapper = pfun_rf)
+    shp_rf_vlsymp_wage <- shapviz(shap_values_rf_vlsymp_wage, X = train_df[, -which(names(train_df) == "outcome")])
+
+    # Rename variable
+    shp_rf_vlsymp_wage$X <- shp_rf_vlsymp_wage$X %>% rename("Viral load at symptom onset" = "vl_sim_symp")
+    colnames(shp_rf_vlsymp_wage$S) <- c("gender", "vaccination", "comorbidity", "Viral load at symptom onset")
+    
+    list(model = rf_vlsymp_wage, confusion_matrix = cfm_rf_vlsymp_wage, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_vlsymp_wage, specificity = specificity_rf_vlsymp_wage, precision = prec_rf_vlsymp_wage,
+          F1_score = f1_sc_rf_vlsymp_wage, AUC_value = auc_val_rf_vlsymp_wage, SHAP_values = shp_rf_vlsymp_wage, prediction = prediction_rf_vlsymp_wage)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_vlsymp_wage_metrics_df <- map_dfr(seq_along(rf_vlsymp_wage_list), function(i) {
+  result <- rf_vlsymp_wage_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_vlsymp_wage_metrics_df <- as.data.frame(rf_vlsymp_wage_metrics_df)
+
+rf_vlsymp_wage_metrics_summary <- rf_vlsymp_wage_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_vlsymp_wage_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_vlsymp_wage_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_vlsymp_wage_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_vlsymp_wage_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_vlsymp_wage_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_vlsymp_wage_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_vlsymp_wage_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_vlsymp_wage_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_vlsymp_wage_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_vlsymp_wage_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_vlsymp_wage_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_vlsymp_wage_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_vlsymp_wage_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_vlsymp_wage_metrics_df$AUC_value, 0.975)
+
+rf_vlsymp_wage_metrics_summary['low_acc_train'] <- low_acc_train
+rf_vlsymp_wage_metrics_summary['low_acc_test'] <- low_acc_test
+rf_vlsymp_wage_metrics_summary['low_sens'] <- low_sens
+rf_vlsymp_wage_metrics_summary['low_spec'] <- low_spec
+rf_vlsymp_wage_metrics_summary['low_prec'] <- low_prec
+rf_vlsymp_wage_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_vlsymp_wage_metrics_summary['low_auc'] <- low_auc
+
+rf_vlsymp_wage_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_vlsymp_wage_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_vlsymp_wage_metrics_summary['upp_sens'] <- upp_sens
+rf_vlsymp_wage_metrics_summary['upp_spec'] <- upp_spec
+rf_vlsymp_wage_metrics_summary['upp_prec'] <- upp_prec
+rf_vlsymp_wage_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_vlsymp_wage_metrics_summary['upp_auc'] <- upp_auc
+
+rf_vlsymp_wage_metrics_summary
+```
+
+## Fitting data with VL at diagnosis
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Age & with VL at diagnosis}
+rf_vldiag_wage_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_vldiag_wage[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_vldiag_wage <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_vldiag_wage <- predict(rf_vldiag_wage, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vldiag_wage <- table(prediction_rf_vldiag_wage, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_vldiag_wage) / sum(cfm_rf_vldiag_wage))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_vldiag_wage, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vldiag_wage_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_vldiag_wage_train) / sum(cfm_rf_vldiag_wage_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_vldiag_wage["Severe", "Severe"]
+    FP <- cfm_rf_vldiag_wage["Severe", "Non severe"]
+    TN <- cfm_rf_vldiag_wage["Non severe", "Non severe"]
+    FN <- cfm_rf_vldiag_wage["Non severe", "Severe"]
+
+    sensitivity_rf_vldiag_wage <- TP / (TP + FN)
+    specificity_rf_vldiag_wage <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_vldiag_wage <- TP / (TP + FP)
+    f1_sc_rf_vldiag_wage <- 2 * ((prec_rf_vldiag_wage * sensitivity_rf_vldiag_wage) / (prec_rf_vldiag_wage + sensitivity_rf_vldiag_wage))
+
+    # Compute AUROC
+    pred_rf_vldiag_wage_res <- ifelse(prediction_rf_vldiag_wage == "Severe", 1, 0)
+    roc_rf_vldiag_wage <- roc(test_df$outcome, pred_rf_vldiag_wage_res)
+    auc_val_rf_vldiag_wage <- auc(roc_rf_vldiag_wage)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-5]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_vldiag_wage <- fastshap::explain(rf_vldiag_wage, X = train_df[, -5], pred_wrapper = pfun_rf)
+    shp_rf_vldiag_wage <- shapviz(shap_values_rf_vldiag_wage, X = train_df[, -which(names(train_df) == "outcome")])
+
+    # Rename variable
+    shp_rf_vldiag_wage$X <- shp_rf_vldiag_wage$X %>% rename("Viral load at diagnosis" = "vl_sim")
+    colnames(shp_rf_vldiag_wage$S) <- c("gender", "vaccination", "comorbidity", "Viral load at diagnosis")
+    
+    list(model = rf_vldiag_wage, confusion_matrix = cfm_rf_vldiag_wage, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_vldiag_wage, specificity = specificity_rf_vldiag_wage, precision = prec_rf_vldiag_wage,
+          F1_score = f1_sc_rf_vldiag_wage, AUC_value = auc_val_rf_vldiag_wage, SHAP_values = shp_rf_vldiag_wage, prediction = prediction_rf_vldiag_wage)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_vldiag_wage_metrics_df <- map_dfr(seq_along(rf_vldiag_wage_list), function(i) {
+  result <- rf_vldiag_wage_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_vldiag_wage_metrics_df <- as.data.frame(rf_vldiag_wage_metrics_df)
+
+rf_vldiag_wage_metrics_summary <- rf_vldiag_wage_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_vldiag_wage_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_vldiag_wage_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_vldiag_wage_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_vldiag_wage_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_vldiag_wage_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_vldiag_wage_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_vldiag_wage_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_vldiag_wage_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_vldiag_wage_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_vldiag_wage_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_vldiag_wage_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_vldiag_wage_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_vldiag_wage_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_vldiag_wage_metrics_df$AUC_value, 0.975)
+
+rf_vldiag_wage_metrics_summary['low_acc_train'] <- low_acc_train
+rf_vldiag_wage_metrics_summary['low_acc_test'] <- low_acc_test
+rf_vldiag_wage_metrics_summary['low_sens'] <- low_sens
+rf_vldiag_wage_metrics_summary['low_spec'] <- low_spec
+rf_vldiag_wage_metrics_summary['low_prec'] <- low_prec
+rf_vldiag_wage_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_vldiag_wage_metrics_summary['low_auc'] <- low_auc
+
+rf_vldiag_wage_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_vldiag_wage_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_vldiag_wage_metrics_summary['upp_sens'] <- upp_sens
+rf_vldiag_wage_metrics_summary['upp_spec'] <- upp_spec
+rf_vldiag_wage_metrics_summary['upp_prec'] <- upp_prec
+rf_vldiag_wage_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_vldiag_wage_metrics_summary['upp_auc'] <- upp_auc
+
+rf_vldiag_wage_metrics_summary
+```
+
+# Fitting data excluding Comorbidity & Age
+## Fitting data without any VL information
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Comorbidity, Age & VL information}
+rf_wvlnagecom_list <- foreach(i = 1: 100, .packages = c("randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_wvlnagecom[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_wvlnagecom <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_wvlnagecom <- predict(rf_wvlnagecom, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_wvlnagecom <- table(prediction_rf_wvlnagecom, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_wvlnagecom) / sum(cfm_rf_wvlnagecom))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_wvlnagecom, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_wvlnagecom_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_wvlnagecom_train) / sum(cfm_rf_wvlnagecom_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_wvlnagecom["Severe", "Severe"]
+    FP <- cfm_rf_wvlnagecom["Severe", "Non severe"]
+    TN <- cfm_rf_wvlnagecom["Non severe", "Non severe"]
+    FN <- cfm_rf_wvlnagecom["Non severe", "Severe"]
+
+    sensitivity_rf_wvlnagecom <- TP / (TP + FN)
+    specificity_rf_wvlnagecom <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_wvlnagecom <- TP / (TP + FP)
+    f1_sc_rf_wvlnagecom <- 2 * ((prec_rf_wvlnagecom * sensitivity_rf_wvlnagecom) / (prec_rf_wvlnagecom + sensitivity_rf_wvlnagecom))
+
+    # Compute AUROC
+    pred_rf_wvlnagecom_res <- ifelse(prediction_rf_wvlnagecom == "Severe", 1, 0)
+    roc_rf_wvlnagecom <- roc(test_df$outcome, pred_rf_wvlnagecom_res)
+    auc_val_rf_wvlnagecom <- auc(roc_rf_wvlnagecom)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-3]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_wvlnagecom <- fastshap::explain(rf_wvlnagecom, X = train_df[, -3], pred_wrapper = pfun_rf)
+    shp_rf_wvlnagecom <- shapviz(shap_values_rf_wvlnagecom, X = train_df[, -which(names(train_df) == "outcome")])
+    
+    list(model = rf_wvlnagecom, confusion_matrix = cfm_rf_wvlnagecom, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_wvlnagecom, specificity = specificity_rf_wvlnagecom, precision = prec_rf_wvlnagecom,
+          F1_score = f1_sc_rf_wvlnagecom, AUC_value = auc_val_rf_wvlnagecom, SHAP_values = shp_rf_wvlnagecom, prediction = prediction_rf_wvlnagecom)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_wvlnagecom_metrics_df <- map_dfr(seq_along(rf_wvlnagecom_list), function(i) {
+  result <- rf_wvlnagecom_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_wvlnagecom_metrics_df <- as.data.frame(rf_wvlnagecom_metrics_df)
+
+rf_wvlnagecom_metrics_summary <- rf_wvlnagecom_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_wvlnagecom_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_wvlnagecom_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_wvlnagecom_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_wvlnagecom_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_wvlnagecom_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_wvlnagecom_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_wvlnagecom_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_wvlnagecom_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_wvlnagecom_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_wvlnagecom_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_wvlnagecom_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_wvlnagecom_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_wvlnagecom_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_wvlnagecom_metrics_df$AUC_value, 0.975)
+
+rf_wvlnagecom_metrics_summary['low_acc_train'] <- low_acc_train
+rf_wvlnagecom_metrics_summary['low_acc_test'] <- low_acc_test
+rf_wvlnagecom_metrics_summary['low_sens'] <- low_sens
+rf_wvlnagecom_metrics_summary['low_spec'] <- low_spec
+rf_wvlnagecom_metrics_summary['low_prec'] <- low_prec
+rf_wvlnagecom_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_wvlnagecom_metrics_summary['low_auc'] <- low_auc
+
+rf_wvlnagecom_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_wvlnagecom_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_wvlnagecom_metrics_summary['upp_sens'] <- upp_sens
+rf_wvlnagecom_metrics_summary['upp_spec'] <- upp_spec
+rf_wvlnagecom_metrics_summary['upp_prec'] <- upp_prec
+rf_wvlnagecom_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_wvlnagecom_metrics_summary['upp_auc'] <- upp_auc
+
+rf_wvlnagecom_metrics_summary
+```
+
+## Fitting data with VL since symptom onset
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Comorbidity, Age & with VL since symptom onset}
+rf_vlsymp_wagecom_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_vlsim_symp_wagecom[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_vlsymp_wagecom <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_vlsymp_wagecom <- predict(rf_vlsymp_wagecom, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vlsymp_wagecom <- table(prediction_rf_vlsymp_wagecom, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_vlsymp_wagecom) / sum(cfm_rf_vlsymp_wagecom))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_vlsymp_wagecom, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vlsymp_wagecom_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_vlsymp_wagecom_train) / sum(cfm_rf_vlsymp_wagecom_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_vlsymp_wagecom["Severe", "Severe"]
+    FP <- cfm_rf_vlsymp_wagecom["Severe", "Non severe"]
+    TN <- cfm_rf_vlsymp_wagecom["Non severe", "Non severe"]
+    FN <- cfm_rf_vlsymp_wagecom["Non severe", "Severe"]
+
+    sensitivity_rf_vlsymp_wagecom <- TP / (TP + FN)
+    specificity_rf_vlsymp_wagecom <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_vlsymp_wagecom <- TP / (TP + FP)
+    f1_sc_rf_vlsymp_wagecom <- 2 * ((prec_rf_vlsymp_wagecom * sensitivity_rf_vlsymp_wagecom) / (prec_rf_vlsymp_wagecom + sensitivity_rf_vlsymp_wagecom))
+
+    # Compute AUROC
+    pred_rf_vlsymp_wagecom_res <- ifelse(prediction_rf_vlsymp_wagecom == "Severe", 1, 0)
+    roc_rf_vlsymp_wagecom <- roc(test_df$outcome, pred_rf_vlsymp_wagecom_res)
+    auc_val_rf_vlsymp_wagecom <- auc(roc_rf_vlsymp_wagecom)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-4]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_vlsymp_wagecom <- fastshap::explain(rf_vlsymp_wagecom, X = train_df[, -4], pred_wrapper = pfun_rf)
+    shp_rf_vlsymp_wagecom <- shapviz(shap_values_rf_vlsymp_wagecom, X = train_df[, -which(names(train_df) == "outcome")])
+
+    # Rename variable
+    shp_rf_vlsymp_wagecom$X <- shp_rf_vlsymp_wagecom$X %>% rename("Viral load at symptom onset" = "vl_sim_symp")
+    colnames(shp_rf_vlsymp_wagecom$S) <- c("gender", "vaccination", "Viral load at symptom onset")
+    
+    list(model = rf_vlsymp_wagecom, confusion_matrix = cfm_rf_vlsymp_wagecom, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_vlsymp_wagecom, specificity = specificity_rf_vlsymp_wagecom, precision = prec_rf_vlsymp_wagecom,
+          F1_score = f1_sc_rf_vlsymp_wagecom, AUC_value = auc_val_rf_vlsymp_wagecom, SHAP_values = shp_rf_vlsymp_wagecom, prediction = prediction_rf_vlsymp_wagecom)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_vlsymp_wagecom_metrics_df <- map_dfr(seq_along(rf_vlsymp_wagecom_list), function(i) {
+  result <- rf_vlsymp_wagecom_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_vlsymp_wagecom_metrics_df <- as.data.frame(rf_vlsymp_wagecom_metrics_df)
+
+rf_vlsymp_wagecom_metrics_summary <- rf_vlsymp_wagecom_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_vlsymp_wagecom_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_vlsymp_wagecom_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_vlsymp_wagecom_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_vlsymp_wagecom_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_vlsymp_wagecom_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_vlsymp_wagecom_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_vlsymp_wagecom_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_vlsymp_wagecom_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_vlsymp_wagecom_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_vlsymp_wagecom_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_vlsymp_wagecom_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_vlsymp_wagecom_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_vlsymp_wagecom_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_vlsymp_wagecom_metrics_df$AUC_value, 0.975)
+
+rf_vlsymp_wagecom_metrics_summary['low_acc_train'] <- low_acc_train
+rf_vlsymp_wagecom_metrics_summary['low_acc_test'] <- low_acc_test
+rf_vlsymp_wagecom_metrics_summary['low_sens'] <- low_sens
+rf_vlsymp_wagecom_metrics_summary['low_spec'] <- low_spec
+rf_vlsymp_wagecom_metrics_summary['low_prec'] <- low_prec
+rf_vlsymp_wagecom_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_vlsymp_wagecom_metrics_summary['low_auc'] <- low_auc
+
+rf_vlsymp_wagecom_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_vlsymp_wagecom_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_vlsymp_wagecom_metrics_summary['upp_sens'] <- upp_sens
+rf_vlsymp_wagecom_metrics_summary['upp_spec'] <- upp_spec
+rf_vlsymp_wagecom_metrics_summary['upp_prec'] <- upp_prec
+rf_vlsymp_wagecom_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_vlsymp_wagecom_metrics_summary['upp_auc'] <- upp_auc
+
+rf_vlsymp_wagecom_metrics_summary
+```
+
+## Fitting data with VL at diagnosis
+```{r, Setup clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Dataframe excluding Comorbidity, Age & with VL at diagnosis}
+rf_vldiag_wagecom_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+    split <- split_list_vldiag_wagecom[[i]]
+    train_df <- split$train
+    test_df <- split$test
+
+    # Fitting the random forest model
+    rf_vldiag_wagecom <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+
+    # Make prediction on the testing set
+    prediction_rf_vldiag_wagecom <- predict(rf_vldiag_wagecom, newdata = test_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vldiag_wagecom <- table(prediction_rf_vldiag_wagecom, test_df$outcome)
+    # Compute accuracy on the testing set
+    acc_rf_test <- sum(diag(cfm_rf_vldiag_wagecom) / sum(cfm_rf_vldiag_wagecom))
+
+    # Make prediction on the training set
+    prediction_rf_train <- predict(rf_vldiag_wagecom, newdata = train_df, type = "class")
+    # Compute the confusion matrix
+    cfm_rf_vldiag_wagecom_train <- table(prediction_rf_train, train_df$outcome)
+    # Compute accuracy on the training set
+    acc_rf_train <- sum(diag(cfm_rf_vldiag_wagecom_train) / sum(cfm_rf_vldiag_wagecom_train))
+
+    # Extract elements from the confusion matrix & compute sensitivity and specificity
+    TP <- cfm_rf_vldiag_wagecom["Severe", "Severe"]
+    FP <- cfm_rf_vldiag_wagecom["Severe", "Non severe"]
+    TN <- cfm_rf_vldiag_wagecom["Non severe", "Non severe"]
+    FN <- cfm_rf_vldiag_wagecom["Non severe", "Severe"]
+
+    sensitivity_rf_vldiag_wagecom <- TP / (TP + FN)
+    specificity_rf_vldiag_wagecom <- TN / (TN + FP)
+
+    # Compute the precision and F1-Score
+    prec_rf_vldiag_wagecom <- TP / (TP + FP)
+    f1_sc_rf_vldiag_wagecom <- 2 * ((prec_rf_vldiag_wagecom * sensitivity_rf_vldiag_wagecom) / (prec_rf_vldiag_wagecom + sensitivity_rf_vldiag_wagecom))
+
+    # Compute AUROC
+    pred_rf_vldiag_wagecom_res <- ifelse(prediction_rf_vldiag_wagecom == "Severe", 1, 0)
+    roc_rf_vldiag_wagecom <- roc(test_df$outcome, pred_rf_vldiag_wagecom_res)
+    auc_val_rf_vldiag_wagecom <- auc(roc_rf_vldiag_wagecom)
+    
+    # Compute SHAP values
+    xvars <- colnames(train_df)[-4]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf_vldiag_wagecom <- fastshap::explain(rf_vldiag_wagecom, X = train_df[, -4], pred_wrapper = pfun_rf)
+    shp_rf_vldiag_wagecom <- shapviz(shap_values_rf_vldiag_wagecom, X = train_df[, -which(names(train_df) == "outcome")])
+
+    # Rename variable
+    shp_rf_vldiag_wagecom$X <- shp_rf_vldiag_wagecom$X %>% rename("Viral load at diagnosis" = "vl_sim")
+    colnames(shp_rf_vldiag_wagecom$S) <- c("gender", "vaccination", "Viral load at diagnosis")
+    
+    list(model = rf_vldiag_wagecom, confusion_matrix = cfm_rf_vldiag_wagecom, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+          sensitivity = sensitivity_rf_vldiag_wagecom, specificity = specificity_rf_vldiag_wagecom, precision = prec_rf_vldiag_wagecom,
+          F1_score = f1_sc_rf_vldiag_wagecom, AUC_value = auc_val_rf_vldiag_wagecom, SHAP_values = shp_rf_vldiag_wagecom, prediction = prediction_rf_vldiag_wagecom)
+}
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_vldiag_wagecom_metrics_df <- map_dfr(seq_along(rf_vldiag_wagecom_list), function(i) {
+  result <- rf_vldiag_wagecom_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_vldiag_wagecom_metrics_df <- as.data.frame(rf_vldiag_wagecom_metrics_df)
+
+rf_vldiag_wagecom_metrics_summary <- rf_vldiag_wagecom_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_vldiag_wagecom_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_vldiag_wagecom_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_vldiag_wagecom_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_vldiag_wagecom_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_vldiag_wagecom_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_vldiag_wagecom_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_vldiag_wagecom_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_vldiag_wagecom_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_vldiag_wagecom_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_vldiag_wagecom_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_vldiag_wagecom_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_vldiag_wagecom_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_vldiag_wagecom_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_vldiag_wagecom_metrics_df$AUC_value, 0.975)
+
+rf_vldiag_wagecom_metrics_summary['low_acc_train'] <- low_acc_train
+rf_vldiag_wagecom_metrics_summary['low_acc_test'] <- low_acc_test
+rf_vldiag_wagecom_metrics_summary['low_sens'] <- low_sens
+rf_vldiag_wagecom_metrics_summary['low_spec'] <- low_spec
+rf_vldiag_wagecom_metrics_summary['low_prec'] <- low_prec
+rf_vldiag_wagecom_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_vldiag_wagecom_metrics_summary['low_auc'] <- low_auc
+
+rf_vldiag_wagecom_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_vldiag_wagecom_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_vldiag_wagecom_metrics_summary['upp_sens'] <- upp_sens
+rf_vldiag_wagecom_metrics_summary['upp_spec'] <- upp_spec
+rf_vldiag_wagecom_metrics_summary['upp_prec'] <- upp_prec
+rf_vldiag_wagecom_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_vldiag_wagecom_metrics_summary['upp_auc'] <- upp_auc
+
+rf_vldiag_wagecom_metrics_summary
+```
+
+# Saving all data in this session
+```{r, Saving RData file}
+save.image(file = paste0(getwd(), '/Random_forest.RData'))
+```
+
+# Show the session info
+```{r, Session Info}
+sessionInfo()
+```

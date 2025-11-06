@@ -1,0 +1,1129 @@
+---
+title: "Figure2_and_data_preparation"
+output: html_document
+---
+
+# Import libraries & environment setup
+```{r, Import libraries}
+library(foreach)
+library(doParallel)
+library(ggplot2)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(smotefamily)
+library(deSolve)
+library(purrr)
+library(dgof)
+library(ggpubr)
+library(gtsummary)
+library(webshot2)
+library(broom)
+library(ggsignif)
+library(ggcorrplot)
+library(caret)
+```
+
+```{r, Import dataset}
+df <- read.csv("~/cluster_uniqID_symptom.csv")
+df2 <- read.csv("~/cluster_longVL_symptom.csv")
+head(df)
+```
+
+```{r, Check the structure of the data}
+dim(df)
+```
+
+```{r, Check the type of each columns}
+sapply(df, typeof)
+```
+
+```{r, Check the columns available in dataframe}
+names(df)
+```
+
+# Exploratory Data Analysis
+## Visualise observed viral load trajectories
+```{r, Figure 2a1}
+f2a1 <- ggplot() +
+        ggtitle("Severe") +
+        geom_point(data = df2 %>% filter(VL <= log10(10^1.31) & outcome == "Severe"), aes(x = Day_since_symptom, y = VL), color = "grey", alpha = 2, size = 4) +
+        geom_point(data = df2 %>% filter(VL > log10(10^1.31) & outcome == "Severe"), aes(x = Day_since_symptom, y = VL), color = "#E97132", alpha = 2, size = 4) +
+        xlab("Time since symptom onset (days)") +
+        ylab("Viral RNA load (log10 copies/mL)") +
+        scale_y_continuous(breaks = seq(0, 10, by = 2), limits = c(0, 10)) +
+        scale_x_continuous(breaks = seq(-20, 40, by = 10), limits = c(-20, 40)) +
+        theme(plot.title = element_text(colour = "#E97132", size = rel(5)),
+                axis.text = element_text(color = "black"),
+                axis.ticks = element_line(color = "black"),
+                axis.line = element_line(color = "black"),
+                panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                panel.background = element_blank(),
+                legend.position = "none",
+                axis.text.x = element_text(size = rel(5)),
+                axis.text.y = element_text(size = rel(5)),
+                axis.title.x = element_text(size = rel(4)),
+                axis.title.y = element_text(size = rel(4)))
+f2a1
+```
+
+```{r, Figure 2a2}
+f2a2 <- ggplot() +
+        ggtitle("Non-severe") +
+        geom_point(data = df2 %>% filter(VL <= log10(10^1.31) & outcome == "Non severe"), aes(x = Day_since_symptom, y = VL), color = "grey", alpha = 2, size = 4) +
+        geom_point(data = df2 %>% filter(VL > log10(10^1.31) & outcome == "Non severe"), aes(x = Day_since_symptom, y = VL), color = "#196B24", alpha = 2, size = 4) +
+        xlab("Time since symptom onset (days)") +
+        ylab("Viral RNA load (log10 copies/mL)") +
+        scale_y_continuous(breaks = seq(0, 10, by = 2), limits = c(0, 10)) +
+        scale_x_continuous(breaks = seq(-20, 40, by = 10), limits = c(-20, 40)) +
+        theme(plot.title = element_text(colour = "#196B24", size = rel(5)),
+                axis.text = element_text(color = "black"),
+                axis.ticks = element_line(color = "black"),
+                axis.line = element_line(color = "black"),
+                panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                panel.background = element_blank(),
+                legend.position = "none",
+                axis.text.x = element_text(family="Helvetica", size = rel(5)),
+                axis.text.y = element_text(family="Helvetica", size = rel(5)),
+                axis.title.x = element_text(family="Helvetica", size = rel(4)),
+                axis.title.y = element_text(family="Helvetica", size = rel(4)))
+f2a2
+```
+
+```{r, Figure 2a; Save Image}
+f2a <- ggarrange(f2a1, f2a2, nrow = 1, ncol = 2, align = "hv", widths = c(1, 1))
+f2a
+#ggsave("Figure2A.png", f2a, width = 16*2, height = 12)
+```
+
+## Summarised the dataset in table
+```{r, Select variables from raw data}
+df_tab <- df %>%
+  select(c("age_cat", "sex", "vaccination", "comorbidity", "log10beta_mode", "log10pi_mode", "log10rho_mode", "log10phi_mode", "delta_mode", "tau_mode", "outcome")) %>%
+  rename("age" = "age_cat", "gender" = "sex")
+head(df_tab)
+```
+
+```{r}
+cols <- c("age", "gender", "vaccination", "comorbidity", "outcome")
+# Transform the categorical variables into factor
+for (i in cols){
+  df_tab[[i]] <- as.factor(df_tab[[i]])}
+sapply(df_tab, typeof)
+```
+
+```{r}
+summary(df_tab)
+```
+
+```{r, Setting the referene level for the categorical variables}
+df_tab$age <- relevel(df_tab$age, ref = "18-59")
+df_tab$gender <- relevel(df_tab$gender, ref = "Male")
+df_tab$vaccination <- relevel(df_tab$vaccination, ref = "Notfull")
+df_tab$comorbidity <- relevel(df_tab$comorbidity, ref = "0")
+df_tab$outcome <- relevel(df_tab$outcome, ref = "Non severe")
+```
+
+```{r, Tabulate data summary}
+table0 <- tbl_summary(df_tab, include = c(age, gender, vaccination, comorbidity, log10beta_mode, log10pi_mode, log10rho_mode, log10phi_mode, delta_mode, tau_mode),
+                        by = outcome, label = list(
+                            age = "Age",
+                            gender = "Gender",
+                            vaccination = "Vaccination",
+                            comorbidity = "Number of Comorbidity",
+                            log10beta_mode = "Beta",
+                            log10pi_mode = "Pi",
+                            log10rho_mode = "Rho",
+                            log10phi_mode = "Phi",
+                            delta_mode = "Delta",
+                            tau_mode = "Tau"
+                        ),
+                        missing = "no") %>%
+                        modify_header(label = "**Variable**") %>%
+                        bold_labels()
+tbl <- as_gt(table0)
+#Sys.setenv(CHROMOTE_CHROME = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")
+#gtsave(tbl, filename = "Summary_before_smote.pdf")
+```
+
+## SMOTE (For handling imbalance data)
+```{r, Prepare dataframe for SMOTE}
+df_for_smote5 <- df_tab %>% 
+mutate(
+    age = case_when(
+        age == "18-59" ~ 1,
+        age == "60-79" ~ 2,
+        age == ">=80" ~ 3),
+    gender = case_when(
+        gender == "Male" ~ 1,
+        gender == "Female"~ 0),
+    vaccination = case_when(
+        vaccination == "Notfull" ~ 1,
+        vaccination == "Full" ~ 2,
+        vaccination == "Booster" ~ 3),
+    comorbidity = case_when(
+        comorbidity == "0" ~ 1,
+        comorbidity == "1-2" ~ 2,
+        comorbidity == ">=3" ~ 3),
+    outcome = case_when(
+        outcome == "Non severe" ~ 0,
+        outcome == "Severe" ~ 1)
+    )
+set.seed(123)
+smote_res2 <- SMOTE(X = df_for_smote5[, -11], target = df_for_smote5$outcome, K = 2, dup_size = 33)
+```
+
+```{r, Perform SMOTE on dataset}
+df_smote5 <- data.frame(smote_res2$data)
+df_smote5 <- df_smote5 %>% 
+mutate(
+    age = case_when(
+        age <= 1 ~ "18-59",
+        age > 1 & age <= 2 ~ "60-79",
+        age > 2 ~ ">=80"),
+    gender = case_when(
+        gender >= 0.5 ~ "Male",
+        gender < 0.5 ~ "Female"),
+    vaccination = case_when(
+        vaccination <= 1 ~ "Notfull",
+        vaccination > 1 & vaccination <= 2 ~ "Full",
+        vaccination > 2 ~ "Booster"),
+    comorbidity = case_when(
+        comorbidity <= 1 ~ "0",
+        comorbidity > 1 & comorbidity <= 2 ~ "1-2",
+        comorbidity > 2 ~ ">=3"),
+    class = case_when(
+        class == 1 ~ "Severe",
+        class == 0 ~ "Non severe")
+    ) %>%
+    rename("outcome" = "class")
+col_cat <- c("age", "gender", "vaccination", "comorbidity", "outcome")
+for (i in col_cat){
+  df_smote5[[i]] <- as.factor(df_smote5[[i]])}
+summary(df_smote5)
+```
+
+```{r, Setting the reference level for the categorical variables}
+df_smote5$age <- relevel(df_smote5$age, ref = "18-59")
+df_smote5$gender <- relevel(df_smote5$gender, ref = "Male")
+df_smote5$vaccination <- relevel(df_smote5$vaccination, ref = "Notfull")
+df_smote5$comorbidity <- relevel(df_smote5$comorbidity, ref = "0")
+df_smote5$outcome <- relevel(df_smote5$outcome, ref = "Non severe")
+```
+
+```{r, Tabulate the summary of balanced data}
+table1 <- tbl_summary(df_smote5, include = c(age, gender, vaccination, comorbidity, log10beta_mode, log10pi_mode, log10rho_mode, log10phi_mode, delta_mode, tau_mode),
+                        by = outcome, label = list(
+                            age = "Age",
+                            gender = "Gender",
+                            vaccination = "Vaccination",
+                            comorbidity = "Number of Comorbidity",
+                            log10beta_mode = "Beta",
+                            log10pi_mode = "Pi",
+                            log10rho_mode = "Rho",
+                            log10phi_mode = "Phi",
+                            delta_mode = "Delta",
+                            tau_mode = "Tau"
+                        ),
+                        missing = "no") %>%
+                        modify_header(label = "**Variable**") %>%
+                        bold_labels()
+tbl1 <- as_gt(table1)
+#Sys.setenv(CHROMOTE_CHROME = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")
+#gtsave(tbl1, filename = "Summary_after_smote.pdf")
+```
+
+## Simulate the viral load trajectories based on the Ordinary Differential Equation from the individual parameters
+```{r, TREIV model}
+ode_TREIV <- function(pars){
+  
+  beta <- as.numeric(pars[1])
+  pi <- as.numeric(pars[2])
+  rho <- as.numeric(pars[3])
+  phi <- as.numeric(pars[4])
+  delta <- as.numeric(pars[5])
+  tau <- as.numeric(pars[6])
+  
+  derivs <- function(time, y, pars){
+    with(as.list(c(pars, y)), {
+      
+      dT <- -beta * T * V - phi * I * T + rho * R
+      dR <- phi * I * T - rho * R
+      dE <- beta * T * V - 4 * E
+      dI <- 4 * E - delta * I
+      dV <- pi * I - 15 * V
+        
+      return(list(c(dT, dR, dE, dI, dV)))
+    })
+  }
+  y <- c(T = 10^7, R = 0, E = 1, I = 0, V = 1)
+  
+  times <- round(seq(-tau, -tau + Time, step_size), -log10(step_size))
+  out <- lsoda(y = y, parms = pars, times = times, func = derivs, rtol = tol, atol = tol)
+  out2 <- cbind(Day_since_symp = out[, 1], VL_sim = log10(pmax(out[, 6], tol)))
+  as.data.frame(out2)
+}
+
+#individual fit for TREIV model
+ind_fit_plt <- function(Est){
+  
+  Fit <- list()
+  for(i in 1:nrow(Est)){
+    pars <- c(beta = 10 ^ (Est$log10beta_mode[i]),
+              pi = 10 ^ (Est$log10pi_mode[i]),
+              rho = 10 ^ (Est$log10rho_mode[i]),
+              phi = 10 ^ (Est$log10phi_mode[i]),
+              delta = Est$delta_mode[i],
+              tau = Est$tau_mode[i])
+    fitted <- ode_TREIV(pars)
+
+    hosp_id <- Est$hosp_id[i]
+    Fit[[i]] <- data.frame(hosp_id, fitted)
+  }
+  
+  ind_fit <- map_df(Fit, ~ as.data.frame(.x))
+  
+  return(ind_fit)
+}
+```
+
+```{r, Setup CPU clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Simulate the individual viral load trajectory}
+#setting
+Time <- 60
+step_size <- 0.1
+tol <- 10^-10
+
+#setting the dummy id for each individual
+hosp_id_dum <- seq_len(nrow(df_smote5))
+df_sim <- df_smote5
+df_sim['hosp_id'] <- hosp_id_dum
+
+est_VL_list <- foreach(i = 1:nrow(df_sim), .packages = c("purrr", "deSolve", "ggpubr", "dplyr")) %dopar% {
+    pars <- c(beta = 10 ^ (df_sim$log10beta_mode[i]),
+              pi = 10 ^ (df_sim$log10pi_mode[i]),
+              rho = 10 ^ (df_sim$log10rho_mode[i]),
+              phi = 10 ^ (df_sim$log10phi_mode[i]),
+              delta = df_sim$delta_mode[i],
+              tau = df_sim$tau_mode[i])
+    fitted <- ode_TREIV(pars)
+    hospid <- i
+
+    list(hosp_id = hospid, Day_since_symp = fitted$Day_since_symp, VL_sim = fitted$VL_sim)
+}
+
+est_VL_df <- map_dfr(seq_along(est_VL_list), function(i) {
+    est <- est_VL_list[[i]]
+
+    tibble(
+        hosp_id = est$hosp_id,
+        Day_since_symp = est$Day_since_symp,
+        VL_sim = est$VL_sim
+    )
+})
+
+est_VL_full <- as.data.frame(est_VL_df)
+est_VL_full_pivot <- est_VL_full %>%
+                        filter(Day_since_symp >= 0 & Day_since_symp <= 20) %>%
+                        pivot_wider(id_cols = hosp_id, names_from = Day_since_symp, values_from = VL_sim)
+day_list <- as.character(seq(0.1, 20, by = 0.1))
+
+df_adj <- df_sim %>%
+  left_join(est_VL_full_pivot, by = "hosp_id") %>%
+  select(-c(log10beta_mode, log10pi_mode, log10rho_mode, log10phi_mode, delta_mode, tau_mode))
+
+head(df_adj)
+```
+
+```{r, Stop clusters}
+stopCluster(cl)
+```
+
+## Rerun the EDA
+```{r, Figure 2b}
+mean_vl_severe <- c()
+mean_vl_nonsevere <- c()
+minvl_severe <- c()
+maxvl_severe <- c()
+minvl_nonsevere <- c()
+maxvl_nonsevere <- c()
+for (i in 1:length(day_list)) {
+    x <- day_list[i]
+    mean_vl_severe[i] <- mean(df_adj %>%
+                                filter(outcome == "Severe") %>%
+                                pull(!!sym(x)))
+    
+    mean_vl_nonsevere[i] <- mean(df_adj %>%
+                                filter(outcome == "Non severe") %>%
+                                pull(!!sym(x)))
+    
+    minvl_severe[i] <- apply(df_adj %>% filter(outcome == "Severe") %>% select(x), 2, function(x){quantile(x, 0.025)})
+    minvl_nonsevere[i] <- apply(df_adj %>% filter(outcome == "Non severe") %>% select(x), 2, function(x){quantile(x, 0.025)})
+    maxvl_severe[i] <- apply(df_adj %>% filter(outcome == "Severe") %>% select(x), 2, function(x){quantile(x, 0.975)})
+    maxvl_nonsevere[i] <- apply(df_adj %>% filter(outcome == "Non severe") %>% select(x), 2, function(x){quantile(x, 0.975)})
+}
+
+df_vl_viz <- data.frame(
+    "Day_since_symptom" = seq(0.1, 20, by = 0.1),
+    "vl_severe" = mean_vl_severe,
+    "vl_nonsevere" = mean_vl_nonsevere,
+    "minvl_severe" = minvl_severe,
+    "minvl_nonsevere" = minvl_nonsevere,
+    "maxvl_severe" = maxvl_severe,
+    "maxvl_nonsevere" = maxvl_nonsevere
+)
+
+df_vl_viz2 <- df_vl_viz %>%
+                mutate(
+                    minvl_severe = if_else(minvl_severe < 0, 0, minvl_severe),
+                    maxvl_severe = if_else(maxvl_severe < 0, 0, maxvl_severe),
+                    minvl_nonsevere = if_else(minvl_nonsevere < 0, 0, minvl_nonsevere),
+                    maxvl_nonsevere = if_else(maxvl_nonsevere < 0, 0, maxvl_nonsevere)
+                )
+
+fig2b <- ggplot(data = df_vl_viz, aes(x = Day_since_symptom)) +
+    geom_ribbon(data = df_vl_viz2, aes(ymin = minvl_severe, ymax = maxvl_severe, fill = factor("Severe")), alpha = 0.2) +
+    geom_ribbon(data = df_vl_viz2, aes(ymin = minvl_nonsevere, ymax = maxvl_nonsevere, fill = ("Non severe")), alpha = 0.2) +
+    geom_line(aes(y = vl_severe, color = factor("Severe")), linewidth = 3) +
+    geom_line(aes(y = vl_nonsevere, color = factor("Non severe")), linewidth = 3) +
+    geom_hline(aes(yintercept = log10(10^1.31)), color = "dark grey", linewidth = 3) +
+    xlab("Time since symptom onset (days)") +
+    ylab("Viral RNA load (log10 copies/mL)") +
+    scale_colour_manual(name = "Outcome", values = c("Severe" = "#E97132", "Non severe" = "#196B24")) +
+    scale_fill_manual(name = "Outcome", values = c("Severe" = "#E97132", "Non severe" = "#196B24")) +
+    scale_x_continuous(breaks = seq(0, 20, by = 5),limits = c(0, 20)) +
+    scale_y_continuous(breaks = seq(0, 10, by = 2), limits = c(0, 10)) +
+    theme(axis.text = element_text(color = "black"),
+            axis.ticks = element_line(color = "black"),
+            axis.line = element_line(color = "black"),
+            legend.position = "none",
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.text.x = element_text(family = "Helvetica", size = rel(5)),
+            axis.text.y = element_text(family = "Helvetica", size = rel(5)),
+            axis.title.x = element_text(family = "Helvetica", size = rel(4)),
+            axis.title.y = element_text(family = "Helvetica", size = rel(4)))
+fig2b
+#ggsave("Figure2B.png", plot = fig2b, width = 16, height = 12)
+```
+
+```{r, Aggregate data}
+df_vl_viz_longi <- df_adj %>%
+                pivot_longer(
+                    cols = c(day_list),
+                    names_to = "Day_since_symp",
+                    values_to = "VL_sim"
+                ) %>%
+                select(c(hosp_id, Day_since_symp, VL_sim, outcome))
+
+df_vl_max <- df_vl_viz_longi %>%
+                        group_by(hosp_id) %>%
+                        summarise(max_VL_sim = max(VL_sim, na.rm = TRUE)) %>%
+                        ungroup()
+
+df_VL_max <- df_vl_viz_longi %>%
+                left_join(df_vl_max, by = "hosp_id") %>%
+                select(hosp_id, max_VL_sim, outcome) %>%
+                group_by(hosp_id) %>%
+                slice_head(n = 1) %>%
+                ungroup() %>%
+                mutate(
+                  outcome = factor(outcome, levels = c("Severe", "Non severe"))
+                  )
+
+df_vl_detlim <- df_vl_viz_longi %>%
+                    group_by(hosp_id) %>%
+                    filter(VL_sim <= log10(10^1.31)) %>%
+                    slice_head(n = 1) %>%
+                    ungroup() %>%
+                    mutate(
+                      outcome = factor(outcome, levels = c("Severe", "Non severe"))
+                    )
+```
+
+### Normality test
+```{r, Normality test with Komolgorov-Smirnov}
+ks_summary <- list()
+
+# Peak viral load
+ks_peak <- tidy(ks.test(df_VL_max$max_VL_sim, y = "pnorm"))
+ks_summary[['Peak viral load (log10 copies/mL)']] <- ks_peak %>% mutate(variable = 'Peak viral load (log10 copies/mL)')
+ks_sum_df <- bind_rows(ks_summary)
+
+df_vl_detlim$Day_since_symp <- as.numeric(df_vl_detlim$Day_since_symp)
+ks_det <- tidy(ks.test(df_vl_detlim$Day_since_symp, y = "pnorm"))
+ks_summary[['Detection duration (days)']] <- ks_det %>% mutate(variable = 'Detection duration (days)')
+ks_sum_df <- bind_rows(ks_summary)
+
+ks_sum_df
+```
+
+```{r, Normality test with Shapiro Wilk}
+sw_summary <- list()
+
+# Peak viral load
+sw_peak <- tidy(shapiro.test(df_VL_max$max_VL_sim))
+sw_summary[['Peak viral load (log10 copies/mL)']] <- sw_peak %>% mutate(variable = 'Peak viral load (log10 copies/mL)')
+sw_sum_df <- bind_rows(sw_summary)
+
+df_vl_detlim$Day_since_symp <- as.numeric(df_vl_detlim$Day_since_symp)
+sw_det <- tidy(shapiro.test(df_vl_detlim$Day_since_symp))
+sw_summary[['Detection duration (days)']] <- sw_det %>% mutate(variable = 'Detection duration (days)')
+sw_sum_df <- bind_rows(sw_summary)
+
+sw_sum_df
+```
+
+```{r, QQ plot}
+print(ggqqplot(df_VL_max$max_VL_sim, color = "steel blue") + labs(title = paste0("QQ plot for Peak viral load (log10 copies/mL)")))
+print(ggqqplot(df_vl_detlim$Day_since_symp, color = "steel blue") + labs(title = paste0("QQ plot for Detection duration (days)")))
+```
+
+```{r, Wilcoxon test}
+fig2c1 <- ggplot(df_VL_max, aes(y = max_VL_sim, x = outcome, fill = outcome)) +
+            geom_boxplot(size = 1.5, outlier.size = 4, outlier.colour = "black") +
+            stat_summary(fun = mean, colour = "black", geom = "point", shape = 4, size = 8, stroke = 2, show.legend = FALSE) +
+            labs(y = "Peak viral load (log10 copies/mL)") +
+            scale_y_continuous(breaks = seq(-3, 12, 3), limits = c(-3, 12)) +
+            scale_x_discrete(labels = c("Severe", "Non-severe")) +
+            geom_signif(comparisons = list(c("Severe", "Non severe")),
+                        map_signif_level = TRUE,
+                        size = 1.5,
+                        textsize = 20,
+                        test = "wilcox.test") +
+            scale_fill_manual(name = "Outcome", values = c("Severe" = "#E97132", "Non severe" = "#196B24")) +
+            theme(legend.position = 'None',
+            axis.text = element_text(colour = "black"),
+            axis.line = element_line(colour = "black"),
+            axis.text.y = element_text(family = "Helvetica", size = rel(5)),
+            axis.text.x = element_text(family = "Helvetica", size = rel(5)),
+            axis.title.y = element_text(family = "Helvetica", size = rel(4)),
+            axis.title.x = element_blank(),
+            panel.grid = element_blank(),
+            panel.background = element_blank())
+#fig2c1
+
+fig2c2_2 <- ggplot(df_vl_detlim, aes(y = as.numeric(Day_since_symp), x = outcome, fill = outcome)) +
+            geom_boxplot(size = 1.5, outlier.size = 4, outlier.colour = "black") +
+            stat_summary(fun = mean, colour = "black", geom = "point", shape = 4, size = 8, stroke = 2, show.legend = FALSE) +
+            scale_y_continuous(breaks = seq(0, 25, 5), limits = c(0, 25)) +
+            scale_x_discrete(labels = c("Severe", "Non-severe")) +
+            ylab("Duration of virus shedding (days)") +
+            geom_signif(comparisons = list(c("Severe", "Non severe")),
+                        map_signif_level = TRUE,
+                        size = 1.5,
+                        textsize = 20,
+                        test = "wilcox.test") +
+            scale_fill_manual(name = "Outcome", values = c("Severe" = "#E97132", "Non severe" = "#196B24")) +
+            theme(legend.position = 'None',
+            axis.text = element_text(colour = "black"),
+            axis.line = element_line(colour = "black"),
+            axis.text.y = element_text(family = "Helvetica", size = rel(5)),
+            axis.text.x = element_text(family = "Helvetica", size = rel(5)),
+            axis.title.y = element_text(family = "Helvetica", size = rel(4)),
+            axis.title.x = element_blank(),
+            panel.grid = element_blank(),
+            panel.background = element_blank())
+#fig2c2
+
+fig2c_2 <- ggarrange(fig2c1, fig2c2_2, nrow = 1, ncol = 2, align = "hv", widths = c(1, 1))
+fig2c_2
+#ggsave("Figure2C.png", plot = fig2c, width = 16*2, height = 12)
+```
+
+```{r}
+mean_severe_pvl <- df_VL_max %>%
+  filter(outcome == "Severe") %>%
+  summarise(mean_severe_pvl = mean(as.numeric(max_VL_sim), na.rm = TRUE)) %>%
+  pull(mean_severe_pvl)
+
+mean_nonsevere_pvl <- df_VL_max %>%
+  filter(outcome == "Non severe") %>%
+  summarise(mean_nonsevere_pvl = mean(as.numeric(max_VL_sim), na.rm = TRUE)) %>%
+  pull(mean_nonsevere_pvl)
+
+print(paste0("Mean of peak viral load for severe case: ", round(mean_severe_pvl, 2)))
+print(paste0("Mean of peak viral load for non-severe case: ", round(mean_nonsevere_pvl, 2)))
+
+w_pvl <- tidy(wilcox.test(max_VL_sim ~ outcome, data = df_VL_max, exact = FALSE, conf.int = TRUE))
+w_pvl
+
+mean_severe_dtdur <- df_vl_detlim %>%
+  filter(outcome == "Severe") %>%
+  summarise(mean_severe_dtdur = mean(as.numeric(Day_since_symp), na.rm = TRUE)) %>%
+  pull(mean_severe_dtdur)
+
+mean_nonsevere_dtdur <- df_vl_detlim %>%
+  filter(outcome == "Non severe") %>%
+  summarise(mean_nonsevere_dtdur = mean(as.numeric(Day_since_symp), na.rm = TRUE)) %>%
+  pull(mean_nonsevere_dtdur)
+
+print(paste0("Mean of duration of virus shedding for severe case: ", round(mean_severe_dtdur, 2)))
+print(paste0("Mean of duration of virus shedding for non-severe case: ", round(mean_nonsevere_dtdur, 2)))
+
+w_dtdur <- tidy(wilcox.test(as.numeric(Day_since_symp) ~ outcome, data = df_vl_detlim, exact = FALSE, conf.int = TRUE))
+w_dtdur
+```
+
+```{r, Spearman Correlation Analysis 2}
+df_corr3 <- df_adj %>%
+                select(c(hosp_id, age, gender, vaccination, comorbidity, outcome))
+df_corr3 <- df_corr3 %>%
+                left_join(df_VL_max, by = "hosp_id") %>%
+                left_join(df_vl_detlim, by = "hosp_id") %>%
+                select(age, gender, vaccination, comorbidity, Day_since_symp, max_VL_sim, outcome) %>%
+                rename("peak viral load" = max_VL_sim,
+                        "duration of virus shedding" = Day_since_symp)
+
+df_corr3 <- df_corr3 %>% 
+                mutate(
+                    age = case_when(
+                        age == "18-59" ~ 1,
+                        age == "60-79" ~ 2,
+                        age == ">=80" ~ 3),
+                    gender = case_when(
+                        gender == "Male" ~ 1,
+                        gender == "Female"~ 0),
+                    vaccination = case_when(
+                        vaccination == "Notfull" ~ 1,
+                        vaccination == "Full" ~ 2,
+                        vaccination == "Booster" ~ 3),
+                    comorbidity = case_when(
+                        comorbidity == "0" ~ 1,
+                        comorbidity == "1-2" ~ 2,
+                        comorbidity == ">=3" ~ 3),
+                    outcome = case_when(
+                        outcome == "Non severe" ~ 0,
+                        outcome == "Severe" ~ 1)
+                )
+
+df_corr3['duration of virus shedding'] <- as.numeric(df_corr3$`duration of virus shedding`)
+
+corr_res2 <- cor(df_corr3, method = "spearman", use = "pairwise.complete.obs")
+fig2d <- ggcorrplot(corr_res2,
+                        type = "lower",
+                        legend.title = "Spearman \n Coef",
+                        ggtheme = theme_classic(base_family = "Helvetica"),
+                            outline = "black",
+                            lab = TRUE,
+                            lab_size = rel(10)) +
+                            theme(panel.background = element_blank(),
+                                    panel.grid = element_blank(),
+                                    axis.text.x = element_text(color = "black", size = rel(4)),
+                                    axis.text.y = element_text(color = "black", size = rel(4)),
+                                    axis.title.x = element_blank(),
+                                    axis.title.y = element_blank(),
+                                    legend.text = element_text(size = 20),
+                                    legend.title = element_text(size = 30),
+                                    legend.key.size = unit(2.5, "cm"))
+fig2d
+#ggsave("Figure2D.png", fig2d, width = 16, height = 12)
+```
+
+```{r, Saving all Figures}
+sfn <- "Figure2.pdf"
+pdf(sfn, width = 16*3, height = 12*2)
+figure2 <- ggarrange(f2a1, f2a2, fig2b, fig2c1, fig2c2, fig2d, nrow = 2, ncol = 3, widths = c(1, 1, 1), height = c(1, 1))
+figure2
+dev.off()
+```
+
+# Fitting dataframe into machine learning models
+## Splitting the data into training and testing set
+```{r, Split data}
+set.seed(123)
+
+# Initialize list to hold the day of diagnosis assigned
+diag_day_list <- list()
+
+# Initialize list to hold train/test splits
+split_list <- list()
+
+# Perform 100 random splits
+for(i in 1:100) {
+  # Generate random numbers from lognormal
+  random_lognorm <- rlnorm(n = 100000, meanlog = 3.12, sdlog = sqrt(10.36))
+
+  # Setting the upper limit to 6
+  random_lognorm <- random_lognorm[random_lognorm >= 0.5 & random_lognorm <= 6]
+
+  # Round value to nearest 0.5
+  random_lognorm_rounded <- as.data.frame(round(random_lognorm * 2) / 2)
+  random_lognorm_rounded <- random_lognorm_rounded[1:nrow(df_adj), ]
+
+  df_copy <- df_adj
+
+  temp_df_lognorm <- df_copy %>%
+                      select("hosp_id") %>%
+                      mutate(day_det = random_lognorm_rounded,
+                             day_det2 = random_lognorm_rounded + 2)
+
+  est_VL_full3 <- df_copy %>%
+                    pivot_longer(
+                        cols = c(all_of(day_list)),
+                        names_to = "day_symp",
+                        values_to = "vl_sim"
+                    ) %>%
+                    left_join(temp_df_lognorm, by = "hosp_id")
+
+  fil_est2 <- est_VL_full3 %>%
+                group_by("hosp_id") %>%
+                filter(day_symp == day_det) %>%
+                ungroup() %>%
+                select(c("hosp_id", "vl_sim", "day_det"))
+  
+  fil_est3 <- est_VL_full3 %>%
+                group_by("hosp_id") %>%
+                filter(day_symp == day_det2) %>%
+                ungroup() %>%
+                select(c("hosp_id", "vl_sim")) %>%
+                rename("vl_sim2" = "vl_sim")
+
+  df_adj2 <- df_copy %>%
+              left_join(fil_est2, by = "hosp_id") %>%
+              left_join(fil_est3, by = "hosp_id")
+
+  index <- createDataPartition(df_adj2$outcome, p = 0.7, list = FALSE)
+  
+  train_df <- df_adj2[index, ]
+  test_df  <- df_adj2[-index, ]
+  
+  split_list[[i]] <- list(train = train_df, test = test_df)
+  diag_day_list[[i]] <- list(hosp_id = temp_df_lognorm$hosp_id, diag_day = temp_df_lognorm$day_det, diag_day_p2 = temp_df_lognorm$day_det2)
+}
+```
+
+## Fitting data without any VL information
+```{r, Create training & testing set without any VL information}
+fea_without_vl <- c("age", "gender", "vaccination", "comorbidity", "outcome")
+
+split_list_fil <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_without_vl))
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_without_vl))
+
+    split_list_fil[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## Fitting data with VL since symptom onset
+```{r, Create training & testing set with VL since symptom onset}
+fea_vlsim_symp <- c("age", "gender", "vaccination", "comorbidity", "0", "outcome")
+
+split_list_vlsim_symp <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_vlsim_symp)) %>% rename("vl_sim_symp" = "0")
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_vlsim_symp)) %>% rename("vl_sim_symp" = "0")
+
+    split_list_vlsim_symp[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## Fitting data with VL at diagnosis
+```{r, Create training & testing set with VL at diagnosis}
+fea_vldiag <- c("age", "gender", "vaccination", "comorbidity", "vl_sim", "outcome")
+
+split_list_vldiag <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_vldiag))
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_vldiag))
+
+    split_list_vldiag[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## Getting the sequential VL after diagnosis
+```{r, Setup CPU clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+```{r, Creating training & testing set with sequential VL after diagnosis}
+split_list_p <- foreach (i = 1:100, .packages = c("dplyr", "tidyr")) %dopar% {
+  split <- split_list[[i]]
+  diag_day_lis <- data.frame(diag_day_list[[i]])
+  
+  train_id_list <- unique(split$train$hosp_id)
+  test_id_list <- unique(split$test$hosp_id)
+  
+  diag_day_lis <- diag_day_lis %>%
+    mutate(diag_p1 = diag_day + 1,
+           diag_p2 = diag_day_p2,
+           diag_p3 = diag_day + 3,
+           diag_p4 = diag_day + 4,
+           diag_p5 = diag_day + 5,
+           diag_p6 = diag_day + 6,
+           diag_p7 = diag_day + 7,
+           diag_p8 = diag_day + 8,
+           diag_p9 = diag_day + 9,
+           diag_p10 = diag_day + 10) %>%
+    select(c(hosp_id, starts_with("diag_p")))
+  
+  pivot_long_train <- split$train %>%
+    pivot_longer(
+      cols = c(all_of(day_list)),
+      names_to = "day_symp",
+      values_to = "simulated_vl"
+    )
+  
+  pivot_long_test <- split$test %>%
+    pivot_longer(
+      cols = c(all_of(day_list)),
+      names_to = "day_symp",
+      values_to = "simulated_vl"
+    )
+  
+  train_dp1 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p1) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp1" = "simulated_vl")
+  
+  train_dp2 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p2) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp2" = "simulated_vl")
+  
+  train_dp3 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p3) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp3" = "simulated_vl")
+  
+  train_dp4 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p4) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp4" = "simulated_vl")
+  
+  train_dp5 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p5) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp5" = "simulated_vl")
+  
+  train_dp6 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p6) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp6" = "simulated_vl")
+  
+  train_dp7 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p7) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp7" = "simulated_vl")
+  
+  train_dp8 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p8) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp8" = "simulated_vl")
+  
+  train_dp9 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p9) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp9" = "simulated_vl")
+  
+  train_dp10 <- diag_day_lis %>%
+    filter(hosp_id %in% train_id_list) %>%
+    left_join(pivot_long_train, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p10) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp10" = "simulated_vl")
+  
+  test_dp1 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p1) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp1" = "simulated_vl")
+  
+  test_dp2 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p2) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp2" = "simulated_vl")
+  
+  test_dp3 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p3) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp3" = "simulated_vl")
+  
+  test_dp4 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p4) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp4" = "simulated_vl")
+  
+  test_dp5 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p5) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp5" = "simulated_vl")
+  
+  test_dp6 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p6) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp6" = "simulated_vl")
+  
+  test_dp7 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p7) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp7" = "simulated_vl")
+  
+  test_dp8 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p8) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp8" = "simulated_vl")
+  
+  test_dp9 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p9) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp9" = "simulated_vl")
+  
+  test_dp10 <- diag_day_lis %>%
+    filter(hosp_id %in% test_id_list) %>%
+    left_join(pivot_long_test, by = "hosp_id") %>%
+    group_by(hosp_id) %>%
+    filter(day_symp == diag_p10) %>%
+    ungroup() %>%
+    select(c(hosp_id, simulated_vl)) %>%
+    rename("vl_dp10" = "simulated_vl")
+  
+  df_train <- split$train %>%
+    select(c(hosp_id, age, gender, vaccination, comorbidity, vl_sim, outcome)) %>%
+    left_join(train_dp1, by = "hosp_id") %>%
+    left_join(train_dp2, by = "hosp_id") %>%
+    left_join(train_dp3, by = "hosp_id") %>%
+    left_join(train_dp4, by = "hosp_id") %>%
+    left_join(train_dp5, by = "hosp_id") %>%
+    left_join(train_dp6, by = "hosp_id") %>%
+    left_join(train_dp7, by = "hosp_id") %>%
+    left_join(train_dp8, by = "hosp_id") %>%
+    left_join(train_dp9, by = "hosp_id") %>%
+    left_join(train_dp10, by = "hosp_id") %>%
+    select(c(age, gender, vaccination, comorbidity, vl_sim, starts_with("vl_dp"), outcome))
+  
+  df_test <- split$test %>%
+    select(c(hosp_id, age, gender, vaccination, comorbidity, vl_sim, outcome)) %>%
+    left_join(test_dp1, by = "hosp_id") %>%
+    left_join(test_dp2, by = "hosp_id") %>%
+    left_join(test_dp3, by = "hosp_id") %>%
+    left_join(test_dp4, by = "hosp_id") %>%
+    left_join(test_dp5, by = "hosp_id") %>%
+    left_join(test_dp6, by = "hosp_id") %>%
+    left_join(test_dp7, by = "hosp_id") %>%
+    left_join(test_dp8, by = "hosp_id") %>%
+    left_join(test_dp9, by = "hosp_id") %>%
+    left_join(test_dp10, by = "hosp_id") %>%
+    select(c(age, gender, vaccination, comorbidity, vl_sim, starts_with("vl_dp"), outcome))
+  
+  list(train = df_train, test = df_test)
+}
+```
+
+```{r, Stop CPU clusters}
+stopCluster(cl)
+```
+
+# Fitting data excluding Comorbidity
+## Without any VL information
+```{r, Creating dataframe without VL information & comorbidity}
+fea_without_vlncom <- c("age", "gender", "vaccination", "outcome")
+
+split_list_wvlncom <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_without_vlncom))
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_without_vlncom))
+
+    split_list_wvlncom[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## With VL since symptom onset
+```{r, Creating dataframe without comorbidity & with VL since symptom onset}
+fea_vlsim_symp_wcom <- c("age", "gender", "vaccination", "0", "outcome")
+
+split_list_vlsim_symp_wcom <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_vlsim_symp_wcom)) %>% rename("vl_sim_symp" = "0")
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_vlsim_symp_wcom)) %>% rename("vl_sim_symp" = "0")
+
+    split_list_vlsim_symp_wcom[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## With VL at diagnosis
+```{r, Creating dataframe without comorbidity & with VL at diagnosis}
+fea_vldiag_wcom <- c("age", "gender", "vaccination", "vl_sim", "outcome")
+
+split_list_vldiag_wcom <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_vldiag_wcom))
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_vldiag_wcom))
+
+    split_list_vldiag_wcom[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+# Fitting data excluding Age
+## Without any VL information
+```{r, Creating dataframe without VL information & age}
+fea_without_vlnage <- c("gender", "vaccination", "comorbidity", "outcome")
+
+split_list_wvlnage <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_without_vlnage))
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_without_vlnage))
+
+    split_list_wvlnage[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## With VL since symptom onset
+```{r, Creating dataframe without age & with VL since symptom onset}
+fea_vlsim_symp_wage <- c("gender", "vaccination", "comorbidity", "0", "outcome")
+
+split_list_vlsim_symp_wage <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_vlsim_symp_wage)) %>% rename("vl_sim_symp" = "0")
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_vlsim_symp_wage)) %>% rename("vl_sim_symp" = "0")
+
+    split_list_vlsim_symp_wage[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## With VL at diagnosis
+```{r, Creating dataframe without age & with VL at diagnosis}
+fea_vldiag_wage <- c("gender", "vaccination", "comorbidity", "vl_sim", "outcome")
+
+split_list_vldiag_wage <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_vldiag_wage))
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_vldiag_wage))
+
+    split_list_vldiag_wage[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+# Fitting data excluding Comorbidity & Age
+## Without any VL information
+```{r, Creating dataframe without VL information, age & comorbidity}
+fea_without_vlnagecom <- c("gender", "vaccination", "outcome")
+
+split_list_wvlnagecom <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_without_vlnagecom))
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_without_vlnagecom))
+
+    split_list_wvlnagecom[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## With VL since symptom onset
+```{r, Creating dataframe without comorbidity and age & with VL since symptom onset}
+fea_vlsim_symp_wagecom <- c("gender", "vaccination", "0", "outcome")
+
+split_list_vlsim_symp_wagecom <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_vlsim_symp_wagecom)) %>% rename("vl_sim_symp" = "0")
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_vlsim_symp_wagecom)) %>% rename("vl_sim_symp" = "0")
+
+    split_list_vlsim_symp_wagecom[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+## With VL at diagnosis
+```{r, Creating dataframe without comorbidity and age & with VL at diagnosis}
+fea_vldiag_wagecom <- c("gender", "vaccination", "vl_sim", "outcome")
+
+split_list_vldiag_wagecom <- list()
+for (i in 1:100) {
+    train_df <- split_list[[i]]$train %>% select(all_of(fea_vldiag_wagecom))
+    test_df <- split_list[[i]]$test %>% select(all_of(fea_vldiag_wagecom))
+
+    split_list_vldiag_wagecom[[i]] <- list(train = train_df, test = test_df)
+}
+```
+
+# Saving all data in this session
+```{r, Save data}
+save.image(file = paste0(getwd(), "/Data_preparation.RData")) # This file will be used for the following analysis
+```
+
+# Show the session info
+```{r, Session Info}
+sessionInfo()
+```

@@ -1,0 +1,857 @@
+---
+title: "Figure3_and_Supplementary_figure2"
+output: html_document
+---
+
+# Setup environment, clusters & load data
+```{r, Import libraries}
+library(dplyr)
+library(ggplot2)
+library(gt)
+library(gtsummary)
+library(foreach)
+library(doParallel)
+library(stringr)
+library(tidyr)
+library(webshot2)
+library(ggsignif)
+library(ggcorrplot)
+library(ggpubr)
+library(tidymodels)
+library(ggsignif)
+```
+
+```{r, Load data into environment}
+load(paste0(getwd(), '/Random_forest.RData'))
+load(paste0(getwd(), '/XGBoost.RData'))
+load(paste0(getwd(), '/LightGBM.RData'))
+```
+
+# Model Performance Summary & Visualisation
+```{r, Compile models performance}
+rf_acc_fil <- rf_fil_metrics_summary$accuracy_test_mean
+rf_acc_low_fil <- rf_fil_metrics_summary$low_acc_test
+rf_acc_upp_fil <- rf_fil_metrics_summary$upp_acc_test
+rf_sens_fil <- rf_fil_metrics_summary$sensitivity_mean
+rf_sens_low_fil <- rf_fil_metrics_summary$low_sens
+rf_sens_upp_fil <- rf_fil_metrics_summary$upp_sens
+rf_spec_fil <- rf_fil_metrics_summary$specificity_mean
+rf_spec_low_fil <- rf_fil_metrics_summary$low_spec
+rf_spec_upp_fil <- rf_fil_metrics_summary$upp_spec
+rf_prec_fil <- rf_fil_metrics_summary$precision_mean
+rf_prec_low_fil <- rf_fil_metrics_summary$low_prec
+rf_prec_upp_fil <- rf_fil_metrics_summary$upp_prec
+rf_f1_fil <- rf_fil_metrics_summary$F1_score_mean
+rf_f1_low_fil <- rf_fil_metrics_summary$low_f1_sc
+rf_f1_upp_fil <- rf_fil_metrics_summary$upp_f1_sc
+rf_auc_fil <- rf_fil_metrics_summary$AUC_mean
+rf_auc_low_fil <- rf_fil_metrics_summary$low_auc
+rf_auc_upp_fil <- rf_fil_metrics_summary$upp_auc
+
+rf_acc_vlsymp <- rf_vlsymp_metrics_summary$accuracy_test_mean
+rf_acc_low_vlsymp <- rf_vlsymp_metrics_summary$low_acc_test
+rf_acc_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_acc_test
+rf_sens_vlsymp <- rf_vlsymp_metrics_summary$sensitivity_mean
+rf_sens_low_vlsymp <- rf_vlsymp_metrics_summary$low_sens
+rf_sens_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_sens
+rf_spec_vlsymp <- rf_vlsymp_metrics_summary$specificity_mean
+rf_spec_low_vlsymp <- rf_vlsymp_metrics_summary$low_spec
+rf_spec_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_spec
+rf_prec_vlsymp <- rf_vlsymp_metrics_summary$precision_mean
+rf_prec_low_vlsymp <- rf_vlsymp_metrics_summary$low_prec
+rf_prec_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_prec
+rf_f1_vlsymp <- rf_vlsymp_metrics_summary$F1_score_mean
+rf_f1_low_vlsymp <- rf_vlsymp_metrics_summary$low_f1_sc
+rf_f1_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_f1_sc
+rf_auc_vlsymp <- rf_vlsymp_metrics_summary$AUC_mean
+rf_auc_low_vlsymp <- rf_vlsymp_metrics_summary$low_auc
+rf_auc_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_auc
+
+rf_acc_vldiag <- rf_vldiag_metrics_summary$accuracy_test_mean
+rf_acc_low_vldiag <- rf_vldiag_metrics_summary$low_acc_test
+rf_acc_upp_vldiag <- rf_vldiag_metrics_summary$upp_acc_test
+rf_sens_vldiag <- rf_vldiag_metrics_summary$sensitivity_mean
+rf_sens_low_vldiag <- rf_vldiag_metrics_summary$low_sens
+rf_sens_upp_vldiag <- rf_vldiag_metrics_summary$upp_sens
+rf_spec_vldiag <- rf_vldiag_metrics_summary$specificity_mean
+rf_spec_low_vldiag <- rf_vldiag_metrics_summary$low_spec
+rf_spec_upp_vldiag <- rf_vldiag_metrics_summary$upp_spec
+rf_prec_vldiag <- rf_vldiag_metrics_summary$precision_mean
+rf_prec_low_vldiag <- rf_vldiag_metrics_summary$low_prec
+rf_prec_upp_vldiag <- rf_vldiag_metrics_summary$upp_prec
+rf_f1_vldiag <- rf_vldiag_metrics_summary$F1_score_mean
+rf_f1_low_vldiag <- rf_vldiag_metrics_summary$low_f1_sc
+rf_f1_upp_vldiag <- rf_vldiag_metrics_summary$upp_f1_sc
+rf_auc_vldiag <- rf_vldiag_metrics_summary$AUC_mean
+rf_auc_low_vldiag <- rf_vldiag_metrics_summary$low_auc
+rf_auc_upp_vldiag <- rf_vldiag_metrics_summary$upp_auc
+
+xgb_acc_fil <- xgb_fil_metrics_summary$accuracy_test_mean
+xgb_acc_low_fil <- xgb_fil_metrics_summary$low_acc_test
+xgb_acc_upp_fil <- xgb_fil_metrics_summary$upp_acc_test
+xgb_sens_fil <- xgb_fil_metrics_summary$sensitivity_mean
+xgb_sens_low_fil <- xgb_fil_metrics_summary$low_sens
+xgb_sens_upp_fil <- xgb_fil_metrics_summary$upp_sens
+xgb_spec_fil <- xgb_fil_metrics_summary$specificity_mean
+xgb_spec_low_fil <- xgb_fil_metrics_summary$low_spec
+xgb_spec_upp_fil <- xgb_fil_metrics_summary$upp_spec
+xgb_prec_fil <- xgb_fil_metrics_summary$precision_mean
+xgb_prec_low_fil <- xgb_fil_metrics_summary$low_prec
+xgb_prec_upp_fil <- xgb_fil_metrics_summary$upp_prec
+xgb_f1_fil <- xgb_fil_metrics_summary$F1_score_mean
+xgb_f1_low_fil <- xgb_fil_metrics_summary$low_f1_sc
+xgb_f1_upp_fil <- xgb_fil_metrics_summary$upp_f1_sc
+xgb_auc_fil <- xgb_fil_metrics_summary$AUC_mean
+xgb_auc_low_fil <- xgb_fil_metrics_summary$low_auc
+xgb_auc_upp_fil <- xgb_fil_metrics_summary$upp_auc
+
+xgb_acc_vlsymp <- xgb_vlsymp_metrics_summary$accuracy_test_mean
+xgb_acc_low_vlsymp <- xgb_vlsymp_metrics_summary$low_acc_test
+xgb_acc_upp_vlsymp <- xgb_vlsymp_metrics_summary$upp_acc_test
+xgb_sens_vlsymp <- xgb_vlsymp_metrics_summary$sensitivity_mean
+xgb_sens_low_vlsymp <- xgb_vlsymp_metrics_summary$low_sens
+xgb_sens_upp_vlsymp <- xgb_vlsymp_metrics_summary$upp_sens
+xgb_spec_vlsymp <- xgb_vlsymp_metrics_summary$specificity_mean
+xgb_spec_low_vlsymp <- xgb_vlsymp_metrics_summary$low_spec
+xgb_spec_upp_vlsymp <- xgb_vlsymp_metrics_summary$upp_spec
+xgb_prec_vlsymp <- xgb_vlsymp_metrics_summary$precision_mean
+xgb_prec_low_vlsymp <- xgb_vlsymp_metrics_summary$low_prec
+xgb_prec_upp_vlsymp <- xgb_vlsymp_metrics_summary$upp_prec
+xgb_f1_vlsymp <- xgb_vlsymp_metrics_summary$F1_score_mean
+xgb_f1_low_vlsymp <- xgb_vlsymp_metrics_summary$low_f1_sc
+xgb_f1_upp_vlsymp <- xgb_vlsymp_metrics_summary$upp_f1_sc
+xgb_auc_vlsymp <- xgb_vlsymp_metrics_summary$AUC_mean
+xgb_auc_low_vlsymp <- xgb_vlsymp_metrics_summary$low_auc
+xgb_auc_upp_vlsymp <- xgb_vlsymp_metrics_summary$upp_auc
+
+xgb_acc_vldiag <- xgb_vldiag_metrics_summary$accuracy_test_mean
+xgb_acc_low_vldiag <- xgb_vldiag_metrics_summary$low_acc_test
+xgb_acc_upp_vldiag <- xgb_vldiag_metrics_summary$upp_acc_test
+xgb_sens_vldiag <- xgb_vldiag_metrics_summary$sensitivity_mean
+xgb_sens_low_vldiag <- xgb_vldiag_metrics_summary$low_sens
+xgb_sens_upp_vldiag <- xgb_vldiag_metrics_summary$upp_sens
+xgb_spec_vldiag <- xgb_vldiag_metrics_summary$specificity_mean
+xgb_spec_low_vldiag <- xgb_vldiag_metrics_summary$low_spec
+xgb_spec_upp_vldiag <- xgb_vldiag_metrics_summary$upp_spec
+xgb_prec_vldiag <- xgb_vldiag_metrics_summary$precision_mean
+xgb_prec_low_vldiag <- xgb_vldiag_metrics_summary$low_prec
+xgb_prec_upp_vldiag <- xgb_vldiag_metrics_summary$upp_prec
+xgb_f1_vldiag <- xgb_vldiag_metrics_summary$F1_score_mean
+xgb_f1_low_vldiag <- xgb_vldiag_metrics_summary$low_f1_sc
+xgb_f1_upp_vldiag <- xgb_vldiag_metrics_summary$upp_f1_sc
+xgb_auc_vldiag <- xgb_vldiag_metrics_summary$AUC_mean
+xgb_auc_low_vldiag <- xgb_vldiag_metrics_summary$low_auc
+xgb_auc_upp_vldiag <- xgb_vldiag_metrics_summary$upp_auc
+
+lgb_acc_fil <- lgb_fil_metrics_summary$accuracy_test_mean
+lgb_acc_low_fil <- lgb_fil_metrics_summary$low_acc_test
+lgb_acc_upp_fil <- lgb_fil_metrics_summary$upp_acc_test
+lgb_sens_fil <- lgb_fil_metrics_summary$sensitivity_mean
+lgb_sens_low_fil <- lgb_fil_metrics_summary$low_sens
+lgb_sens_upp_fil <- lgb_fil_metrics_summary$upp_sens
+lgb_spec_fil <- lgb_fil_metrics_summary$specificity_mean
+lgb_spec_low_fil <- lgb_fil_metrics_summary$low_spec
+lgb_spec_upp_fil <- lgb_fil_metrics_summary$upp_spec
+lgb_prec_fil <- lgb_fil_metrics_summary$precision_mean
+lgb_prec_low_fil <- lgb_fil_metrics_summary$low_prec
+lgb_prec_upp_fil <- lgb_fil_metrics_summary$upp_prec
+lgb_f1_fil <- lgb_fil_metrics_summary$F1_score_mean
+lgb_f1_low_fil <- lgb_fil_metrics_summary$low_f1_sc
+lgb_f1_upp_fil <- lgb_fil_metrics_summary$upp_f1_sc
+lgb_auc_fil <- lgb_fil_metrics_summary$AUC_mean
+lgb_auc_low_fil <- lgb_fil_metrics_summary$low_auc
+lgb_auc_upp_fil <- lgb_fil_metrics_summary$upp_auc
+
+lgb_acc_vlsymp <- lgb_vlsymp_metrics_summary$accuracy_test_mean
+lgb_acc_low_vlsymp <- lgb_vlsymp_metrics_summary$low_acc_test
+lgb_acc_upp_vlsymp <- lgb_vlsymp_metrics_summary$upp_acc_test
+lgb_sens_vlsymp <- lgb_vlsymp_metrics_summary$sensitivity_mean
+lgb_sens_low_vlsymp <- lgb_vlsymp_metrics_summary$low_sens
+lgb_sens_upp_vlsymp <- lgb_vlsymp_metrics_summary$upp_sens
+lgb_spec_vlsymp <- lgb_vlsymp_metrics_summary$specificity_mean
+lgb_spec_low_vlsymp <- lgb_vlsymp_metrics_summary$low_spec
+lgb_spec_upp_vlsymp <- lgb_vlsymp_metrics_summary$upp_spec
+lgb_prec_vlsymp <- lgb_vlsymp_metrics_summary$precision_mean
+lgb_prec_low_vlsymp <- lgb_vlsymp_metrics_summary$low_prec
+lgb_prec_upp_vlsymp <- lgb_vlsymp_metrics_summary$upp_prec
+lgb_f1_vlsymp <- lgb_vlsymp_metrics_summary$F1_score_mean
+lgb_f1_low_vlsymp <- lgb_vlsymp_metrics_summary$low_f1_sc
+lgb_f1_upp_vlsymp <- lgb_vlsymp_metrics_summary$upp_f1_sc
+lgb_auc_vlsymp <- lgb_vlsymp_metrics_summary$AUC_mean
+lgb_auc_low_vlsymp <- lgb_vlsymp_metrics_summary$low_auc
+lgb_auc_upp_vlsymp <- lgb_vlsymp_metrics_summary$upp_auc
+
+lgb_acc_vldiag <- lgb_vldiag_metrics_summary$accuracy_test_mean
+lgb_acc_low_vldiag <- lgb_vldiag_metrics_summary$low_acc_test
+lgb_acc_upp_vldiag <- lgb_vldiag_metrics_summary$upp_acc_test
+lgb_sens_vldiag <- lgb_vldiag_metrics_summary$sensitivity_mean
+lgb_sens_low_vldiag <- lgb_vldiag_metrics_summary$low_sens
+lgb_sens_upp_vldiag <- lgb_vldiag_metrics_summary$upp_sens
+lgb_spec_vldiag <- lgb_vldiag_metrics_summary$specificity_mean
+lgb_spec_low_vldiag <- lgb_vldiag_metrics_summary$low_spec
+lgb_spec_upp_vldiag <- lgb_vldiag_metrics_summary$upp_spec
+lgb_prec_vldiag <- lgb_vldiag_metrics_summary$precision_mean
+lgb_prec_low_vldiag <- lgb_vldiag_metrics_summary$low_prec
+lgb_prec_upp_vldiag <- lgb_vldiag_metrics_summary$upp_prec
+lgb_f1_vldiag <- lgb_vldiag_metrics_summary$F1_score_mean
+lgb_f1_low_vldiag <- lgb_vldiag_metrics_summary$low_f1_sc
+lgb_f1_upp_vldiag <- lgb_vldiag_metrics_summary$upp_f1_sc
+lgb_auc_vldiag <- lgb_vldiag_metrics_summary$AUC_mean
+lgb_auc_low_vldiag <- lgb_vldiag_metrics_summary$low_auc
+lgb_auc_upp_vldiag <- lgb_vldiag_metrics_summary$upp_auc
+
+df_perf_summary <- data.frame(
+    models = c("Random forest (Without viral load)", "Random forest (Viral load at symptom onset)", "Random forest (Viral load at diagnosis)",
+                "XGBoost (Without viral load)", "XGBoost (Viral load at symptom onset)", "XGBoost (Viral load at diagnosis)",
+                "LightGBM (Without viral load)", "LightGBM (Viral load at symptom onset)", "LightGBM (Viral load at diagnosis)"),
+    
+    Accuracy = c(rf_acc_fil, rf_acc_vlsymp, rf_acc_vldiag,
+                xgb_acc_fil, xgb_acc_vlsymp, xgb_acc_vldiag,
+                lgb_acc_fil, lgb_acc_vlsymp, lgb_acc_vldiag),
+
+    acc_low = c(rf_acc_low_fil, rf_acc_low_vlsymp, rf_acc_low_vldiag,
+                xgb_acc_low_fil, xgb_acc_low_vlsymp, xgb_acc_low_vldiag,
+                lgb_acc_low_fil, lgb_acc_low_vlsymp, lgb_acc_low_vldiag),
+
+    acc_upp = c(rf_acc_upp_fil, rf_acc_upp_vlsymp, rf_acc_upp_vldiag,
+                xgb_acc_upp_fil, xgb_acc_upp_vlsymp, xgb_acc_upp_vldiag,
+                lgb_acc_upp_fil, lgb_acc_upp_vlsymp, lgb_acc_upp_vldiag),
+
+    Sensitivity = c(rf_sens_fil, rf_sens_vlsymp, rf_sens_vldiag,
+                    xgb_sens_fil, xgb_sens_vlsymp, xgb_sens_vldiag,
+                    lgb_sens_fil, lgb_sens_vlsymp, lgb_sens_vldiag),
+
+    sens_low = c(rf_sens_low_fil, rf_sens_low_vlsymp, rf_sens_low_vldiag,
+                xgb_sens_low_fil, xgb_sens_low_vlsymp, xgb_sens_low_vldiag,
+                lgb_sens_low_fil, lgb_sens_low_vlsymp, lgb_sens_low_vldiag),
+
+    sens_upp = c(rf_sens_upp_fil, rf_sens_upp_vlsymp, rf_sens_upp_vldiag,
+                xgb_sens_upp_fil, xgb_sens_upp_vlsymp, xgb_sens_upp_vldiag,
+                lgb_sens_upp_fil, lgb_sens_upp_vlsymp, lgb_sens_upp_vldiag),
+
+    Specificity = c(rf_spec_fil, rf_spec_vlsymp, rf_spec_vldiag,
+                    xgb_spec_fil, xgb_spec_vlsymp, xgb_spec_vldiag,
+                    lgb_spec_fil, lgb_spec_vlsymp, lgb_spec_vldiag),
+
+    spec_low = c(rf_spec_low_fil, rf_spec_low_vlsymp, rf_spec_low_vldiag,
+                xgb_spec_low_fil, xgb_spec_low_vlsymp, xgb_spec_low_vldiag,
+                lgb_spec_low_fil, lgb_spec_low_vlsymp, lgb_spec_low_vldiag),
+
+    spec_upp = c(rf_spec_upp_fil, rf_spec_upp_vlsymp, rf_spec_upp_vldiag,
+                xgb_spec_upp_fil, xgb_spec_upp_vlsymp, xgb_spec_upp_vldiag,
+                lgb_spec_upp_fil, lgb_spec_upp_vlsymp, lgb_spec_upp_vldiag),
+
+    Precision = c(rf_prec_fil, rf_prec_vlsymp, rf_prec_vldiag,
+                    xgb_prec_fil, xgb_prec_vlsymp, xgb_prec_vldiag,
+                    lgb_prec_fil, lgb_prec_vlsymp, lgb_prec_vldiag),
+
+    prec_low = c(rf_prec_low_fil, rf_prec_low_vlsymp, rf_prec_low_vldiag,
+                xgb_prec_low_fil, xgb_prec_low_vlsymp, xgb_prec_low_vldiag,
+                lgb_prec_low_fil, lgb_prec_low_vlsymp, lgb_prec_low_vldiag),
+
+    prec_upp = c(rf_prec_upp_fil, rf_prec_upp_vlsymp, rf_prec_upp_vldiag,
+                xgb_prec_upp_fil, xgb_prec_upp_vlsymp, xgb_prec_upp_vldiag,
+                lgb_prec_upp_fil, lgb_prec_upp_vlsymp, lgb_prec_upp_vldiag),
+
+    `F1-Score` = c(rf_f1_fil, rf_f1_vlsymp, rf_f1_vldiag,
+                    xgb_f1_fil, xgb_f1_vlsymp, xgb_f1_vldiag,
+                    lgb_f1_fil, lgb_f1_vlsymp, lgb_f1_vldiag),
+
+    f1_low = c(rf_f1_low_fil, rf_f1_low_vlsymp, rf_f1_low_vldiag,
+                xgb_f1_low_fil, xgb_f1_low_vlsymp, xgb_f1_low_vldiag,
+                lgb_f1_low_fil, lgb_f1_low_vlsymp, lgb_f1_low_vldiag),
+
+    f1_upp = c(rf_f1_upp_fil, rf_f1_upp_vlsymp, rf_f1_upp_vldiag,
+                xgb_f1_upp_fil, xgb_f1_upp_vlsymp, xgb_f1_upp_vldiag,
+                lgb_f1_upp_fil, lgb_f1_upp_vlsymp, lgb_f1_upp_vldiag),
+
+    AUROC = c(rf_auc_fil, rf_auc_vlsymp, rf_auc_vldiag,
+                xgb_auc_fil, xgb_auc_vlsymp, xgb_auc_vldiag,
+                lgb_auc_fil, lgb_auc_vlsymp, lgb_auc_vldiag),
+
+    auc_low = c(rf_auc_low_fil, rf_auc_low_vlsymp, rf_auc_low_vldiag,
+                xgb_auc_low_fil, xgb_auc_low_vlsymp, xgb_auc_low_vldiag,
+                lgb_auc_low_fil, lgb_auc_low_vlsymp, lgb_auc_low_vldiag),
+
+    auc_upp = c(rf_auc_upp_fil, rf_auc_upp_vlsymp, rf_auc_upp_vldiag,
+                xgb_auc_upp_fil, xgb_auc_upp_vlsymp, xgb_auc_upp_vldiag,
+                lgb_auc_upp_fil, lgb_auc_upp_vlsymp, lgb_auc_upp_vldiag)
+)
+
+df_perf_summary_display <- df_perf_summary %>%
+                            select(c("models", "Accuracy", "Sensitivity", "Specificity", "Precision", "F1.Score", "AUROC")) %>%
+                            rename("Models" = "models", "F1-Score" = "F1.Score")
+df_perf_summary_display
+```
+
+```{r, Tabulate models performance summary}
+perf_tab <- df_perf_summary_display %>%
+                gt() %>%
+                tab_header(title = "Model Performance Metrics")
+Sys.setenv(CHROMOTE_CHROME = "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")
+#gtsave(perf_tab, filename = "Perf_tab.pdf")
+```
+
+```{r, Models performance visualisation}
+model_perf <- df_perf_summary %>%
+                pivot_longer(
+                    cols = -models,
+                    names_to = "metrics",
+                    values_to = "Perf"
+                ) %>%
+                mutate(Metrics = case_when(
+                    str_starts(metrics, 'acc_') ~ "Accuracy",
+                    str_starts(metrics, "sens_") ~ "Sensitivity",
+                    str_starts(metrics, "spec_") ~ "Specificity",
+                    str_starts(metrics, "prec_") ~ "Precision",
+                    str_starts(metrics, "f1_") ~ "F1-Score",
+                    str_starts(metrics, "auc_") ~ "AUROC",
+                    metrics == "Accuracy" ~ "Accuracy",
+                    metrics == "Sensitivity" ~ "Sensitivity",
+                    metrics == "Specificity" ~ "Specificity",
+                    metrics == "Precision" ~ "Precision",
+                    metrics == "F1.Score" ~ "F1-Score",
+                    metrics == "AUROC" ~ "AUROC"
+                ),
+                bound = case_when(
+                    str_ends(metrics, "_low") ~ "lower",
+                    str_ends(metrics, "_upp") ~ "upper",
+                    TRUE ~ "estimate"
+                ),
+                Model = case_when(
+                    str_starts(models, "Random") ~ "Random Forest",
+                    str_starts(models, "XGBoost") ~ "XGBoost",
+                    str_starts(models, "LightGBM") ~ "LightGBM"
+                )) %>%
+                select(c("models", "Model", "Metrics", "bound", "Perf")) %>%
+                pivot_wider(names_from = bound, values_from = Perf)
+```
+
+## Comparison across each scenario cases for each model
+### Random forest
+```{r, Comparison on sensitivity of Random Forest}
+mc_rf_list <- list()
+mc_plot_rf_list <- list()
+for(i in 1:100) {
+  # Normalize all factors
+  actual_rf_fil <- factor(split_list_fil[[i]]$test$outcome)
+  actual_rf_vlsymp <- factor(split_list_vlsim_symp[[i]]$test$outcome)
+  actual_rf_vldiag <- factor(split_list_vldiag[[i]]$test$outcome)
+
+  pred_rf_fil <- factor(rf_fil_list[[i]]$prediction, levels = levels(actual_rf_fil))
+  pred_rf_vlsymp <- factor(rf_vlsymp_list[[i]]$prediction, levels = levels(actual_rf_vlsymp))
+  pred_rf_vldiag <- factor(rf_vldiag_list[[i]]$prediction, levels = levels(actual_rf_vldiag))
+
+  pos_case <- "Severe"
+
+  idx_pos_fil <- actual_rf_fil == pos_case
+  idx_pos_vlsymp <- actual_rf_vlsymp == pos_case
+  idx_pos_vldiag <- actual_rf_vldiag == pos_case
+
+  rf_correct_fil <- pred_rf_fil[idx_pos_fil] == actual_rf_fil[idx_pos_fil]
+  rf_correct_vlsymp <- pred_rf_vlsymp[idx_pos_vlsymp] == actual_rf_vlsymp[idx_pos_vlsymp]
+  rf_correct_vldiag <- pred_rf_vldiag[idx_pos_vldiag] == actual_rf_vldiag[idx_pos_vldiag]
+
+  # Forming the table for McNemar test
+  mc_tab_rf_filvsymp <- table(
+      RF_fil = factor(rf_correct_fil, levels = c(TRUE, FALSE)),
+      RF_symp = factor(rf_correct_vlsymp, levels = c(TRUE, FALSE))
+  )
+
+  mc_tab_rf_filvdiag <- table(
+      RF_fil = factor(rf_correct_fil, levels = c(TRUE, FALSE)),
+      RF_diag = factor(rf_correct_vldiag, levels = c(TRUE, FALSE))
+  )
+
+  mc_tab_rf_sympvdiag <- table(
+      RF_symp = factor(rf_correct_vlsymp, levels = c(TRUE, FALSE)),
+      RF_diag = factor(rf_correct_vldiag, levels = c(TRUE, FALSE))
+  )
+
+  # Perform McNemar test
+  mc_rf_filvsymp <- mcnemar.test(mc_tab_rf_filvsymp, correct = FALSE)
+  mc_rf_filvdiag <- mcnemar.test(mc_tab_rf_filvdiag, correct = FALSE)
+  mc_rf_sympvdiag <- mcnemar.test(mc_tab_rf_sympvdiag, correct = FALSE)
+
+  # Getting the p-value of McNemar test
+  mc_rf_filvsymp_p <- tidy(mc_rf_filvsymp)$p.value
+  mc_rf_filvdiag_p <- tidy(mc_rf_filvdiag)$p.value
+  mc_rf_sympvdiag_p <- tidy(mc_rf_sympvdiag)$p.value
+
+  mc_rf_summary <- tibble(
+      group1 = c("Random forest (Without viral load)", "Random forest (Without viral load)", "Random forest (Viral load at symptom onset)",
+                 "Random forest (Viral load at symptom onset)", "Random forest (Viral load at diagnosis)", "Random forest (Viral load at diagnosis)",
+                 "Random forest (Without viral load)", "Random forest (Viral load at symptom onset)", "Random forest (Viral load at diagnosis)"),
+
+      group2 = c("Random forest (Viral load at symptom onset)", "Random forest (Viral load at diagnosis)", "Random forest (Viral load at diagnosis)",
+                 "Random forest (Without viral load)", "Random forest (Without viral load)", "Random forest (Viral load at symptom onset)",
+                 "Random forest (Without viral load)", "Random forest (Viral load at symptom onset)", "Random forest (Viral load at diagnosis)"),
+
+      p.value = c(mc_rf_filvsymp_p, mc_rf_filvdiag_p, mc_rf_sympvdiag_p,
+                  mc_rf_filvsymp_p, mc_rf_filvdiag_p, mc_rf_sympvdiag_p,
+                  2, 2, 2)
+  ) %>%
+  mutate(label = case_when(
+      is.na(p.value) ~ "NS",
+      p.value < 0.001 ~ "***",
+      p.value < 0.01 ~ "**",
+      p.value < 0.05 ~ "*",
+      p.value == 2 ~ "NA",
+      TRUE ~ "NS"
+  ))
+
+  mc_rf_heatmap <- mc_rf_summary %>%
+                      select(group1, group2, label) %>%
+                      pivot_wider(names_from = group1, values_from = label) %>%
+                      column_to_rownames("group2")
+
+
+  mcnemar_rf_long <- as.data.frame(as.table(as.matrix(mc_rf_heatmap)))
+  colnames(mcnemar_rf_long) <- c("Model1", "Model2", "Significance")
+
+  mc_rf_list[[i]] <- mcnemar_rf_long %>%
+                        mutate(
+                          Model1 = case_when(
+                          Model1 == "Random forest (Viral load at symptom onset)" ~ "S2",
+                          Model1 == "Random forest (Viral load at diagnosis)" ~ "S3",
+                          Model1 == "Random forest (Without viral load)" ~ "S1"
+                          ),
+                          Model2 = case_when(
+                          Model2 == "Random forest (Viral load at symptom onset)" ~ "S2",
+                          Model2 == "Random forest (Viral load at diagnosis)" ~ "S3",
+                          Model2 == "Random forest (Without viral load)" ~ "S1"
+                          ),
+                          Model1 = factor(Model1, levels = c("S3", "S2", "S1")),
+                          Model2 = factor(Model2, levels = c("S1", "S2", "S3"))
+                        )
+}
+
+# Summarise the percentage of significance in each scenario cases
+mc_rf_percent_sum <- dplyr::bind_rows(
+                      lapply(seq_along(mc_rf_list), function(i) {
+                        mc_rf_list[[i]] %>% mutate(run = i)
+                        })
+                      )
+
+# Define labels of statistically significant
+sig_labels <- c("*", "**", "***")
+
+# Summarize the percentage significant for each scenario
+sig_rf_sum <- mc_rf_percent_sum %>%
+                mutate(is_significant = Significance %in% sig_labels) %>%
+                group_by(Model1, Model2) %>%
+                summarize(
+                  n_sig = sum(is_significant),
+                  n_total = n(),
+                  percent_sig = 100 * n_sig / n_total,
+                  .groups = "drop"
+                ) %>%
+                mutate(percent_sig = ifelse(Model1 == Model2, NA, percent_sig))
+```
+
+### XGBoost
+```{r, Comparison on sensitivity of XGBoost}
+mc_xgb_list <- list()
+mc_plot_xgb_list <- list()
+for(i in 1:100) {
+  # Normalize all factors
+  actual_xgb_fil <- factor(split_list_fil[[i]]$test$outcome)
+  actual_xgb_vlsymp <- factor(split_list_vlsim_symp[[i]]$test$outcome)
+  actual_xgb_vldiag <- factor(split_list_vldiag[[i]]$test$outcome)
+
+  pred_xgb_fil <- factor(xgb_fil_list[[i]]$prediction, levels = levels(actual_xgb_fil))
+  pred_xgb_vlsymp <- factor(xgb_vlsymp_list[[i]]$prediction, levels = levels(actual_xgb_vlsymp))
+  pred_xgb_vldiag <- factor(xgb_vldiag_list[[i]]$prediction, levels = levels(actual_xgb_vldiag))
+
+  pos_case <- "Severe"
+
+  idx_pos_fil <- actual_xgb_fil == pos_case
+  idx_pos_vlsymp <- actual_xgb_vlsymp == pos_case
+  idx_pos_vldiag <- actual_xgb_vldiag == pos_case
+
+  xgb_correct_fil <- pred_xgb_fil[idx_pos_fil] == actual_xgb_fil[idx_pos_fil]
+  xgb_correct_vlsymp <- pred_xgb_vlsymp[idx_pos_vlsymp] == actual_xgb_vlsymp[idx_pos_vlsymp]
+  xgb_correct_vldiag <- pred_xgb_vldiag[idx_pos_vldiag] == actual_xgb_vldiag[idx_pos_vldiag]
+
+  # Forming the table for McNemar test
+  mc_tab_xgb_filvsymp <- table(
+      RF_fil = factor(xgb_correct_fil, levels = c(TRUE, FALSE)),
+      RF_symp = factor(xgb_correct_vlsymp, levels = c(TRUE, FALSE))
+  )
+
+  mc_tab_xgb_filvdiag <- table(
+      RF_fil = factor(xgb_correct_fil, levels = c(TRUE, FALSE)),
+      RF_diag = factor(xgb_correct_vldiag, levels = c(TRUE, FALSE))
+  )
+
+  mc_tab_xgb_sympvdiag <- table(
+      RF_symp = factor(xgb_correct_vlsymp, levels = c(TRUE, FALSE)),
+      RF_diag = factor(xgb_correct_vldiag, levels = c(TRUE, FALSE))
+  )
+
+  # Pexgborm McNemar test
+  mc_xgb_filvsymp <- mcnemar.test(mc_tab_xgb_filvsymp, correct = FALSE)
+  mc_xgb_filvdiag <- mcnemar.test(mc_tab_xgb_filvdiag, correct = FALSE)
+  mc_xgb_sympvdiag <- mcnemar.test(mc_tab_xgb_sympvdiag, correct = FALSE)
+
+  # Getting the p-value of McNemar test
+  mc_xgb_filvsymp_p <- tidy(mc_xgb_filvsymp)$p.value
+  mc_xgb_filvdiag_p <- tidy(mc_xgb_filvdiag)$p.value
+  mc_xgb_sympvdiag_p <- tidy(mc_xgb_sympvdiag)$p.value
+
+  mc_xgb_summary <- tibble(
+      group1 = c("XGBoost (Without viral load)", "XGBoost (Without viral load)", "XGBoost (Viral load at symptom onset)",
+                 "XGBoost (Viral load at symptom onset)", "XGBoost (Viral load at diagnosis)", "XGBoost (Viral load at diagnosis)",
+                 "XGBoost (Without viral load)", "XGBoost (Viral load at symptom onset)", "XGBoost (Viral load at diagnosis)"),
+
+      group2 = c("XGBoost (Viral load at symptom onset)", "XGBoost (Viral load at diagnosis)", "XGBoost (Viral load at diagnosis)",
+                 "XGBoost (Without viral load)", "XGBoost (Without viral load)", "XGBoost (Viral load at symptom onset)",
+                 "XGBoost (Without viral load)", "XGBoost (Viral load at symptom onset)", "XGBoost (Viral load at diagnosis)"),
+
+      p.value = c(mc_xgb_filvsymp_p, mc_xgb_filvdiag_p, mc_xgb_sympvdiag_p,
+                  mc_xgb_filvsymp_p, mc_xgb_filvdiag_p, mc_xgb_sympvdiag_p,
+                  2, 2, 2)
+  ) %>%
+  mutate(label = case_when(
+      is.na(p.value) ~ "NS",
+      p.value < 0.001 ~ "***",
+      p.value < 0.01 ~ "**",
+      p.value < 0.05 ~ "*",
+      p.value == 2 ~ "NA",
+      TRUE ~ "NS"
+  ))
+
+  mc_xgb_heatmap <- mc_xgb_summary %>%
+                      select(group1, group2, label) %>%
+                      pivot_wider(names_from = group1, values_from = label) %>%
+                      column_to_rownames("group2")
+
+
+  mcnemar_xgb_long <- as.data.frame(as.table(as.matrix(mc_xgb_heatmap)))
+  colnames(mcnemar_xgb_long) <- c("Model1", "Model2", "Significance")
+
+  mc_xgb_list[[i]] <- mcnemar_xgb_long %>%
+                        mutate(
+                          Model1 = case_when(
+                          Model1 == "XGBoost (Viral load at symptom onset)" ~ "S2",
+                          Model1 == "XGBoost (Viral load at diagnosis)" ~ "S3",
+                          Model1 == "XGBoost (Without viral load)" ~ "S1"
+                          ),
+                          Model2 = case_when(
+                          Model2 == "XGBoost (Viral load at symptom onset)" ~ "S2",
+                          Model2 == "XGBoost (Viral load at diagnosis)" ~ "S3",
+                          Model2 == "XGBoost (Without viral load)" ~ "S1"
+                          ),
+                          Model1 = factor(Model1, levels = c("S3", "S2", "S1")),
+                          Model2 = factor(Model2, levels = c("S1", "S2", "S3"))
+                        )
+}
+
+# Summarise the percentage of significance in each scenario cases
+mc_xgb_percent_sum <- dplyr::bind_rows(
+                      lapply(seq_along(mc_xgb_list), function(i) {
+                        mc_xgb_list[[i]] %>% mutate(run = i)
+                        })
+                      )
+
+# Define labels of statistically significant
+sig_labels <- c("*", "**", "***")
+
+# Summarize the percentage significant for each scenario
+sig_xgb_sum <- mc_xgb_percent_sum %>%
+                mutate(is_significant = Significance %in% sig_labels) %>%
+                group_by(Model1, Model2) %>%
+                summarize(
+                  n_sig = sum(is_significant),
+                  n_total = n(),
+                  percent_sig = 100 * n_sig / n_total,
+                  .groups = "drop"
+                ) %>%
+                mutate(percent_sig = ifelse(Model1 == Model2, NA, percent_sig))
+```
+
+### LightGBM
+```{r, Comparison on sensitivity of LightGBM}
+mc_lgb_list <- list()
+mc_plot_lgb_list <- list()
+for(i in 1:100) {
+  # Normalize all factors
+  actual_lgb_fil <- factor(split_list_fil[[i]]$test$outcome)
+  actual_lgb_vlsymp <- factor(split_list_vlsim_symp[[i]]$test$outcome)
+  actual_lgb_vldiag <- factor(split_list_vldiag[[i]]$test$outcome)
+
+  pred_lgb_fil <- factor(lightgbm_fil_list[[i]]$prediction, levels = levels(actual_lgb_fil))
+  pred_lgb_vlsymp <- factor(lightgbm_vlsymp_list[[i]]$prediction, levels = levels(actual_lgb_vlsymp))
+  pred_lgb_vldiag <- factor(lightgbm_vldiag_list[[i]]$prediction, levels = levels(actual_lgb_vldiag))
+
+  pos_case <- "Severe"
+
+  idx_pos_fil <- actual_lgb_fil == pos_case
+  idx_pos_vlsymp <- actual_lgb_vlsymp == pos_case
+  idx_pos_vldiag <- actual_lgb_vldiag == pos_case
+
+  lgb_correct_fil <- pred_lgb_fil[idx_pos_fil] == actual_lgb_fil[idx_pos_fil]
+  lgb_correct_vlsymp <- pred_lgb_vlsymp[idx_pos_vlsymp] == actual_lgb_vlsymp[idx_pos_vlsymp]
+  lgb_correct_vldiag <- pred_lgb_vldiag[idx_pos_vldiag] == actual_lgb_vldiag[idx_pos_vldiag]
+
+  # Forming the table for McNemar test
+  mc_tab_lgb_filvsymp <- table(
+      RF_fil = factor(lgb_correct_fil, levels = c(TRUE, FALSE)),
+      RF_symp = factor(lgb_correct_vlsymp, levels = c(TRUE, FALSE))
+  )
+
+  mc_tab_lgb_filvdiag <- table(
+      RF_fil = factor(lgb_correct_fil, levels = c(TRUE, FALSE)),
+      RF_diag = factor(lgb_correct_vldiag, levels = c(TRUE, FALSE))
+  )
+
+  mc_tab_lgb_sympvdiag <- table(
+      RF_symp = factor(lgb_correct_vlsymp, levels = c(TRUE, FALSE)),
+      RF_diag = factor(lgb_correct_vldiag, levels = c(TRUE, FALSE))
+  )
+
+  # Pelgborm McNemar test
+  mc_lgb_filvsymp <- mcnemar.test(mc_tab_lgb_filvsymp, correct = FALSE)
+  mc_lgb_filvdiag <- mcnemar.test(mc_tab_lgb_filvdiag, correct = FALSE)
+  mc_lgb_sympvdiag <- mcnemar.test(mc_tab_lgb_sympvdiag, correct = FALSE)
+
+  # Getting the p-value of McNemar test
+  mc_lgb_filvsymp_p <- tidy(mc_lgb_filvsymp)$p.value
+  mc_lgb_filvdiag_p <- tidy(mc_lgb_filvdiag)$p.value
+  mc_lgb_sympvdiag_p <- tidy(mc_lgb_sympvdiag)$p.value
+
+  mc_lgb_summary <- tibble(
+      group1 = c("LightGBM (Without viral load)", "LightGBM (Without viral load)", "LightGBM (Viral load at symptom onset)",
+                 "LightGBM (Viral load at symptom onset)", "LightGBM (Viral load at diagnosis)", "LightGBM (Viral load at diagnosis)",
+                 "LightGBM (Without viral load)", "LightGBM (Viral load at symptom onset)", "LightGBM (Viral load at diagnosis)"),
+
+      group2 = c("LightGBM (Viral load at symptom onset)", "LightGBM (Viral load at diagnosis)", "LightGBM (Viral load at diagnosis)",
+                 "LightGBM (Without viral load)", "LightGBM (Without viral load)", "LightGBM (Viral load at symptom onset)",
+                 "LightGBM (Without viral load)", "LightGBM (Viral load at symptom onset)", "LightGBM (Viral load at diagnosis)"),
+
+      p.value = c(mc_lgb_filvsymp_p, mc_lgb_filvdiag_p, mc_lgb_sympvdiag_p,
+                  mc_lgb_filvsymp_p, mc_lgb_filvdiag_p, mc_lgb_sympvdiag_p,
+                  2, 2, 2)
+  ) %>%
+  mutate(label = case_when(
+      is.na(p.value) ~ "NS",
+      p.value < 0.001 ~ "***",
+      p.value < 0.01 ~ "**",
+      p.value < 0.05 ~ "*",
+      p.value == 2 ~ "NA",
+      TRUE ~ "NS"
+  ))
+
+  mc_lgb_heatmap <- mc_lgb_summary %>%
+                      select(group1, group2, label) %>%
+                      pivot_wider(names_from = group1, values_from = label) %>%
+                      column_to_rownames("group2")
+
+
+  mcnemar_lgb_long <- as.data.frame(as.table(as.matrix(mc_lgb_heatmap)))
+  colnames(mcnemar_lgb_long) <- c("Model1", "Model2", "Significance")
+
+  mc_lgb_list[[i]] <- mcnemar_lgb_long %>%
+                        mutate(
+                          Model1 = case_when(
+                          Model1 == "LightGBM (Viral load at symptom onset)" ~ "S2",
+                          Model1 == "LightGBM (Viral load at diagnosis)" ~ "S3",
+                          Model1 == "LightGBM (Without viral load)" ~ "S1"
+                          ),
+                          Model2 = case_when(
+                          Model2 == "LightGBM (Viral load at symptom onset)" ~ "S2",
+                          Model2 == "LightGBM (Viral load at diagnosis)" ~ "S3",
+                          Model2 == "LightGBM (Without viral load)" ~ "S1"
+                          ),
+                          Model1 = factor(Model1, levels = c("S3", "S2", "S1")),
+                          Model2 = factor(Model2, levels = c("S1", "S2", "S3"))
+                        )
+  
+}
+
+# Summarise the percentage of significance in each scenario cases
+mc_lgb_percent_sum <- dplyr::bind_rows(
+                      lapply(seq_along(mc_lgb_list), function(i) {
+                        mc_lgb_list[[i]] %>% mutate(run = i)
+                        })
+                      )
+
+# Define labels of statistically significant
+sig_labels <- c("*", "**", "***")
+
+# Summarize the percentage significant for each scenario
+sig_lgb_sum <- mc_lgb_percent_sum %>%
+                mutate(is_significant = Significance %in% sig_labels) %>%
+                group_by(Model1, Model2) %>%
+                summarize(
+                  n_sig = sum(is_significant),
+                  n_total = n(),
+                  percent_sig = 100 * n_sig / n_total,
+                  .groups = "drop"
+                ) %>%
+                mutate(percent_sig = ifelse(Model1 == Model2, NA, percent_sig))
+```
+
+```{r, Compiling the results of comparison}
+model_perf2 <- model_perf %>%
+                filter(Metrics %in% c("Accuracy", "AUROC", "Sensitivity")) %>%
+                mutate(model = case_when(
+                  models == "Random forest (Viral load at symptom onset)" ~ "S2",
+                  models == "Random forest (Viral load at diagnosis)" ~ "S3",
+                  models == "Random forest (Without viral load)" ~ "S1",
+                  models == "XGBoost (Viral load at symptom onset)" ~ "S2",
+                  models == "XGBoost (Viral load at diagnosis)" ~ "S3",
+                  models == "XGBoost (Without viral load)" ~ "S1",
+                  models == "LightGBM (Viral load at symptom onset)" ~ "S2",
+                  models == "LightGBM (Viral load at diagnosis)" ~ "S3",
+                  models == "LightGBM (Without viral load)" ~ "S1"
+                  ),
+                  Model = factor(Model, levels = c("XGBoost", "Random Forest", "LightGBM")),
+                  model = factor(model, levels = c("S3", "S2", "S1"))
+                )
+
+# Function to convert the percentage of significant to annotation
+pct_to_stars <- function(p) dplyr::case_when(
+  is.na(p) ~ "NA",
+  p >= 80 ~ "****",
+  p >= 60 ~ "***",
+  p >= 40 ~ "**",
+  p >= 20 ~ "*",
+  TRUE ~ ""
+)
+
+# Function to extract the percentage of significant
+get_pair_percents <- function(sig_df) {
+  sig_df %>%
+    filter(!is.na(percent_sig)) %>%
+    mutate(
+      a = pmin(as.character(Model1), as.character(Model2)),
+      b = pmax(as.character(Model1), as.character(Model2)),
+      pair = paste0(a, "-", b)
+    ) %>%
+    distinct(pair, percent_sig) %>%
+    select(pair, percent_sig) %>%
+    tibble::deframe()
+}
+
+# Function to build bracket information for one row facet for each model family
+row_signif <- function(family, sig_df, perf_all, ymax = 98, offsets = c(0.15, 0.45, 0.75)) {
+  fam_sens <- perf_all %>% filter(Model == family, Metrics == "Sensitivity")
+  if (nrow(fam_sens) == 0) {
+    return(NULL)
+  }
+  
+  pairs <- list(c("S1", "S2"), c("S2", "S3"), c("S1", "S3"))
+  
+  pp <- get_pair_percents(sig_df)
+  pct_vec <- c(pp[["S1-S2"]], pp[["S2-S3"]], pp[["S1-S3"]])
+  ann <- pct_to_stars(pct_vec)
+  
+  #y_pos <- ymax + offsets
+  y_top <- max(fam_sens$upper, fam_sens$estimate, na.rm = TRUE)
+  gap <- 0.01 * (y_top %||% 1)
+  y_pos <- y_top + gap * (1:6)
+  
+  # Return the list compiled
+  list(family = family, pairs = pairs, annotations = ann, y = y_pos)
+}
+
+# Compile the results of comparisons
+rf_row <- row_signif("Random Forest", sig_rf_sum, model_perf2)
+xgb_row <- row_signif("XGBoost", sig_xgb_sum, model_perf2)
+lgb_row <- row_signif("LightGBM", sig_lgb_sum, model_perf2)
+```
+
+## Figure 3
+```{r, Figure 3}
+# Function to add the row of results of comparisons into plot
+add_row_signif <- function(p, row_spec) {
+  if (is.null(row_spec)) {
+    return(p)
+  }
+  p + geom_signif(
+    data = model_perf2 %>% filter(Metrics == "Sensitivity" & Model == row_spec$family),
+    inherit.aes = FALSE,
+    aes(x = model, y = estimate),
+    comparisons = row_spec$pairs,
+    annotations = row_spec$annotations,
+    y_position = row_spec$y,
+    textsize = rel(6),
+    size = 0.8,
+    vjust = 0.2
+  )
+}
+
+model_perf3 <- model_perf2 %>% filter(Metrics == "Sensitivity")
+
+perf3_temp <- ggplot(data = model_perf3, aes(x = model, y = estimate, color = Metrics)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.1, linewidth = rel(2)) +
+  geom_point(size = rel(2), shape = 21, stroke = 1.2) +
+  scale_y_continuous(limits = c(84, 103), breaks = seq(85, 100, 5)) +#, labels = function(x) ifelse(x == 100, "100 (%)", x)) +
+  facet_grid(~ Model, scale = "free_y", switch = "y") +
+  scale_color_manual(values = c("Sensitivity" = "#0072B2")) +
+  #xlab("Sensitivity (%)") +
+  theme_minimal() +
+  theme(axis.text = element_text(color = "black"),
+        axis.text.x = element_text(vjust = 0.5, hjust = 0.5, face = "bold", size = rel(4)),
+        axis.text.y.left = element_text(face = "bold", size = rel(2)),
+        axis.line.y = element_blank(),
+        axis.line.x = element_line(color = "black", arrow = grid::arrow(length = unit(0.1, "inches"))),
+        strip.text.x = element_text(angle = 360, vjust = 0.5, face = "bold", size = rel(4)),
+        strip.text.y = element_text(face = "bold", size = rel(2)),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "none",
+        strip.placement = "outside",
+        axis.title.y = element_blank(),
+        axis.title.x = element_text(face = "bold", size = rel(4))
+        )
+
+perf3 <-  perf3_temp %>%
+  add_row_signif(xgb_row) %>%
+  add_row_signif(rf_row) %>%
+  add_row_signif(lgb_row) +
+  coord_flip() +
+  ylab("Sensitivity (%)")
+perf3
+```
+
+## Supplementary Figure 2
+```{r, SP2}
+perf_plot3 <- ggplot(data = model_perf2 %>% filter(Metrics != "Sensitivity"), aes(x = model, y = estimate, group = Metrics, color = Metrics)) +
+                geom_errorbar(aes(ymin = lower, ymax = upper), width = 0.1, linewidth = rel(2)) +
+                #geom_line(size = 1.2) +
+                geom_point(aes(fill = Metrics), size = rel(4), shape = 21, stroke = 1.2) +
+                scale_y_continuous(limits = c(84, 100), breaks = seq(85, 100, 5), labels = function(x) ifelse(x == 100, "100 (%)", x)) +
+                facet_grid(Metrics ~ Model, scale = "free_y", switch = "y", axis.labels = "all_x", axes = "all") +
+                scale_color_manual(values = c("Accuracy" = "#FA766E", "AUROC" = "#FFC001")) +
+                scale_fill_manual(values = c("Accuracy" = "#FA766E", "AUROC" = "#FFC001")) +
+                theme_minimal(base_family = "Helvatica") +
+                theme(axis.text = element_text(color = "black"),
+                      axis.text.x = element_text(vjust = 0.5, hjust = 0.5, face = "bold", size = rel(1.4)),
+                      axis.text.y.left = element_text(face = "bold", size = rel(1.4)),
+                      axis.line.x = element_line(color = "black", arrow = grid::arrow(length = unit(0.1, "inches"))),
+                      strip.text.x = element_text(angle = 360, vjust = 0.5, face = "bold", size = rel(2)),
+                      strip.text.y = element_text(face = "bold", size = rel(2)),
+                      panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(),
+                      panel.background = element_blank(),
+                      legend.position = "none",
+                      strip.placement = "outside",
+                      axis.title.y = element_blank(),
+                      axis.title.x = element_blank()
+                      ) +
+              coord_flip()
+perf_plot3
+```
+
+# Saving all data in this session
+```{r, Save data}
+save.image(file = paste0(getwd(), '/Models_performance_summaries_and_comparisons2.RData'))
+```
+
+# Session Info
+```{r, Session Info}
+sessionInfo()
+```
