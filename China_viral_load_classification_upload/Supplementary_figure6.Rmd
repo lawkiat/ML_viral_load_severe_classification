@@ -1,0 +1,1552 @@
+---
+title: "Supplementary_figure6"
+output: html_document
+---
+
+# Import library & Setup environment
+```{r, Import libraries}
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggpubr)
+library(doParallel)
+library(foreach)
+library(randomForest)
+library(fastshap)
+library(shapviz)
+library(lightgbm)
+library(pROC)
+library(purrr)
+library(ggplot2)
+library(tidymodels)
+library(grid)
+```
+
+```{r, Load data into environment}
+load(paste0(getwd(), "/Data_preparation.RData"))
+load(paste0(getwd(), '/Random_forest.RData'))
+```
+
+# Retrieve Random forest performance with VL at symptom onset & VL at diagnosis
+```{r, Compile models performance}
+rf_acc_vlsymp <- rf_vlsymp_metrics_summary$accuracy_test_mean
+rf_acc_low_vlsymp <- rf_vlsymp_metrics_summary$low_acc_test
+rf_acc_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_acc_test
+rf_sens_vlsymp <- rf_vlsymp_metrics_summary$sensitivity_mean
+rf_sens_low_vlsymp <- rf_vlsymp_metrics_summary$low_sens
+rf_sens_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_sens
+rf_spec_vlsymp <- rf_vlsymp_metrics_summary$specificity_mean
+rf_spec_low_vlsymp <- rf_vlsymp_metrics_summary$low_spec
+rf_spec_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_spec
+rf_prec_vlsymp <- rf_vlsymp_metrics_summary$precision_mean
+rf_prec_low_vlsymp <- rf_vlsymp_metrics_summary$low_prec
+rf_prec_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_prec
+rf_f1_vlsymp <- rf_vlsymp_metrics_summary$F1_score_mean
+rf_f1_low_vlsymp <- rf_vlsymp_metrics_summary$low_f1_sc
+rf_f1_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_f1_sc
+rf_auc_vlsymp <- rf_vlsymp_metrics_summary$AUC_mean
+rf_auc_low_vlsymp <- rf_vlsymp_metrics_summary$low_auc
+rf_auc_upp_vlsymp <- rf_vlsymp_metrics_summary$upp_auc
+
+rf_acc_vldiag <- rf_vldiag_metrics_summary$accuracy_test_mean
+rf_acc_low_vldiag <- rf_vldiag_metrics_summary$low_acc_test
+rf_acc_upp_vldiag <- rf_vldiag_metrics_summary$upp_acc_test
+rf_sens_vldiag <- rf_vldiag_metrics_summary$sensitivity_mean
+rf_sens_low_vldiag <- rf_vldiag_metrics_summary$low_sens
+rf_sens_upp_vldiag <- rf_vldiag_metrics_summary$upp_sens
+rf_spec_vldiag <- rf_vldiag_metrics_summary$specificity_mean
+rf_spec_low_vldiag <- rf_vldiag_metrics_summary$low_spec
+rf_spec_upp_vldiag <- rf_vldiag_metrics_summary$upp_spec
+rf_prec_vldiag <- rf_vldiag_metrics_summary$precision_mean
+rf_prec_low_vldiag <- rf_vldiag_metrics_summary$low_prec
+rf_prec_upp_vldiag <- rf_vldiag_metrics_summary$upp_prec
+rf_f1_vldiag <- rf_vldiag_metrics_summary$F1_score_mean
+rf_f1_low_vldiag <- rf_vldiag_metrics_summary$low_f1_sc
+rf_f1_upp_vldiag <- rf_vldiag_metrics_summary$upp_f1_sc
+rf_auc_vldiag <- rf_vldiag_metrics_summary$AUC_mean
+rf_auc_low_vldiag <- rf_vldiag_metrics_summary$low_auc
+rf_auc_upp_vldiag <- rf_vldiag_metrics_summary$upp_auc
+
+df_perf_summary <- data.frame(
+    models = c("Random forest (Viral load at symptom onset)", "Random forest (Viral load at diagnosis)"),
+    Accuracy = c(rf_acc_vlsymp, rf_acc_vldiag),
+    acc_low = c(rf_acc_low_vlsymp, rf_acc_low_vldiag),
+    acc_upp = c(rf_acc_upp_vlsymp, rf_acc_upp_vldiag),
+    Sensitivity = c(rf_sens_vlsymp, rf_sens_vldiag),
+    sens_low = c(rf_sens_low_vlsymp, rf_sens_low_vldiag),
+    sens_upp = c(rf_sens_upp_vlsymp, rf_sens_upp_vldiag),
+    Specificity = c(rf_spec_vlsymp, rf_spec_vldiag),
+    spec_low = c(rf_spec_low_vlsymp, rf_spec_low_vldiag),
+    spec_upp = c(rf_spec_upp_vlsymp, rf_spec_upp_vldiag),
+    Precision = c(rf_prec_vlsymp, rf_prec_vldiag),
+    prec_low = c(rf_prec_low_vlsymp, rf_prec_low_vldiag),
+    prec_upp = c(rf_prec_upp_vlsymp, rf_prec_upp_vldiag),
+    `F1-Score` = c(rf_f1_vlsymp, rf_f1_vldiag),
+    f1_low = c(rf_f1_low_vlsymp, rf_f1_low_vldiag),
+    f1_upp = c(rf_f1_upp_vlsymp, rf_f1_upp_vldiag),
+    AUROC = c(rf_auc_vlsymp, rf_auc_vldiag),
+    auc_low = c(rf_auc_low_vlsymp, rf_auc_low_vldiag),
+    auc_upp = c(rf_auc_upp_vlsymp, rf_auc_upp_vldiag)
+)
+```
+
+# Random forest with VL at sequential days after diagnosis
+## Setup CPU clusters
+```{r, Setup CPU clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+## Fitting data into Random Forest
+```{r}
+rf_seq_diag_list <- foreach(i = 1:100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+  split <- split_list_p[[i]]
+  
+  lapply(1:10, function(j) {
+    col_nm <- paste0("vl_dp", j)
+    
+    train_df <- split$train %>% select(age, gender, vaccination, comorbidity, col_nm, outcome)
+    test_df <- split$test %>% select(age, gender, vaccination, comorbidity, col_nm, outcome)
+    
+    rf_model <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+    
+    rf_pred <- predict(rf_model, newdata = test_df, type = "class")
+    
+    cfm_rf <- table(Predicted = rf_pred, Actual = test_df$outcome)
+    accuracy_rf <- sum(cfm_rf["Severe", "Severe"], cfm_rf["Non severe", "Non severe"]) / sum(cfm_rf)
+    
+    rf_pred_train <- predict(rf_model, newdata = train_df, type = "class")
+    cfm_rf_train <- table(Predicted = rf_pred_train, Actual = train_df$outcome)
+    accuracy_rf_train <- sum(cfm_rf_train["Severe", "Severe"], cfm_rf_train["Non severe", "Non severe"]) / sum(cfm_rf_train)
+
+    TP <- cfm_rf["Severe", "Severe"]
+    FP <- cfm_rf["Severe", "Non severe"]
+    TN <- cfm_rf["Non severe", "Non severe"]
+    FN <- cfm_rf["Non severe", "Severe"]
+    
+    sensitivity_rf <- TP / (TP + FN)
+    specificity_rf <- TN / (TN + FP)
+    prec_rf <- TP / (TP + FP)
+    f1_sc_rf <- 2 * ((prec_rf * sensitivity_rf) / (prec_rf + sensitivity_rf))
+    
+    rf_pred_res <- ifelse(rf_pred == "Severe", 1, 0)
+    roc_rf <- roc(test_df$outcome, rf_pred_res)
+    auc_val_rf <- auc(roc_rf)
+    
+    xvars <- colnames(train_df)[-6]
+    pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+    shap_values_rf <- fastshap::explain(rf_model, X = train_df[, -6], pred_wrapper = pfun_rf)
+    shp_rf <- shapviz(shap_values_rf, X = train_df[, -which(names(train_df) == "outcome")])
+    
+    list(
+      #model = rf_model,
+      confusion_matrix = cfm_rf,
+      accuracy_training = accuracy_rf_train,
+      accuracy_testing = accuracy_rf,
+      sensitivity = sensitivity_rf,
+      specificity = specificity_rf,
+      precision = prec_rf,
+      F1_score = f1_sc_rf,
+      AUC_value = auc_val_rf,
+      #SHAP_values = shp_rf,
+      prediction = rf_pred
+    )
+  })
+}
+```
+
+## Stop CPU clusters
+```{r, Stop CPU clusters}
+stopCluster(cl)
+```
+
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_seq_diag_metrics_df <- map2_dfr(
+  .x = rf_seq_diag_list,
+  .y = seq_along(rf_seq_diag_list),
+  .f = function(model_list, run_index) {
+    map2_dfr(model_list, 1:10, function(model_result, var_index) {
+      tibble(
+        run = run_index,
+        variable = var_index,
+        accuracy_train = round(model_result$accuracy_training * 100, 4),
+        accuracy_test = round(model_result$accuracy_testing * 100, 4),
+        sensitivity = round(model_result$sensitivity * 100, 4),
+        specificity = round(model_result$specificity * 100, 4),
+        precision = round(model_result$precision * 100, 4),
+        F1_score = round(model_result$F1_score, 4),
+        AUC_value = round(model_result$AUC_value * 100, 4)
+      )
+    })
+  }
+)
+
+rf_seq_diag_metrics_df
+
+rf_seq_diag_metrics_summary <- rf_seq_diag_metrics_df %>%
+  group_by(variable) %>%
+  summarise(
+    across(
+      .cols = c(accuracy_train, accuracy_test, sensitivity, specificity, precision, F1_score, AUC_value),
+      .fns = list(mean = mean, sd = sd, low = ~ quantile(.x, 0.025), upp = ~ quantile(.x, 0.975)),
+      .names = "{.col}_{.fn}"
+    )
+  ) %>%
+  ungroup()
+
+rf_seq_diag_metrics_summary
+```
+
+```{r, Model performance visualisation}
+rf_perf_viz_diag_df <- rf_seq_diag_metrics_summary %>%
+  select(-c("accuracy_train_mean", "accuracy_train_sd", "accuracy_train_upp", "accuracy_train_low")) %>%
+  pivot_longer(
+    cols = -variable,
+    names_to = "metrics",
+    values_to = "perf"
+  ) %>%
+  mutate(
+    Metrics = case_when(
+      str_starts(metrics, "accuracy_") ~ "Accuracy",
+      str_starts(metrics, "sensitivity") ~ "Sensitivity",
+      str_starts(metrics, "specificity") ~ "Specificity",
+      str_starts(metrics, "precision") ~ "Precision",
+      str_starts(metrics, "F1_score") ~ "F1_score",
+      str_starts(metrics, "AUC_value") ~ "AUROC_value"
+    ),
+    bound = case_when(
+      str_ends(metrics, "_low") ~ "lower",
+      str_ends(metrics, "_upp") ~ "upper",
+      str_ends(metrics, "_sd") ~ "sd",
+      TRUE ~ "estimate"
+    )
+  ) %>%
+  select(c("variable", "Metrics", "bound", "perf")) %>%
+  pivot_wider(names_from = bound, values_from = perf) %>%
+  select(-sd)
+
+rf_perf_viz_diag_df2 <- df_perf_summary %>%
+  filter(models == "Random forest (Viral load at diagnosis)") %>%
+  pivot_longer(
+    cols = -models,
+    names_to = "metrics",
+    values_to = "Perf"
+    ) %>%
+  mutate(Metrics = case_when(
+    str_starts(metrics, 'acc_') ~ "Accuracy",
+    str_starts(metrics, "sens_") ~ "Sensitivity",
+    str_starts(metrics, "spec_") ~ "Specificity",
+    str_starts(metrics, "prec_") ~ "Precision",
+    str_starts(metrics, "f1_") ~ "F1_score",
+    str_starts(metrics, "auc_") ~ "AUROC_value",
+    metrics == "Accuracy" ~ "Accuracy",
+    metrics == "Sensitivity" ~ "Sensitivity",
+    metrics == "Specificity" ~ "Specificity",
+    metrics == "Precision" ~ "Precision",
+    metrics == "F1.Score" ~ "F1_score",
+    metrics == "AUROC" ~ "AUROC_value"
+    ),
+    bound = case_when(
+      str_ends(metrics, "_low") ~ "lower",
+      str_ends(metrics, "_upp") ~ "upper",
+      TRUE ~ "estimate"
+      )) %>%
+  select(c("models", "Metrics", "bound", "Perf")) %>%
+  rename("variable" = "models") %>%
+  pivot_wider(names_from = bound, values_from = Perf) %>%
+  mutate(variable = 0)
+
+rf_perf_viz_df_all2 <- dplyr::bind_rows(rf_perf_viz_diag_df, rf_perf_viz_diag_df2) %>%
+  dplyr::arrange(Metrics, variable)
+```
+
+## Figure 4A
+```{r, Fig4A_rf}
+fig4a_rf_diag <- ggplot(data = rf_perf_viz_df_all2 %>% filter(Metrics %in% c("Accuracy", "AUROC_value", "Sensitivity")), aes(x = variable, y = estimate, color = Metrics)) +
+  geom_col(data = rf_perf_viz_df_all2 %>% filter(Metrics %in% c("Sensitivity")), aes(x = variable, y = estimate, fill = Metrics), alpha = 0.8) +
+  geom_errorbar(data = rf_perf_viz_df_all2 %>% filter(Metrics %in% c("Sensitivity")), aes(ymin = lower, ymax = upper), linewidth = 1.2, width = 0.3, 
+                color = "black") +
+  geom_line(data = rf_perf_viz_df_all2 %>% filter(Metrics %in% c("AUROC_value")), aes(x = variable, y = estimate, color = Metrics), linewidth = rel(2), linetype = "solid") +
+  geom_point(data = rf_perf_viz_df_all2 %>% filter(Metrics %in% c("AUROC_value")), aes(x = variable, y = estimate, color = Metrics), size = rel(4)) +
+  geom_line(data = rf_perf_viz_df_all2 %>% filter(Metrics %in% c("Accuracy")), aes(x = variable, y = estimate, color = Metrics), linewidth = rel(2), linetype = "dashed") +
+  geom_point(data = rf_perf_viz_df_all2 %>% filter(Metrics %in% c("Accuracy")), aes(x = variable, y = estimate, color = Metrics), size = rel(4)) +
+  xlab("Day since diagnosis (days)") +
+  ylab("Metrics (%)") +
+  scale_fill_manual(name = "", values = c(Sensitivity = "#0072B2")) +
+  scale_color_manual(name = "", values = c(AUROC_value = "#FFC001", Accuracy = "#FA766E")) +
+  guides(
+    fill  = guide_legend(order = 1, override.aes = list(alpha = 0.6)),
+    color = guide_legend(order = 2, override.aes = list(linetype = 1, shape = 16))
+  ) +
+  scale_x_continuous(limits = c(-0.5, 10.5), breaks = seq(0, 10, 1)) +
+  coord_cartesian(ylim = c(90, 100)) +
+  theme(axis.text = element_text(color = "black"),
+        axis.text.x = element_text(vjust = 0.5, hjust = 0.5, face = "bold", size = rel(4)),
+        axis.text.y = element_text(face = "bold", size = rel(4)),
+        axis.line = element_line(color = "black"),
+        strip.text.x = element_text(vjust = 0.5, face = "bold"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "none",
+        legend.box = "horizontal",
+        legend.text = element_text(size = rel(2)),
+        axis.title.x = element_text(size = rel(4)),
+        axis.title.y = element_text(size = rel(4))
+        )
+fig4a_rf_diag
+```
+
+# Comparison between model with viral load point at different time point
+```{r, McNemar Test}
+# Function for getting the contigency table
+mc_tab <- function(list1, list2) {
+  table(
+    list1 = factor(list1, levels = c(TRUE, FALSE)),
+    list2 = factor(list2, levels = c(TRUE, FALSE))
+  )
+}
+
+mc_rf_seqcomp_diag_list <- list()
+for(i in 1:100) {
+  # Normalize all factors
+  actual_rf_vldiag <- factor(split_list_vldiag[[i]]$test$outcome)
+  actual_rf <- factor(split_list[[i]]$test$outcome)
+
+  pred_rf_vldiag <- factor(rf_vldiag_list[[i]]$prediction, levels = levels(actual_rf_vldiag))
+  pred_rf_day1 <- factor(rf_seq_diag_list[[i]][[1]]$prediction, levels = levels(actual_rf))
+  pred_rf_day2 <- factor(rf_seq_diag_list[[i]][[2]]$prediction, levels = levels(actual_rf))
+  pred_rf_day5 <- factor(rf_seq_diag_list[[i]][[5]]$prediction, levels = levels(actual_rf))
+
+  pos_case <- "Severe"
+
+  idx_pos_vldiag <- actual_rf_vldiag == pos_case
+  idx_pos_rf <- actual_rf == pos_case
+
+  rf_correct_vldiag <- pred_rf_vldiag[idx_pos_vldiag] == actual_rf_vldiag[idx_pos_vldiag]
+  rf_correct_day1 <- pred_rf_day1[idx_pos_rf] == actual_rf[idx_pos_rf]
+  rf_correct_day2 <- pred_rf_day2[idx_pos_rf] == actual_rf[idx_pos_rf]
+  rf_correct_day5 <- pred_rf_day5[idx_pos_rf] == actual_rf[idx_pos_rf]
+
+  # Forming the table for McNemar test
+  mc_tab_rf_diagvday1 <- mc_tab(rf_correct_vldiag, rf_correct_day1)
+  mc_tab_rf_diagvday2 <- mc_tab(rf_correct_vldiag, rf_correct_day2)
+  mc_tab_rf_diagvday5 <- mc_tab(rf_correct_vldiag, rf_correct_day5)
+  
+  mc_tab_rf_day1vday2 <- mc_tab(rf_correct_day1, rf_correct_day2)
+  mc_tab_rf_day1vday5 <- mc_tab(rf_correct_day1, rf_correct_day5)
+  
+  mc_tab_rf_day2vday5 <- mc_tab(rf_correct_day2, rf_correct_day5)
+
+  # Perform McNemar test
+  mc_rf_diagvday1 <- mcnemar.test(mc_tab_rf_diagvday1, correct = FALSE)
+  mc_rf_diagvday2 <- mcnemar.test(mc_tab_rf_diagvday2, correct = FALSE)
+  mc_rf_diagvday5 <- mcnemar.test(mc_tab_rf_diagvday5, correct = FALSE)
+  
+  mc_rf_day1vday2 <- mcnemar.test(mc_tab_rf_day1vday2, correct = FALSE)
+  mc_rf_day1vday5 <- mcnemar.test(mc_tab_rf_day1vday5, correct = FALSE)
+  
+  mc_rf_day2vday5 <- mcnemar.test(mc_tab_rf_day2vday5, correct = FALSE)
+  
+  # Getting the p-value of McNemar test
+  mc_rf_diagvday1_p <- tidy(mc_rf_diagvday1)$p.value
+  mc_rf_diagvday2_p <- tidy(mc_rf_diagvday2)$p.value
+  mc_rf_diagvday5_p <- tidy(mc_rf_diagvday5)$p.value
+  
+  mc_rf_day1vday2_p <- tidy(mc_rf_day1vday2)$p.value
+  mc_rf_day1vday5_p <- tidy(mc_rf_day1vday5)$p.value
+  
+  mc_rf_day2vday5_p <- tidy(mc_rf_day2vday5)$p.value
+
+  mc_rf_summary <- tibble(
+      group1 = c("Random forest (Day 0)", "Random forest (Day 0)", "Random forest (Day 0)", "Random forest (Day 1)", "Random forest (Day 1)", "Random forest (Day 2)",
+                 "Random forest (Day 1)", "Random forest (Day 2)", "Random forest (Day 5)", "Random forest (Day 2)", "Random forest (Day 5)", "Random forest (Day 5)",
+                 "Random forest (Day 0)", "Random forest (Day 1)", "Random forest (Day 2)", "Random forest (Day 5)"),
+
+      group2 = c("Random forest (Day 1)", "Random forest (Day 2)", "Random forest (Day 5)", "Random forest (Day 2)", "Random forest (Day 5)", "Random forest (Day 5)",
+                 "Random forest (Day 0)", "Random forest (Day 0)", "Random forest (Day 0)", "Random forest (Day 1)", "Random forest (Day 1)", "Random forest (Day 2)",
+                 "Random forest (Day 0)", "Random forest (Day 1)", "Random forest (Day 2)", "Random forest (Day 5)"),
+
+      p.value = c(mc_rf_diagvday1_p, mc_rf_diagvday2_p, mc_rf_diagvday5_p, mc_rf_day1vday2_p, mc_rf_day1vday5_p, mc_rf_day2vday5_p,
+                  mc_rf_diagvday1_p, mc_rf_diagvday2_p, mc_rf_diagvday5_p, mc_rf_day1vday2_p, mc_rf_day1vday5_p, mc_rf_day2vday5_p,
+                  2, 2, 2, 2)
+  ) %>%
+  mutate(label = case_when(
+      is.na(p.value) ~ "NS",
+      p.value < 0.001 ~ "***",
+      p.value < 0.01 ~ "**",
+      p.value < 0.05 ~ "*",
+      p.value == 2 ~ "NA",
+      TRUE ~ "NS"
+  ))
+
+  mc_rf_heatmap <- mc_rf_summary %>%
+                      select(group1, group2, label) %>%
+                      pivot_wider(names_from = group1, values_from = label) %>%
+                      column_to_rownames("group2")
+
+
+  mcnemar_rf_long <- as.data.frame(as.table(as.matrix(mc_rf_heatmap)))
+  colnames(mcnemar_rf_long) <- c("Model1", "Model2", "Significance")
+
+  mc_rf_seqcomp_diag_list[[i]] <- mcnemar_rf_long %>%
+                        mutate(
+                          Model1 = case_when(
+                          Model1 == "Random forest (Day 0)" ~ "0",
+                          Model1 == "Random forest (Day 1)" ~ "1",
+                          Model1 == "Random forest (Day 2)" ~ "2",
+                          Model1 == "Random forest (Day 5)" ~ "5"
+                          ),
+                          Model2 = case_when(
+                          Model2 == "Random forest (Day 0)" ~ "0",
+                          Model2 == "Random forest (Day 1)" ~ "1",
+                          Model2 == "Random forest (Day 2)" ~ "2",
+                          Model2 == "Random forest (Day 5)" ~ "5"
+                          ),
+                          Model1 = factor(Model1, levels = c("5", "2", "1", "0")),
+                          Model2 = factor(Model2, levels = c("0", "1", "2", "5"))
+                        )
+}
+
+# Summarise the percentage of significance in each scenario cases
+mc_rf_seqcomp_diag_percent_sum <- dplyr::bind_rows(
+  lapply(seq_along(mc_rf_seqcomp_diag_list), function(i) {
+    mc_rf_seqcomp_diag_list[[i]] %>% mutate(run = i)
+    })
+  )
+
+# Define labels of statistically significant
+sig_labels <- c("*", "**", "***")
+
+# Summarize the percentage significant for each scenario
+sig_rf_seqcomp_diag_sum <- mc_rf_seqcomp_diag_percent_sum %>%
+                mutate(is_significant = Significance %in% sig_labels) %>%
+                group_by(Model1, Model2) %>%
+                summarize(
+                  n_sig = sum(is_significant),
+                  n_total = n(),
+                  percent_sig = 100 * n_sig / n_total,
+                  .groups = "drop"
+                ) %>%
+                mutate(percent_sig = ifelse(Model1 == Model2, NA, percent_sig)) %>%
+                mutate(
+                  fill = case_when(
+                      is.na(percent_sig) ~ "black",
+                      percent_sig < 40 ~ "white",
+                      percent_sig >= 40 & percent_sig < 60 ~ "grey90",
+                      percent_sig >=60 & percent_sig <80 ~ "gold",
+                      percent_sig >= 80 ~ "orange"
+                    ),
+                  percent_label = ifelse(is.na(percent_sig), "", sprintf("%.1f%%", percent_sig))
+                )
+sig_rf_seqcomp_diag_sum
+```
+
+```{r, Heatmap}
+# Plot heatmap
+mc_plot_rfseq_diag <- ggplot(sig_rf_seqcomp_diag_sum, aes(x = Model2, y = Model1, fill = fill)) +
+                  geom_tile(color = "black") +
+                  geom_text(aes(label = percent_label), color = "black", size = rel(5), fontface = "bold") +
+                  scale_fill_manual(values = c("black"= "black", "white" = "white", "grey90" = "grey90", "orange" = "orange", "gold" = "gold"), guide = "none") +
+                  theme_classic() +
+                  theme(axis.text.x = element_text(hjust = 0.5, face = "bold", size = rel(2)),
+                        axis.text.y = element_text(face = "bold", size = rel(2)),
+                        axis.title.x = element_blank(),
+                        axis.title.y = element_blank(),
+                        legend.position = "none")
+mc_plot_rfseq_diag
+```
+
+## Figure 4B
+```{r, Fig4B_rf_diag}
+rf_sens_comp_diag <- rf_perf_viz_df_all2 %>%
+                filter(Metrics == "Sensitivity" & variable %in% c("0", "1", "2", "5"))
+
+# Function to convert the percentage of significant to annotation
+pct_to_stars <- function(p) dplyr::case_when(
+  is.na(p) ~ "NA",
+  p >= 80 ~ "****",
+  p >= 60 ~ "***",
+  p >= 40 ~ "**",
+  p >= 20 ~ "*",
+  TRUE ~ "NS"
+)
+
+# Function to extract the percentage of significant
+get_pair_percents <- function(sig_df) {
+  sig_df %>%
+    filter(!is.na(percent_sig)) %>%
+    mutate(
+      a = pmin(as.character(Model1), as.character(Model2)),
+      b = pmax(as.character(Model1), as.character(Model2)),
+      pair = paste0(a, "-", b)
+    ) %>%
+    distinct(pair, percent_sig) %>%
+    select(pair, percent_sig) %>%
+    tibble::deframe()
+}
+
+# Function to build bracket information for one row facet for each model family
+row_signif_2 <- function(sig_df, perf_all) {
+  fam_sens <- perf_all
+  if (nrow(fam_sens) == 0) {
+    return(NULL)
+  }
+  
+  pairs <- list(c("0", "1"), c("0", "2"), c("0", "5"))
+  
+  pp <- get_pair_percents(sig_df)
+  pct_vec <- c(pp[["0-1"]], pp[["0-2"]], pp[["0-5"]])
+  ann <- pct_to_stars(pct_vec)
+  
+  y_top <- max(fam_sens$upper, fam_sens$estimate, na.rm = TRUE)
+  gap <- 0.01 * (y_top %||% 1)
+  y_pos <- y_top + gap * (1:6)
+  
+  # Return the list compiled
+  list(family = family, pairs = pairs, annotations = ann, y = y_pos)
+}
+
+# Compile the results of comparisons
+rf_row_3 <- row_signif_2(sig_rf_seqcomp_diag_sum, rf_sens_comp_diag)
+
+# Function to add the row of results of comparisons into plot
+add_row_signif_diag <- function(p, row_spec) {
+  if (is.null(row_spec)) {
+    return(p)
+  }
+  p + geom_signif(
+    data = rf_sens_comp_diag,
+    inherit.aes = FALSE,
+    aes(x = as.factor(variable), y = estimate),
+    comparisons = row_spec$pairs,
+    annotations = row_spec$annotations,
+    y_position = row_spec$y,
+    textsize = 8,
+    size = 0.8,
+    vjust = -0.1
+  )
+}
+
+fig4b_rf_diag <- ggplot(data = rf_sens_comp_diag, aes(x = as.factor(variable), y = estimate, group = Metrics, color = Metrics)) +
+                geom_col(data = rf_sens_comp_diag, aes(x = as.factor(variable), y = estimate, fill = Metrics), alpha = 0.8) +
+                geom_errorbar(aes(ymin = lower, ymax = upper, color = Metrics), width = 0.1, linewidth = 1.2) +
+                scale_x_discrete(limits = c("0", "1", "2", "5")) +
+                xlab("Time since diagnosis (days)") +
+                ylab("Sensitivity (%)") +
+                scale_fill_manual(name = "", values = c(Sensitivity = "#0072B2")) +
+                scale_color_manual(name = "", values = c(Sensitivity = "black")) +
+                coord_cartesian(ylim = c(88, 103)) +
+                theme_classic(base_family = "Helvetica") +
+                theme(axis.text = element_text(color = "black"),
+                      axis.text.x = element_text(vjust = 0.5, hjust = 0.5, face = "bold", size = rel(4)),
+                      axis.text.y.left = element_text(face = "bold", size = rel(4)),
+                      axis.line = element_line(color = "black"),
+                      strip.text.x = element_text(angle = 360, vjust = 0.5, face = "bold", size = rel(4)),
+                      strip.text.y = element_text(face = "bold", size = rel(4)),
+                      panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(),
+                      panel.background = element_blank(),
+                      legend.position = "none",
+                      axis.title.y = element_text(size = rel(4)),
+                      axis.title.x = element_text(size = rel(4))
+                      )
+fig4b_rf_diag <- fig4b_rf_diag %>%
+        add_row_signif_diag(rf_row_3)
+fig4b_rf_diag
+#ggsave("Figure4B.png", fig4b_rf_diag, width = 16, height = 12)
+```
+
+# Adding one additional viral load to the model
+## Day 2
+### Setup CPU clusters
+```{r, Setup CPU clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+### Fitting data into Random forest
+```{r, Inclusion of additional time point into model}
+rf_add2_list <- foreach(i = 1:100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+  split <- split_list[[i]]
+  
+  train_df <- split$train %>% select(age, gender, vaccination, comorbidity, vl_sim, vl_sim2, outcome) %>% rename("diagnosis" = "vl_sim", "day2" = "vl_sim2")
+  test_df <- split$test %>% select(age, gender, vaccination, comorbidity, vl_sim, vl_sim2, outcome) %>% rename("diagnosis" = "vl_sim", "day2" = "vl_sim2")
+  
+  rf_model <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+  
+  rf_pred <- predict(rf_model, newdata = test_df, type = "class")
+  cfm_rf <- table(Predicted = rf_pred, Actual = test_df$outcome)
+  accuracy_rf <- sum(cfm_rf["Severe", "Severe"], cfm_rf["Non severe", "Non severe"]) / sum(cfm_rf)
+  
+  rf_pred_train <- predict(rf_model, newdata = train_df, type = "class")
+  cfm_rf_train <- table(Predicted = rf_pred_train, Actual = train_df$outcome)
+  accuracy_rf_train <- sum(cfm_rf_train["Severe", "Severe"], cfm_rf_train["Non severe", "Non severe"]) / sum(cfm_rf_train)
+  
+  TP <- cfm_rf["Severe", "Severe"]
+  FP <- cfm_rf["Severe", "Non severe"]
+  TN <- cfm_rf["Non severe", "Non severe"]
+  FN <- cfm_rf["Non severe", "Severe"]
+    
+  sensitivity_rf <- TP / (TP + FN)
+  specificity_rf <- TN / (TN + FP)
+  prec_rf <- TP / (TP + FP)
+  f1_sc_rf <- 2 * ((prec_rf * sensitivity_rf) / (prec_rf + sensitivity_rf))
+    
+  rf_pred_res <- ifelse(rf_pred == "Severe", 1, 0)
+  roc_rf <- roc(test_df$outcome, rf_pred_res)
+  auc_val_rf <- auc(roc_rf)
+    
+  xvars <- colnames(train_df)[-7]
+  pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+  shap_values_rf <- fastshap::explain(rf_model, X = train_df[, -7], pred_wrapper = pfun_rf)
+  shp_rf <- shapviz(shap_values_rf, X = train_df[, -which(names(train_df) == "outcome")])
+    
+  list(#model = rf_model,
+       confusion_matrix = cfm_rf, accuracy_training = accuracy_rf_train, accuracy_testing = accuracy_rf, sensitivity = sensitivity_rf,
+       specificity = specificity_rf, precision = prec_rf, F1_score = f1_sc_rf, AUC_value = auc_val_rf,
+       #SHAP_values = shp_rf,
+       prediction = rf_pred, roc = roc_rf)
+}
+```
+
+### Stop CPU clusters
+```{r, Stop CPU clusters}
+stopCluster(cl)
+```
+
+### Compile model performance metrics 
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_add2_metrics_df <- map_dfr(seq_along(rf_add2_list), function(i) {
+  result <- rf_add2_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_add2_metrics_df <- as.data.frame(rf_add2_metrics_df)
+
+rf_add2_metrics_summary <- rf_add2_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_add2_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_add2_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_add2_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_add2_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_add2_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_add2_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_add2_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_add2_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_add2_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_add2_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_add2_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_add2_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_add2_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_add2_metrics_df$AUC_value, 0.975)
+
+rf_add2_metrics_summary['low_acc_train'] <- low_acc_train
+rf_add2_metrics_summary['low_acc_test'] <- low_acc_test
+rf_add2_metrics_summary['low_sens'] <- low_sens
+rf_add2_metrics_summary['low_spec'] <- low_spec
+rf_add2_metrics_summary['low_prec'] <- low_prec
+rf_add2_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_add2_metrics_summary['low_auc'] <- low_auc
+
+rf_add2_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_add2_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_add2_metrics_summary['upp_sens'] <- upp_sens
+rf_add2_metrics_summary['upp_spec'] <- upp_spec
+rf_add2_metrics_summary['upp_prec'] <- upp_prec
+rf_add2_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_add2_metrics_summary['upp_auc'] <- upp_auc
+
+rf_add2_metrics_summary
+```
+
+## Day 1
+### Setup CPU clusters
+```{r, Setup CPU clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+### Fitting data into Random forest
+```{r, Inclusion of additional time point into model}
+rf_add3_list <- foreach(i = 1:100, .packages = c("dplyr", "randomForest", "pROC", "fastshap", "shapviz")) %dopar% {
+  split <- split_list_p[[i]]
+  
+  train_df <- split$train %>% select(age, gender, vaccination, comorbidity, vl_sim, vl_dp1, outcome) %>% rename("diagnosis" = "vl_sim", "day1" = "vl_dp1")
+  test_df <- split$test %>% select(age, gender, vaccination, comorbidity, vl_sim, vl_dp1, outcome) %>% rename("diagnosis" = "vl_sim", "day1" = "vl_dp1")
+  
+  rf_model <- randomForest(outcome ~ ., data = train_df, importance = TRUE)
+  
+  rf_pred <- predict(rf_model, newdata = test_df, type = "class")
+  cfm_rf <- table(Predicted = rf_pred, Actual = test_df$outcome)
+  accuracy_rf <- sum(cfm_rf["Severe", "Severe"], cfm_rf["Non severe", "Non severe"]) / sum(cfm_rf)
+  
+  rf_pred_train <- predict(rf_model, newdata = train_df, type = "class")
+  cfm_rf_train <- table(Predicted = rf_pred_train, Actual = train_df$outcome)
+  accuracy_rf_train <- sum(cfm_rf_train["Severe", "Severe"], cfm_rf_train["Non severe", "Non severe"]) / sum(cfm_rf_train)
+  
+  TP <- cfm_rf["Severe", "Severe"]
+  FP <- cfm_rf["Severe", "Non severe"]
+  TN <- cfm_rf["Non severe", "Non severe"]
+  FN <- cfm_rf["Non severe", "Severe"]
+    
+  sensitivity_rf <- TP / (TP + FN)
+  specificity_rf <- TN / (TN + FP)
+  prec_rf <- TP / (TP + FP)
+  f1_sc_rf <- 2 * ((prec_rf * sensitivity_rf) / (prec_rf + sensitivity_rf))
+    
+  rf_pred_res <- ifelse(rf_pred == "Severe", 1, 0)
+  roc_rf <- roc(test_df$outcome, rf_pred_res)
+  auc_val_rf <- auc(roc_rf)
+    
+  xvars <- colnames(train_df)[-7]
+  pfun_rf <- function(object, newdata) predict(object, newdata, type = "prob")[, 2]
+  shap_values_rf <- fastshap::explain(rf_model, X = train_df[, -7], pred_wrapper = pfun_rf)
+  shp_rf <- shapviz(shap_values_rf, X = train_df[, -which(names(train_df) == "outcome")])
+    
+  list(#model = rf_model,
+       confusion_matrix = cfm_rf, accuracy_training = accuracy_rf_train, accuracy_testing = accuracy_rf, sensitivity = sensitivity_rf,
+       specificity = specificity_rf, precision = prec_rf, F1_score = f1_sc_rf, AUC_value = auc_val_rf,
+       #SHAP_values = shp_rf,
+       prediction = rf_pred, roc = roc_rf)
+}
+```
+
+### Stop CPU clusters
+```{r, Stop CPU clusters}
+stopCluster(cl)
+```
+
+### Compile model performance metrics 
+```{r, Convert the metrics list into data frame (Exclude the SHAP values figure)}
+rf_add3_metrics_df <- map_dfr(seq_along(rf_add3_list), function(i) {
+  result <- rf_add3_list[[i]]
+  
+  tibble(
+    run = i,
+    accuracy_train = round(result$accuracy_training * 100 , 4),
+    accuracy_test = round(result$accuracy_testing * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$F1_score, 4),
+    AUC_value = round(result$AUC_value * 100, 4)
+  )
+})
+rf_add3_metrics_df <- as.data.frame(rf_add3_metrics_df)
+
+rf_add3_metrics_summary <- rf_add3_metrics_df %>%
+                              summarise(
+                                accuracy_train_mean = mean(accuracy_train),
+                                accuracy_train_sd = sd(accuracy_train),
+                                accuracy_test_mean = mean(accuracy_test),
+                                accuracy_test_sd = sd(accuracy_test),
+                                sensitivity_mean = mean(sensitivity),
+                                sensitivity_sd = sd(sensitivity),
+                                specificity_mean = mean(specificity),
+                                specificity_sd = sd(specificity),
+                                precision_mean = mean(precision),
+                                precision_sd = sd(precision),
+                                F1_score_mean = mean(F1_score),
+                                F1_score_sd = sd(F1_score),
+                                AUC_mean = mean(AUC_value),
+                                AUC_sd = sd(AUC_value)
+                              )
+
+low_acc_train <- quantile(rf_add3_metrics_df$accuracy_train, 0.025)
+low_acc_test <- quantile(rf_add3_metrics_df$accuracy_test, 0.025)
+low_sens <- quantile(rf_add3_metrics_df$sensitivity, 0.025)
+low_spec <- quantile(rf_add3_metrics_df$specificity, 0.025)
+low_prec <- quantile(rf_add3_metrics_df$precision, 0.025)
+low_f1_sc <- quantile(rf_add3_metrics_df$F1_score, 0.025)
+low_auc <- quantile(rf_add3_metrics_df$AUC_value, 0.025)
+
+upp_acc_train <- quantile(rf_add3_metrics_df$accuracy_train, 0.975)
+upp_acc_test <- quantile(rf_add3_metrics_df$accuracy_test, 0.975)
+upp_sens <- quantile(rf_add3_metrics_df$sensitivity, 0.975)
+upp_spec <- quantile(rf_add3_metrics_df$specificity, 0.975)
+upp_prec <- quantile(rf_add3_metrics_df$precision, 0.975)
+upp_f1_sc <- quantile(rf_add3_metrics_df$F1_score, 0.975)
+upp_auc <- quantile(rf_add3_metrics_df$AUC_value, 0.975)
+
+rf_add3_metrics_summary['low_acc_train'] <- low_acc_train
+rf_add3_metrics_summary['low_acc_test'] <- low_acc_test
+rf_add3_metrics_summary['low_sens'] <- low_sens
+rf_add3_metrics_summary['low_spec'] <- low_spec
+rf_add3_metrics_summary['low_prec'] <- low_prec
+rf_add3_metrics_summary['low_f1_sc'] <- low_f1_sc
+rf_add3_metrics_summary['low_auc'] <- low_auc
+
+rf_add3_metrics_summary['upp_acc_train'] <- upp_acc_train
+rf_add3_metrics_summary['upp_acc_test'] <- upp_acc_test
+rf_add3_metrics_summary['upp_sens'] <- upp_sens
+rf_add3_metrics_summary['upp_spec'] <- upp_spec
+rf_add3_metrics_summary['upp_prec'] <- upp_prec
+rf_add3_metrics_summary['upp_f1_sc'] <- upp_f1_sc
+rf_add3_metrics_summary['upp_auc'] <- upp_auc
+
+rf_add3_metrics_summary
+```
+
+#### Compile all the performance metrics
+```{r, Compile performance metrics for Figure 4C}
+rf_acc_add2 <- rf_add2_metrics_summary$accuracy_test_mean
+rf_acc_low_add2 <- rf_add2_metrics_summary$low_acc_test
+rf_acc_upp_add2 <- rf_add2_metrics_summary$upp_acc_test
+rf_sens_add2 <- rf_add2_metrics_summary$sensitivity_mean
+rf_sens_low_add2 <- rf_add2_metrics_summary$low_sens
+rf_sens_upp_add2 <- rf_add2_metrics_summary$upp_sens
+rf_spec_add2 <- rf_add2_metrics_summary$specificity_mean
+rf_spec_low_add2 <- rf_add2_metrics_summary$low_spec
+rf_spec_upp_add2 <- rf_add2_metrics_summary$upp_spec
+rf_prec_add2 <- rf_add2_metrics_summary$precision_mean
+rf_prec_low_add2 <- rf_add2_metrics_summary$low_prec
+rf_prec_upp_add2 <- rf_add2_metrics_summary$upp_prec
+rf_f1_add2 <- rf_add2_metrics_summary$F1_score_mean
+rf_f1_low_add2 <- rf_add2_metrics_summary$low_f1_sc
+rf_f1_upp_add2 <- rf_add2_metrics_summary$upp_f1_sc
+rf_auc_add2 <- rf_add2_metrics_summary$AUC_mean
+rf_auc_low_add2 <- rf_add2_metrics_summary$low_auc
+rf_auc_upp_add2 <- rf_add2_metrics_summary$upp_auc
+
+rf_acc_add3 <- rf_add3_metrics_summary$accuracy_test_mean
+rf_acc_low_add3 <- rf_add3_metrics_summary$low_acc_test
+rf_acc_upp_add3 <- rf_add3_metrics_summary$upp_acc_test
+rf_sens_add3 <- rf_add3_metrics_summary$sensitivity_mean
+rf_sens_low_add3 <- rf_add3_metrics_summary$low_sens
+rf_sens_upp_add3 <- rf_add3_metrics_summary$upp_sens
+rf_spec_add3 <- rf_add3_metrics_summary$specificity_mean
+rf_spec_low_add3 <- rf_add3_metrics_summary$low_spec
+rf_spec_upp_add3 <- rf_add3_metrics_summary$upp_spec
+rf_prec_add3 <- rf_add3_metrics_summary$precision_mean
+rf_prec_low_add3 <- rf_add3_metrics_summary$low_prec
+rf_prec_upp_add3 <- rf_add3_metrics_summary$upp_prec
+rf_f1_add3 <- rf_add3_metrics_summary$F1_score_mean
+rf_f1_low_add3 <- rf_add3_metrics_summary$low_f1_sc
+rf_f1_upp_add3 <- rf_add3_metrics_summary$upp_f1_sc
+rf_auc_add3 <- rf_add3_metrics_summary$AUC_mean
+rf_auc_low_add3 <- rf_add3_metrics_summary$low_auc
+rf_auc_upp_add3 <- rf_add3_metrics_summary$upp_auc
+
+perf_metrics_rf2 <- data.frame(
+  models = c("Diagnosis + Day 2 post diagnosis", "Diagnosis + Day 1 post diagnosis"),
+  Accuracy = c(rf_acc_add2, rf_acc_add3),
+  acc_low = c(rf_acc_low_add2, rf_acc_low_add3),
+  acc_upp = c(rf_acc_upp_add2, rf_acc_upp_add3),
+  Sensitivity = c(rf_sens_add2, rf_sens_add3),
+  sens_low = c(rf_sens_low_add2, rf_sens_low_add3),
+  sens_upp = c(rf_sens_upp_add2, rf_sens_upp_add3),
+  Specificity = c(rf_spec_add2, rf_spec_add3),
+  spec_low = c(rf_spec_low_add2, rf_spec_low_add3),
+  spec_upp = c(rf_spec_upp_add2, rf_spec_upp_add3),
+  Precision = c(rf_prec_add2, rf_prec_add3),
+  prec_low = c(rf_prec_low_add2, rf_prec_low_add3),
+  prec_upp = c(rf_prec_upp_add2, rf_prec_upp_add3),
+  `F1-Score` = c(rf_f1_add2, rf_f1_add3),
+  f1_low = c(rf_f1_low_add2, rf_f1_low_add3),
+  f1_upp = c(rf_f1_upp_add2, rf_f1_upp_add3),
+  AUROC = c(rf_auc_add2, rf_auc_add3),
+  auc_low = c(rf_auc_low_add2, rf_auc_low_add3),
+  auc_upp = c(rf_auc_upp_add2, rf_auc_upp_add3)
+)
+df_perf_metrics_rf_diag <- dplyr::bind_rows(df_perf_summary, perf_metrics_rf2)   %>%
+  filter(models %in% c("Random forest (Viral load at symptom onset)", "Random forest (Viral load at diagnosis)", "Diagnosis + Day 2 post diagnosis", "Diagnosis + Day 1 post diagnosis")) %>%
+  mutate(models = case_when(
+    models == "Random forest (Viral load at symptom onset)" ~ "Onset only",
+    models == "Random forest (Viral load at diagnosis)" ~ "Diagnosis only",
+    TRUE ~ models))
+df_perf_metrics_rf_diag
+```
+
+##### Perform McNemar Test
+```{r, McNemar test for Random forest in three scenarios}
+mc_rf_compare_list2 <- list()
+for(i in 1:100) {
+  # Normalize all factors
+  actual_rf_vlsymp <- factor(split_list_vlsim_symp[[i]]$test$outcome)
+  actual_rf_vldiag <- factor(split_list_vldiag[[i]]$test$outcome)
+  actual_rf <- factor(split_list[[i]]$test$outcome)
+
+  pred_rf_vlsymp <- factor(rf_vlsymp_list[[i]]$prediction, levels = levels(actual_rf_vlsymp))
+  pred_rf_vldiag <- factor(rf_vldiag_list[[i]]$prediction, levels = levels(actual_rf_vldiag))
+  pred_rf_add3 <- factor(rf_add3_list[[i]]$prediction, levels = levels(actual_rf))
+  pred_rf_add2 <- factor(rf_add2_list[[i]]$prediction, levels = levels(actual_rf))
+
+  pos_case <- "Severe"
+
+  idx_pos_vlsymp <- actual_rf_vlsymp == pos_case
+  idx_pos_vldiag <- actual_rf_vldiag == pos_case
+  idx_pos_rf <- actual_rf == pos_case
+
+  rf_correct_vlsymp <- pred_rf_vlsymp[idx_pos_vlsymp] == actual_rf_vlsymp[idx_pos_vlsymp]
+  rf_correct_vldiag <- pred_rf_vldiag[idx_pos_vldiag] == actual_rf_vldiag[idx_pos_vldiag]
+  rf_correct_add3 <- pred_rf_add3[idx_pos_rf] == actual_rf[idx_pos_rf]
+  rf_correct_add2 <- pred_rf_add2[idx_pos_rf] == actual_rf[idx_pos_rf]
+
+  # Forming the table for McNemar test
+  mc_tab_rf_sympvdiag <- mc_tab(rf_correct_vlsymp, rf_correct_vldiag)
+  mc_tab_rf_sympvadd3 <- mc_tab(rf_correct_vlsymp, rf_correct_add3)
+  mc_tab_rf_sympvadd2 <- mc_tab(rf_correct_vlsymp, rf_correct_add2)
+  
+  mc_tab_rf_diagvadd3 <- mc_tab(rf_correct_vldiag, rf_correct_add3)
+  mc_tab_rf_diagvadd2 <- mc_tab(rf_correct_vldiag, rf_correct_add2)
+  
+  mc_tab_rf_add3vadd2 <- mc_tab(rf_correct_add3, rf_correct_add2)
+  
+  # Perform McNemar test
+  mc_rf_sympvdiag <- mcnemar.test(mc_tab_rf_sympvdiag, correct = FALSE)
+  mc_rf_sympvadd3 <- mcnemar.test(mc_tab_rf_sympvadd3, correct = FALSE)
+  mc_rf_sympvadd2 <- mcnemar.test(mc_tab_rf_sympvadd2, correct = FALSE)
+  
+  mc_rf_diagvadd3 <- mcnemar.test(mc_tab_rf_diagvadd3, correct = FALSE)
+  mc_rf_diagvadd2 <- mcnemar.test(mc_tab_rf_diagvadd2, correct = FALSE)
+  
+  mc_rf_add3vadd2 <- mcnemar.test(mc_tab_rf_add3vadd2, correct = FALSE)
+  
+  # Getting the p-value of McNemar test
+  mc_rf_sympvdiag_p <- tidy(mc_rf_sympvdiag)$p.value
+  mc_rf_sympvadd3_p <- tidy(mc_rf_sympvadd3)$p.value
+  mc_rf_sympvadd2_p <- tidy(mc_rf_sympvadd2)$p.value
+  
+  mc_rf_diagvadd3_p <- tidy(mc_rf_diagvadd3)$p.value
+  mc_rf_diagvadd2_p <- tidy(mc_rf_diagvadd2)$p.value
+  
+  mc_rf_add3vadd2_p <- tidy(mc_rf_add3vadd2)$p.value
+  
+  mc_rf_compare_summary <- tibble(
+      group1 = c("Onset only", "Onset only", "Onset only",
+                 "Diagnosis only", "Diagnosis only",
+                 "Diagnosis + Day 1 post diagnosis", 
+                 
+                 "Diagnosis only", "Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis",
+                 "Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis",
+                 "Diagnosis + Day 2 post diagnosis",
+                 
+                 "Onset only", "Diagnosis only", "Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis"),
+
+      group2 = c("Diagnosis only", "Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis",
+                 "Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis",
+                 "Diagnosis + Day 2 post diagnosis",
+                 
+                 "Onset only", "Onset only", "Onset only",
+                 "Diagnosis only", "Diagnosis only",
+                 "Diagnosis + Day 1 post diagnosis",
+                
+                 "Onset only", "Diagnosis only", "Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis"),
+
+      p.value = c(mc_rf_sympvdiag_p, mc_rf_sympvadd3_p,mc_rf_sympvadd2_p,
+                  mc_rf_diagvadd3_p, mc_rf_diagvadd2_p,
+                  mc_rf_add3vadd2_p,
+                  mc_rf_sympvdiag_p, mc_rf_sympvadd3_p,mc_rf_sympvadd2_p,
+                  mc_rf_diagvadd3_p, mc_rf_diagvadd2_p,
+                  mc_rf_add3vadd2_p,
+                  2, 2, 2, 2)
+  ) %>%
+  mutate(label = case_when(
+      is.na(p.value) ~ "NS",
+      p.value < 0.001 ~ "***",
+      p.value < 0.01 ~ "**",
+      p.value < 0.05 ~ "*",
+      p.value == 2 ~ "NA",
+      TRUE ~ "NS"
+  ))
+
+  mc_rf_compare_heatmap <- mc_rf_compare_summary %>%
+                      select(group1, group2, label) %>%
+                      pivot_wider(names_from = group1, values_from = label) %>%
+                      column_to_rownames("group2")
+
+
+  mcnemar_rf_compare_long <- as.data.frame(as.table(as.matrix(mc_rf_compare_heatmap)))
+  colnames(mcnemar_rf_compare_long) <- c("Model1", "Model2", "Significance")
+
+  mc_rf_compare_list2[[i]] <- mcnemar_rf_compare_long %>%
+                        mutate(
+                          Model1 = factor(Model1, levels = c("Diagnosis + Day 2 post diagnosis", "Diagnosis + Day 1 post diagnosis", "Diagnosis only", "Onset only")),
+                          Model2 = factor(Model2, levels = c("Onset only", "Diagnosis only", "Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis"))
+                        )
+}
+
+# Summarise the percentage of significance in each scenario cases
+mc_rf_compare_percent_sum2 <- dplyr::bind_rows(
+  lapply(seq_along(mc_rf_compare_list2), function(i) {
+    mc_rf_compare_list2[[i]] %>% mutate(run = i)
+    })
+  )
+
+# Define labels of statistically significant
+sig_labels <- c("*", "**", "***")
+
+# Summarize the percentage significant for each scenario
+sig_rf_compare_sum2 <- mc_rf_compare_percent_sum2 %>%
+                mutate(is_significant = Significance %in% sig_labels) %>%
+                group_by(Model1, Model2) %>%
+                summarize(
+                  n_sig = sum(is_significant),
+                  n_total = n(),
+                  percent_sig = 100 * n_sig / n_total,
+                  .groups = "drop"
+                ) %>%
+                mutate(percent_sig = ifelse(Model1 == Model2, NA, percent_sig)) %>%
+                mutate(
+                  fill = case_when(
+                      is.na(percent_sig) ~ "black",
+                      percent_sig < 40 ~ "white",
+                      percent_sig >= 40 & percent_sig < 60 ~ "grey90",
+                      percent_sig >=60 & percent_sig <80 ~ "gold",
+                      percent_sig >= 80 ~ "orange"
+                    ),
+                  percent_label = ifelse(is.na(percent_sig), "", sprintf("%.1f%%", percent_sig))
+                )
+sig_rf_compare_sum2
+```
+
+```{r, Heatmap}
+# Plot heatmap
+mc_plot_rfcomp2 <- ggplot(sig_rf_compare_sum2, aes(x = Model2, y = Model1, fill = fill)) +
+                  geom_tile(color = "black") +
+                  geom_text(aes(label = percent_label), color = "black", size = rel(5), fontface = "bold") +
+                  scale_fill_manual(values = c("black"= "black", "white" = "white", "grey90" = "grey90", "orange" = "orange", "gold" = "gold"), guide = "none") +
+                  theme_classic() +
+                  theme(axis.text.x = element_text(hjust = 0.5, face = "bold", size = rel(1)),
+                        axis.text.y = element_text(face = "bold", size = rel(1)),
+                        axis.title.x = element_blank(),
+                        axis.title.y = element_blank(),
+                        legend.position = "none")
+mc_plot_rfcomp2
+```
+
+## Figure 4C
+```{r, Fig4C}
+model_perf_comp_rf2 <- df_perf_metrics_rf_diag %>%
+                pivot_longer(
+                    cols = -models,
+                    names_to = "metrics",
+                    values_to = "Perf"
+                ) %>%
+                mutate(Metrics = case_when(
+                    str_starts(metrics, 'acc_') ~ "Accuracy",
+                    str_starts(metrics, "sens_") ~ "Sensitivity",
+                    str_starts(metrics, "spec_") ~ "Specificity",
+                    str_starts(metrics, "prec_") ~ "Precision",
+                    str_starts(metrics, "f1_") ~ "F1-Score",
+                    str_starts(metrics, "auc_") ~ "AUROC",
+                    metrics == "Accuracy" ~ "Accuracy",
+                    metrics == "Sensitivity" ~ "Sensitivity",
+                    metrics == "Specificity" ~ "Specificity",
+                    metrics == "Precision" ~ "Precision",
+                    metrics == "F1.Score" ~ "F1-Score",
+                    metrics == "AUROC" ~ "AUROC"
+                ),
+                bound = case_when(
+                    str_ends(metrics, "_low") ~ "lower",
+                    str_ends(metrics, "_upp") ~ "upper",
+                    TRUE ~ "estimate"
+                )) %>%
+                select(c("models", "Metrics", "bound", "Perf")) %>%
+                pivot_wider(names_from = bound, values_from = Perf) %>%
+                mutate(models = factor(models, levels = c("Onset only", "Diagnosis only", "Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis")))
+
+# AUROC text positioned just above the Sensitivity upper CI for each model
+ann_auroc_rf2 <- model_perf_comp_rf2 %>%
+  filter(Metrics %in% c("Sensitivity", "AUROC")) %>%
+  select(models, Metrics, estimate, upper) %>%
+  pivot_wider(names_from = Metrics, values_from = c(estimate, upper)) %>%
+  transmute(
+    models,
+    Metrics = "AUROC",
+    # place text a bit above the Sensitivity bar/errorbar
+    y = pmax(upper_Sensitivity, estimate_Sensitivity, na.rm = TRUE) + 1,
+    label = sprintf("%.1f", estimate_AUROC)
+  )
+
+# Accuracy text positioned just above the Sensitivity upper CI for each model
+ann_acc_rf2 <- model_perf_comp_rf2 %>%
+  filter(Metrics %in% c("Sensitivity", "Accuracy")) %>%
+  select(models, Metrics, estimate, upper) %>%
+  pivot_wider(names_from = Metrics, values_from = c(estimate, upper)) %>%
+  transmute(
+    models,
+    Metrics = "Accuracy",
+    # place text a bit above the Sensitivity bar/errorbar
+    y = pmax(upper_Sensitivity, estimate_Sensitivity, na.rm = TRUE) + 0.4,
+    label = sprintf("%.1f", estimate_Accuracy)
+  )
+
+# Function to build bracket information for one row facet for each model family
+row_signif_comp_diag <- function(sig_df, perf_all, offsets = c(1.6, 2.6, 3.8, 5.4, 7, 9.1)) {
+  fam_sens <- perf_all
+  if (nrow(fam_sens) == 0) {
+    return(NULL)
+  }
+  
+  pairs <- list(c("Onset only", "Diagnosis only"), c("Diagnosis only", "Diagnosis + Day 1 post diagnosis"), c("Diagnosis + Day 1 post diagnosis", "Diagnosis + Day 2 post diagnosis"),
+                c("Diagnosis only", "Diagnosis + Day 2 post diagnosis"), c("Onset only", "Diagnosis + Day 1 post diagnosis"), c("Onset only", "Diagnosis + Day 2 post diagnosis"))
+  
+  pp <- get_pair_percents(sig_df)
+  pct_vec <- c(pp[["Diagnosis only-Onset only"]], pp[["Diagnosis + Day 1 post diagnosis-Diagnosis only"]], pp[["Diagnosis + Day 1 post diagnosis-Diagnosis + Day 2 post diagnosis"]],
+               pp[["Diagnosis + Day 2 post diagnosis-Diagnosis only"]], pp[["Diagnosis + Day 1 post diagnosis-Onset only"]], pp[["Diagnosis + Day 2 post diagnosis-Onset only"]])
+  ann <- pct_to_stars(pct_vec)
+  
+  y_top <- max(fam_sens$estimate, na.rm = TRUE)
+  
+  # Return the list compiled
+  list(pairs = pairs, annotations = ann, y = y_top - 3 + offsets)
+}
+
+rf_row_compare2 <- row_signif_comp_diag(sig_rf_compare_sum2, model_perf_comp_rf2)
+#rf_row_compare['pairs'] <- factor(rf_row_compare['pairs'], levels = c())
+
+# Function to add the row of results of comparisons into plot
+add_row_signif_compare2 <- function(p, row_spec) {
+  if (is.null(row_spec)) {
+    return(p)
+  }
+  p + geom_signif(
+    data = model_perf_comp_rf2,
+    inherit.aes = FALSE,
+    aes(x = as.factor(models), y = estimate),
+    comparisons = row_spec$pairs,
+    annotations = row_spec$annotations,
+    y_position = row_spec$y,
+    textsize = 8,
+    size = 0.8,
+    tip_length = 0.008,
+    vjust = 0.1
+  )
+}
+
+fig4c_temp_rf2 <- ggplot(data = model_perf_comp_rf2 %>% filter(Metrics %in% c("AUROC", "Sensitivity")), aes(x = models, y = estimate, color = Metrics)) +
+  geom_col(data = model_perf_comp_rf2 %>% filter(Metrics %in% c("Sensitivity")), aes(x = models, y = estimate, fill = models), alpha = 0.8) +
+  geom_errorbar(data = model_perf_comp_rf2 %>% filter(Metrics %in% c("Sensitivity")), aes(ymin = lower, ymax = upper), linewidth = 1.2, width = 0.3, 
+                color = "black") +
+  geom_text(data = ann_auroc_rf2 %>% filter(Metrics %in% c("AUROC")), aes(x = models, y = y, label = paste0("AUROC ", label, "%"), color = Metrics), inherit.aes = FALSE, size = rel(6),
+            vjust = 0) +
+  geom_text(data = ann_acc_rf2 %>% filter(Metrics %in% c("Accuracy")), aes(x = models, y = y, label = paste0("Accuracy ", label, "%"), color = Metrics), inherit.aes = FALSE, size = rel(6),
+            vjust = 0) +
+  ylab("Sensitivity (%)") +
+  scale_x_discrete(labels=c("Onset only", "Diagnosis only", "Diagnosis + Day 1", "Diagnosis + Day 2")) +
+  scale_fill_manual(name = "", values = c("#0072B2", "#BDBDBD", "#5F9AFB", "#CC79A7")) +
+  scale_color_manual(name = "", values = c(AUROC = "#FFC001", Accuracy = "#FA766E")) +
+  guides(
+    fill  = guide_legend(order = 1, override.aes = list(alpha = 0.6)),
+    color = guide_legend(order = 2, override.aes = list(linetype = 1, shape = 16))
+  ) +
+  scale_y_continuous(breaks = seq(85, 100, 2.5)) +
+  coord_cartesian(ylim = c(85, 110)) +
+  theme(axis.text = element_text(color = "black"),
+        axis.text.x = element_text(vjust = 0.5, hjust = 0.5, face = "bold", size = rel(3)),
+        axis.text.y = element_text(face = "bold", size = rel(3)),
+        axis.line = element_line(color = "black"),
+        strip.text.x = element_text(vjust = 0.5, face = "bold"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "none",
+        legend.box = "horizontal",
+        legend.text = element_text(size = rel(4)),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size = rel(4))
+        )
+fig4c_rf2 <- fig4c_temp_rf2 %>%
+  add_row_signif_compare2(rf_row_compare2)
+fig4c_rf2
+#ggsave("Figure4C_rf.png", fig4c_rf2, width = 16, height = 12)
+```
+
+# Comparison of sensitivity with features aggregated
+## Preparation for Figure 4D
+```{r, Compiling the dataframe of testing set, prediction from model with symptom onset, diagnosis & onset + day 2}
+testing_df_rf <- map2_dfr(
+  .x = split_list,
+  .y = seq_along(split_list),
+  ~ .x$test %>%
+    mutate(simulation = .y) %>%
+    select(simulation, age, gender, vaccination, comorbidity, outcome)
+)
+
+pred_onset_df_rf <- imap_dfr(
+  rf_vlsymp_list,
+  ~ tibble(
+    simulation = .y,
+    pred_onset = .x$prediction
+  )
+)
+
+pred_diag_df_rf <- imap_dfr(
+  rf_vldiag_list,
+  ~ tibble(
+    simulation = .y,
+    pred_diag = .x$prediction
+  )
+)
+
+pred_add2_df_rf <- imap_dfr(
+  rf_add2_list,
+  ~ tibble(
+    simulation = .y,
+    pred_add2 = .x$prediction
+  )
+)
+
+pred_add3_df_rf <- imap_dfr(
+  rf_add3_list,
+  ~ tibble(
+    simulation = .y,
+    pred_add3 = .x$prediction
+  )
+)
+
+testing_df_rf['pred_onset'] <- pred_onset_df_rf$pred_onset
+testing_df_rf['pred_diag'] <- pred_diag_df_rf$pred_diag
+testing_df_rf['pred_add2'] <- pred_add2_df_rf$pred_add2
+testing_df_rf['pred_add3'] <- pred_add3_df_rf$pred_add3
+```
+
+```{r, Define functions for compute aggregated performance metrics}
+# Define function to compute performance metrics
+metrics_comp <- function(df_comp, cols) {
+  cols <- as.character(cols)
+  actual_chr <- trimws(as.character(df_comp$outcome))
+  pred_chr   <- trimws(as.character(df_comp[[cols]]))
+  keep <- !is.na(actual_chr) & !is.na(pred_chr)
+  
+  actual <- factor(actual_chr[keep], levels = c("Non severe", "Severe"))
+  pred   <- factor(pred_chr[keep],   levels = c("Non severe", "Severe"))
+  
+  pred_num <- ifelse(pred == "Severe", 1, 0)
+  
+  cfm <- table(pred, actual, dnn = c("pred", "actual"))
+  
+  TP <- cfm["Severe", "Severe"]
+  FP <- cfm["Severe", "Non severe"]
+  TN <- cfm["Non severe", "Non severe"]
+  FN <- cfm["Non severe", "Severe"]
+  
+  acc <- sum(TP, TN) / sum(cfm)
+  sens <- TP / (TP + FN)
+  spec <- TN / (TN + FP)
+  prec <- TP / (TP + FP)
+  f1_sc <- 2 * ((prec * sens) / (prec + sens))
+    
+  roc <- roc(actual, pred_num)
+  auc_val <- auc(roc)
+  
+  list(confusion_matrix = cfm, accuracy = acc, sensitivity = sens, specificity = spec, precision = prec, f1_score = f1_sc, roc_val = roc, AUC = auc_val)
+}
+
+# Define function for parallel compute the aggregated performance metrics over 100 simulations
+func_agg_met <- function(df_for_comp, criteria, criteria_fil, cols_comp) {
+  num_cores <- parallel::detectCores() - 1
+  cl <- makeCluster(num_cores)
+  registerDoParallel(cl)
+  on.exit(parallel::stopCluster(cl), add = TRUE)
+  
+  res <- foreach(i = 1:100, .packages = c("dplyr", "pROC", "tibble"), .export = c("metrics_comp")) %dopar% {
+    df_temp <- df_for_comp[[i]]
+    df_temp2 <- dplyr::filter(df_temp, .data[[criteria]] == criteria_fil)
+    
+    met_list <- metrics_comp(df_temp2, cols = cols_comp)
+    
+    list(confusion_matrix = met_list$confusion_matrix, accuracy = met_list$accuracy, sensitivity = met_list$sensitivity, specificity = met_list$specificity,
+         precision = met_list$specificity, f1_score = met_list$f1_score, roc_val = met_list$roc_val, AUC = met_list$AUC)
+  }
+  res
+}
+
+# Define function to aggregate the computed performance metrics into a dataframe
+met_sum_func <- function(perf_list) {
+  temp_df <- map_dfr(seq_along(perf_list), function(i) {
+    result <- perf_list[[i]]
+    
+    tibble(
+    run = i,
+    accuracy = round(result$accuracy * 100, 4),
+    sensitivity = round(result$sensitivity * 100, 4),
+    specificity = round(result$specificity * 100, 4),
+    precision = round(result$precision * 100, 4),
+    F1_score = round(result$f1_score, 4),
+    AUC_value = round(result$AUC * 100, 4))
+  })
+  
+  temp_df2 <- as.data.frame(temp_df)
+  return(temp_df2)
+}
+
+# Define function to compile & compute the confidence interval
+met_cic_func <- function(perf_df, mod_name) {
+  summary_df <- perf_df %>%
+    summarise(
+      across(
+        .cols = c(accuracy, sensitivity, specificity, precision, F1_score, AUC_value),
+        .fns = list(mean = mean, low = ~ quantile(.x, 0.025), upp = ~ quantile(.x, 0.975)),
+        .names = "{.col}_{.fn}"
+      )
+    ) %>%
+    ungroup() %>%
+    mutate(models = as.character(mod_name)) %>%
+    pivot_longer(
+      cols = -models,
+      names_to = "metrics",
+      values_to = "perf"
+      ) %>%
+    mutate(
+      Metrics = case_when(
+        str_starts(metrics, "accuracy_") ~ "Accuracy",
+        str_starts(metrics, "sensitivity") ~ "Sensitivity",
+        str_starts(metrics, "specificity") ~ "Specificity",
+        str_starts(metrics, "precision") ~ "Precision",
+        str_starts(metrics, "F1_score") ~ "F1_score",
+        str_starts(metrics, "AUC_value") ~ "AUROC_value"
+        ),
+      bound = case_when(
+        str_ends(metrics, "_low") ~ "lower",
+        str_ends(metrics, "_upp") ~ "upper",
+        TRUE ~ "estimate"
+        )
+      ) %>%
+    select(c("models", "Metrics", "bound", "perf")) %>%
+    pivot_wider(names_from = bound, values_from = perf)
+  return(summary_df)
+}
+```
+
+```{r, Compute sensitivity according the specific features filtering}
+# Splitting the dataframe into list
+testing_df_list_rf <- list()
+for(i in 1:100) {
+  testing_df_list_rf[[i]] <- testing_df_rf %>% filter(simulation == i)
+}
+
+# Compute the performance metrics of model with viral load since symptom onset which aggregate with different scenario
+perf_com3_onset_rf <- func_agg_met(testing_df_list_rf, criteria = "comorbidity", criteria_fil = ">=3", cols_comp = "pred_onset")
+perf_com12_onset_rf <- func_agg_met(testing_df_list_rf, criteria = "comorbidity", criteria_fil = "1-2", cols_comp = "pred_onset")
+perf_age60_onset_rf <- func_agg_met(testing_df_list_rf, criteria = "age", criteria_fil = "60-79", cols_comp = "pred_onset")
+perf_age80_onset_rf <- func_agg_met(testing_df_list_rf, criteria = "age", criteria_fil = ">=80", cols_comp = "pred_onset")
+perf_vacfull_onset_rf <- func_agg_met(testing_df_list_rf, criteria = "vaccination", criteria_fil = "Full", cols_comp = "pred_onset")
+perf_vacboost_onset_rf <- func_agg_met(testing_df_list_rf, criteria = "vaccination", criteria_fil = "Booster", cols_comp = "pred_onset")
+
+# Compute the performance metrics of model with viral load at diagnosis which aggregate with different scenario
+perf_com3_diag_rf <- func_agg_met(testing_df_list_rf, criteria = "comorbidity", criteria_fil = ">=3", cols_comp = "pred_diag")
+perf_com12_diag_rf <- func_agg_met(testing_df_list_rf, criteria = "comorbidity", criteria_fil = "1-2", cols_comp = "pred_diag")
+perf_age60_diag_rf <- func_agg_met(testing_df_list_rf, criteria = "age", criteria_fil = "60-79", cols_comp = "pred_diag")
+perf_age80_diag_rf <- func_agg_met(testing_df_list_rf, criteria = "age", criteria_fil = ">=80", cols_comp = "pred_diag")
+perf_vacfull_diag_rf <- func_agg_met(testing_df_list_rf, criteria = "vaccination", criteria_fil = "Full", cols_comp = "pred_diag")
+perf_vacboost_diag_rf <- func_agg_met(testing_df_list_rf, criteria = "vaccination", criteria_fil = "Booster", cols_comp = "pred_diag")
+
+# Compute the performance metrics of model with viral load at diagnosis and viral load at day 2 after diagnosis which aggregate with different scenario
+perf_com3_add2_rf <- func_agg_met(testing_df_list_rf, criteria = "comorbidity", criteria_fil = ">=3", cols_comp = "pred_add2")
+perf_com12_add2_rf <- func_agg_met(testing_df_list_rf, criteria = "comorbidity", criteria_fil = "1-2", cols_comp = "pred_add2")
+perf_age60_add2_rf <- func_agg_met(testing_df_list_rf, criteria = "age", criteria_fil = "60-79", cols_comp = "pred_add2")
+perf_age80_add2_rf <- func_agg_met(testing_df_list_rf, criteria = "age", criteria_fil = ">=80", cols_comp = "pred_add2")
+perf_vacfull_add2_rf <- func_agg_met(testing_df_list_rf, criteria = "vaccination", criteria_fil = "Full", cols_comp = "pred_add2")
+perf_vacboost_add2_rf <- func_agg_met(testing_df_list_rf, criteria = "vaccination", criteria_fil = "Booster", cols_comp = "pred_add2")
+
+# Compute the performance metrics of model with viral load at diagnosis and viral load at day 1 after diagnosis which aggregate with different scenario
+perf_com3_add3_rf <- func_agg_met(testing_df_list_rf, criteria = "comorbidity", criteria_fil = ">=3", cols_comp = "pred_add3")
+perf_com12_add3_rf <- func_agg_met(testing_df_list_rf, criteria = "comorbidity", criteria_fil = "1-2", cols_comp = "pred_add3")
+perf_age60_add3_rf <- func_agg_met(testing_df_list_rf, criteria = "age", criteria_fil = "60-79", cols_comp = "pred_add3")
+perf_age80_add3_rf <- func_agg_met(testing_df_list_rf, criteria = "age", criteria_fil = ">=80", cols_comp = "pred_add3")
+perf_vacfull_add3_rf <- func_agg_met(testing_df_list_rf, criteria = "vaccination", criteria_fil = "Full", cols_comp = "pred_add3")
+perf_vacboost_add3_rf <- func_agg_met(testing_df_list_rf, criteria = "vaccination", criteria_fil = "Booster", cols_comp = "pred_add3")
+
+com3_onset_df_rf <- met_sum_func(perf_com3_onset_rf)
+com3_onset_sum_rf <- met_cic_func(com3_onset_df_rf, mod_name = "onset_com3")
+
+com12_onset_df_rf <- met_sum_func(perf_com12_onset_rf)
+com12_onset_sum_rf <- met_cic_func(com12_onset_df_rf, mod_name = "onset_com12")
+
+age80_onset_df_rf <- met_sum_func(perf_age80_onset_rf)
+age80_onset_sum_rf <- met_cic_func(age80_onset_df_rf, mod_name = "onset_age80")
+
+age60_onset_df_rf <- met_sum_func(perf_age60_onset_rf)
+age60_onset_sum_rf <- met_cic_func(age60_onset_df_rf, mod_name = "onset_age60")
+
+vacfull_onset_df_rf <- met_sum_func(perf_vacfull_onset_rf)
+vacfull_onset_sum_rf <- met_cic_func(vacfull_onset_df_rf, mod_name = "onset_vacfull")
+
+vacboost_onset_df_rf <- met_sum_func(perf_vacboost_onset_rf)
+vacboost_onset_sum_rf <- met_cic_func(vacboost_onset_df_rf, mod_name = "onset_vacboost")
+
+com3_diag_df_rf <- met_sum_func(perf_com3_diag_rf)
+com3_diag_sum_rf <- met_cic_func(com3_diag_df_rf, mod_name = "diag_com3")
+
+com12_diag_df_rf <- met_sum_func(perf_com12_diag_rf)
+com12_diag_sum_rf <- met_cic_func(com12_diag_df_rf, mod_name = "diag_com12")
+
+age80_diag_df_rf <- met_sum_func(perf_age80_diag_rf)
+age80_diag_sum_rf <- met_cic_func(age80_diag_df_rf, mod_name = "diag_age80")
+
+age60_diag_df_rf <- met_sum_func(perf_age60_diag_rf)
+age60_diag_sum_rf <- met_cic_func(age60_diag_df_rf, mod_name = "diag_age60")
+
+vacfull_diag_df_rf <- met_sum_func(perf_vacfull_diag_rf)
+vacfull_diag_sum_rf <- met_cic_func(vacfull_diag_df_rf, mod_name = "diag_vacfull")
+
+vacboost_diag_df_rf <- met_sum_func(perf_vacboost_diag_rf)
+vacboost_diag_sum_rf <- met_cic_func(vacboost_diag_df_rf, mod_name = "diag_vacboost")
+
+com3_add2_df_rf <- met_sum_func(perf_com3_add2_rf)
+com3_add2_sum_rf <- met_cic_func(com3_add2_df_rf, mod_name = "add2_com3")
+
+com12_add2_df_rf <- met_sum_func(perf_com12_add2_rf)
+com12_add2_sum_rf <- met_cic_func(com12_add2_df_rf, mod_name = "add2_com12")
+
+age80_add2_df_rf <- met_sum_func(perf_age80_add2_rf)
+age80_add2_sum_rf <- met_cic_func(age80_add2_df_rf, mod_name = "add2_age80")
+
+age60_add2_df_rf <- met_sum_func(perf_age60_add2_rf)
+age60_add2_sum_rf <- met_cic_func(age60_add2_df_rf, mod_name = "add2_age60")
+
+vacfull_add2_df_rf <- met_sum_func(perf_vacfull_add2_rf)
+vacfull_add2_sum_rf <- met_cic_func(vacfull_add2_df_rf, mod_name = "add2_vacfull")
+
+vacboost_add2_df_rf <- met_sum_func(perf_vacboost_add2_rf)
+vacboost_add2_sum_rf <- met_cic_func(vacboost_add2_df_rf, mod_name = "add2_vacboost")
+
+com3_add3_df_rf <- met_sum_func(perf_com3_add3_rf)
+com3_add3_sum_rf <- met_cic_func(com3_add3_df_rf, mod_name = "add3_com3")
+
+com12_add3_df_rf <- met_sum_func(perf_com12_add3_rf)
+com12_add3_sum_rf <- met_cic_func(com12_add3_df_rf, mod_name = "add3_com12")
+
+age80_add3_df_rf <- met_sum_func(perf_age80_add3_rf)
+age80_add3_sum_rf <- met_cic_func(age80_add3_df_rf, mod_name = "add3_age80")
+
+age60_add3_df_rf <- met_sum_func(perf_age60_add3_rf)
+age60_add3_sum_rf <- met_cic_func(age60_add3_df_rf, mod_name = "add3_age60")
+
+vacfull_add3_df_rf <- met_sum_func(perf_vacfull_add3_rf)
+vacfull_add3_sum_rf <- met_cic_func(vacfull_add3_df_rf, mod_name = "add3_vacfull")
+
+vacboost_add3_df_rf <- met_sum_func(perf_vacboost_add3_rf)
+vacboost_add3_sum_rf <- met_cic_func(vacboost_add3_df_rf, mod_name = "add3_vacboost")
+
+com3_df_rf <- dplyr::bind_rows(com3_onset_sum_rf, com3_diag_sum_rf, com3_add2_sum_rf, com3_add3_sum_rf)
+com12_df_rf <- dplyr::bind_rows(com12_onset_sum_rf, com12_diag_sum_rf, com12_add2_sum_rf, com12_add3_sum_rf)
+age80_df_rf <- dplyr::bind_rows(age80_onset_sum_rf, age80_diag_sum_rf, age80_add2_sum_rf, age80_add3_sum_rf)
+age60_df_rf <- dplyr::bind_rows(age60_onset_sum_rf, age60_diag_sum_rf, age60_add2_sum_rf, age60_add3_sum_rf)
+vacfull_df_rf <- dplyr::bind_rows(vacfull_onset_sum_rf, vacfull_diag_sum_rf, vacfull_add2_sum_rf, vacfull_add3_sum_rf)
+vacboost_df_rf <- dplyr::bind_rows(vacboost_onset_sum_rf, vacboost_diag_sum_rf, vacboost_add2_sum_rf, vacboost_add3_sum_rf)
+
+agg_df_rf <- dplyr::bind_rows(com3_df_rf, com12_df_rf, age80_df_rf, age60_df_rf, vacfull_df_rf, vacboost_df_rf) %>%
+  mutate(scenario = case_when(
+    str_ends(models, "_com3") ~ "Comorbidity >= 3",
+    str_ends(models, "_com12") ~ "Comorbidity 1-2",
+    str_ends(models, "_age80") ~ "Age >= 80",
+    str_ends(models, "_age60") ~ "Age 60-79",
+    str_ends(models, "_vacfull") ~ "Vaccination 2 dose",
+    str_ends(models, "_vacboost") ~ "Vaccination 3 dose"
+  ),
+  scenario = factor(scenario, levels = c("Comorbidity 1-2", "Comorbidity >= 3", "Age 60-79", "Age >= 80", "Vaccination 2 dose", "Vaccination 3 dose")),
+  model_sce = case_when(
+    str_starts(models, "onset_") ~ "Onset",
+    str_starts(models, "diag_") ~ "Diagnosis",
+    str_starts(models, "add2_") ~ "Diagnosis + day 2 post diagnosis",
+    str_starts(models, "add3_") ~ "Diagnosis + day 1 post diagnosis"
+  ),
+  model_sce = factor(model_sce, levels = c("Onset", "Diagnosis", "Diagnosis + day 1 post diagnosis", "Diagnosis + day 2 post diagnosis")))
+```
+
+```{r}
+sens_onset <- as.numeric(model_perf_comp_rf %>% filter(models == "Onset only" & Metrics == "Sensitivity") %>% select(estimate))
+sens_diag <- as.numeric(model_perf_comp_rf %>% filter(models == "Diagnosis only" & Metrics == "Sensitivity") %>% select(estimate))
+sens_add2 <- as.numeric(model_perf_comp_rf %>% filter(models == "Diagnosis + Day 2 post diagnosis" & Metrics == "Sensitivity") %>% select(estimate))
+sens_add3 <- as.numeric(model_perf_comp_rf2 %>% filter(models == "Diagnosis + Day 1 post diagnosis" & Metrics == "Sensitivity") %>% select(estimate))
+
+agg_df2_rf <- agg_df_rf %>%
+  mutate(sens_diff = case_when(
+    model_sce == "Onset" & Metrics == "Sensitivity" ~ round((estimate - sens_onset), 4),
+    model_sce == "Diagnosis" & Metrics == "Sensitivity" ~ round((estimate - sens_diag), 4),
+    model_sce == "Diagnosis + day 1 post diagnosis" & Metrics == "Sensitivity" ~ round((estimate - sens_add3), 4),
+    model_sce == "Diagnosis + day 2 post diagnosis" & Metrics == "Sensitivity" ~ round((estimate - sens_add2), 4)
+  )) %>%
+  filter(Metrics == "Sensitivity") %>%
+  mutate(
+    lower_plot = ifelse(lower < 65, 65, lower),
+    lower_flag = lower < 65
+  )
+```
+
+## Figure 4D
+```{r, Figure 4D_diag}
+fig4d_rf <- ggplot(data = agg_df2_rf %>% filter(Metrics == "Sensitivity" & model_sce != "Onset + day 2") %>%
+                    mutate(model_sce = case_when(model_sce == "Diagnosis + day 2 post diagnosis" ~ "Diagnosis + day 2",
+                                                 model_sce == "Diagnosis + day 1 post diagnosis" ~ "Diagnosis + day 1",
+                                                 TRUE ~ model_sce),
+                           model_sce = factor(model_sce, levels = c("Onset", "Diagnosis", "Diagnosis + day 1", "Diagnosis + day 2"))),
+                  aes(x = factor(scenario), y = estimate, fill = model_sce)) +
+  geom_bar(position = position_dodge(0.8), stat = "identity", width = 0.8) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), linewidth = 1.2, width = 0.3, color = "black", position = position_dodge(0.8)) +
+  #geom_text(aes(x = scenario, y = upper + 0.5, label = paste0("Diff \n", round(sens_diff, 2), "%"), color = model_sce), size = rel(4), vjust = 0, position = position_dodge(width = 0.8)) +
+  scale_x_discrete(labels = function(x) {
+    x <- gsub(">=", "≥", x)                    
+    x <- sub("\\s+(?=(?:≥|\\d))", "\n", x, perl = TRUE)
+    x
+  }) +
+  scale_y_continuous(breaks = seq(60, 100, 10)) +
+  coord_cartesian(ylim = c(60, 100)) +
+  scale_fill_manual(name = "", values = c("Onset" = "#0072B2", "Diagnosis" = "#BDBDBD", "Diagnosis + day 1" = "#5F9AFB", "Diagnosis + day 2" = "#CC79A7")) +
+  scale_color_manual(name = "", values = c("Onset" = "#0072B2", "Diagnosis" = "#BDBDBD", "Diagnosis + day 1" = "#5F9AFB", "Diagnosis + day 2" = "#CC79A7")) +
+  ylab("Sensitivity (%)") +
+  labs(fill = "Scenario") +
+  theme_classic(base_family = "Helvetica") +
+  theme(axis.text = element_text(color = "black"),
+        axis.text.x = element_text(vjust = 0.5, hjust = 0.5, face = "bold", size = rel(3)),
+        axis.text.y = element_text(face = "bold", size = rel(3)),
+        axis.line = element_line(color = "black"),
+        strip.text.x = element_text(vjust = 0.5, face = "bold"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position = "top",
+        legend.box = "horizontal",
+        legend.text = element_text(size = rel(4)),
+        #legend.title = element_text(size = rel(4)),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size = rel(4))
+        )
+fig4d_rf
+```
+
+# Saving all data in this session
+```{r, Saving RData file}
+path <- paste0(getwd(), '/seq_model_rf.RData')
+#save.image(file = path)
+```
+
+# Session Info
+```{r, Session Information}
+sessionInfo()
+```

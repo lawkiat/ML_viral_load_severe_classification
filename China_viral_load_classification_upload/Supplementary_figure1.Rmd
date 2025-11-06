@@ -1,0 +1,167 @@
+---
+title: "Supplementary_figure1"
+output: html_document
+---
+
+# Import libraries & environment setup
+```{r, Import libraries}
+library(foreach)
+library(doParallel)
+library(ggplot2)
+library(dplyr)
+library(deSolve)
+library(purrr)
+library(ggpubr)
+```
+
+```{r, Import dataset}
+df <- read.csv("~/cluster_longVL_symptom.csv")
+head(df)
+```
+
+## Setup CPU Clusters
+```{r, Setup CPU clusters}
+num_cores <- parallel::detectCores() - 1
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+```
+
+## Simulate the viral load trajectories based on the Ordinary Differential Equation from the individual parameters
+```{r, TREIV model}
+ode_TREIV <- function(pars){
+  
+  beta <- as.numeric(pars[1])
+  pi <- as.numeric(pars[2])
+  rho <- as.numeric(pars[3])
+  phi <- as.numeric(pars[4])
+  delta <- as.numeric(pars[5])
+  tau <- as.numeric(pars[6])
+  
+  derivs <- function(time, y, pars){
+    with(as.list(c(pars, y)), {
+      
+      dT <- -beta * T * V - phi * I * T + rho * R
+      dR <- phi * I * T - rho * R
+      dE <- beta * T * V - 4 * E
+      dI <- 4 * E - delta * I
+      dV <- pi * I - 15 * V
+        
+      return(list(c(dT, dR, dE, dI, dV)))
+    })
+  }
+  y <- c(T = 10^7, R = 0, E = 1, I = 0, V = 1)
+  
+  times <- round(seq(-tau, -tau + Time, step_size), -log10(step_size))
+  out <- lsoda(y = y, parms = pars, times = times, func = derivs, rtol = tol, atol = tol)
+  out2 <- cbind(Day_since_symp = out[, 1], VL_sim = log10(pmax(out[, 6], tol)))
+  as.data.frame(out2)
+}
+
+#individual fit for TREIV model
+ind_fit_plt <- function(Est){
+  
+  Fit <- list()
+  for(i in 1:nrow(Est)){
+    pars <- c(beta = 10 ^ (Est$log10beta_mode[i]),
+              pi = 10 ^ (Est$log10pi_mode[i]),
+              rho = 10 ^ (Est$log10rho_mode[i]),
+              phi = 10 ^ (Est$log10phi_mode[i]),
+              delta = Est$delta_mode[i],
+              tau = Est$tau_mode[i])
+    fitted <- ode_TREIV(pars)
+
+    hosp_id <- Est$hosp_id[i]
+    Fit[[i]] <- data.frame(hosp_id, fitted)
+  }
+  
+  ind_fit <- map_df(Fit, ~ as.data.frame(.x))
+  
+  return(ind_fit)
+}
+```
+
+```{r, Simulate the individual viral load trajectory}
+#setting
+Time <- 60
+step_size <- 0.1
+tol <- 10^-10
+
+est_VL_list <- foreach(i = 1:nrow(df), .packages = c("purrr", "deSolve", "ggpubr", "dplyr")) %dopar% {
+    pars <- c(beta = 10 ^ (df$log10beta_mode[i]),
+              pi = 10 ^ (df$log10pi_mode[i]),
+              rho = 10 ^ (df$log10rho_mode[i]),
+              phi = 10 ^ (df$log10phi_mode[i]),
+              delta = df$delta_mode[i],
+              tau = df$tau_mode[i])
+    fitted <- ode_TREIV(pars)
+    hospid <- df$hosp_id[i]
+
+    list(hosp_id = hospid, Day_since_symp = fitted$Day_since_symp, VL_sim = fitted$VL_sim)
+}
+
+est_VL_df <- map_dfr(seq_along(est_VL_list), function(i) {
+    est <- est_VL_list[[i]]
+
+    tibble(
+        hosp_id = est$hosp_id,
+        Day_since_symp = est$Day_since_symp,
+        VL_sim = est$VL_sim
+    )
+})
+
+est_VL_full <- as.data.frame(est_VL_df)
+df_temp <- df %>%
+  group_by(hosp_id) %>%
+  slice_head(n = 1) %>%
+  ungroup() %>%
+  select(c(hosp_id, outcome))
+est_VL_full <- est_VL_full %>%
+  left_join(df_temp, by = "hosp_id")
+```
+
+## Stop CPU clusters
+```{r, Stop CPU clusters}
+stopCluster(cl)
+```
+
+## Plotting the individul VL trajectories
+```{r, Visualise the individual simulated viral load}
+id_severe <- unique(df %>% group_by(hosp_id) %>% filter(outcome == "Severe") %>% slice_head(n = 1) %>% ungroup() %>% select(hosp_id)) %>% slice_head(n = 21)
+id_nonsevere <- unique(df %>% group_by(hosp_id) %>% filter(outcome == "Non severe") %>% slice_head(n = 1) %>% ungroup() %>% select(hosp_id)) %>% slice_head(n = 21)
+
+id_list <- c(id_severe$hosp_id, id_nonsevere$hosp_id)
+
+# Generate a list of ggplot objects
+ind_plot <- ggplot() +
+  geom_line(data = est_VL_full %>% filter(hosp_id %in% id_list),aes(x = Day_since_symp, y = VL_sim, color = outcome), lwd = rel(2), alpha = 0.8) +
+  geom_hline(yintercept = log10(10^1.31), color = "dark grey", linewidth = rel(2), linetype = "dashed") +
+  scale_y_continuous(breaks = seq(0, 10, by = 2), limits = c(0, 10)) +
+  scale_colour_manual(name = "Outcome", values = c("Severe" = "#E97132", "Non severe" = "#196B24")) +
+  geom_point(data = df %>% filter(hosp_id %in% id_list), aes(x = Day_since_symptom, y = VL, color = outcome), shape = 16, size = rel(2), alpha = 2) +
+  facet_wrap(~hosp_id, scales = "free_y") +
+  xlab("Time since symptom onset (days)") +
+  ylab("Viral RNA load (log10 copies/mL)") +
+  theme_classic(base_family = "Helvetica") +
+  theme(axis.text = element_text(color = "black"),
+        axis.ticks = element_line(color = "black"),
+        axis.line = element_line(color = "black"),
+        legend.position = "bottom",
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.text.x = element_text(family = "Helvetica", size = rel(2)),
+        axis.text.y = element_text(family = "Helvetica", size = rel(2)),
+        axis.title.x = element_text(family = "Helvetica", size = rel(2)),
+        axis.title.y = element_text(family = "Helvetica", size = rel(2)))
+ind_plot
+```
+
+# Saving all data in this session
+```{r, Saving RData file}
+save.image(file = paste0(getwd(), '/Individual_trajectories_plot.RData'))
+```
+
+# Session information
+```{r, Session information}
+sessionInfo()
+```
