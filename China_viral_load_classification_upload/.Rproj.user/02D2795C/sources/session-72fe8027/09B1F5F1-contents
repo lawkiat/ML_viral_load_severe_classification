@@ -1,0 +1,372 @@
+library(deSolve)
+library(patchwork)
+library(ggplot2)
+library(ggpubr)
+library(ggpattern)
+library(dplyr)
+
+
+setwd("~/Desktop/Papers/Ejima/Severity/Figures/Figure4")
+
+
+load("fig4.RDATA")
+
+
+########################################################################################################
+##################################### Figure4A | Metrics over time #####################################
+########################################################################################################
+
+Fig4A_Sen <- subset(xgb_perf_viz_df_all2,Metrics=="Sensitivity")
+Fig4A_Acc <- subset(xgb_perf_viz_df_all2,Metrics=="Accuracy")
+Fig4A_AUC <- subset(xgb_perf_viz_df_all2,Metrics=="AUROC_value")
+
+lb_A <- 85
+
+fn <- "Fig4A.pdf"
+pdf(fn,width=24,height=14)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+xlabel <- "Time since diagnosis (days)"
+ylabel <- "Metrics (%)"
+pnl_4A <- ggplot() +
+  geom_bar(data=Fig4A_Sen, aes(x=variable, y=pmax(estimate-lb_A,0)), fill="#348EC2", position="dodge", stat="identity", width = 0.6) + 
+  geom_errorbar(data=Fig4A_Sen, aes(x=variable, ymin=pmax(lower-lb_A,0), ymax=pmax(upper-lb_A,0)), width = 0.3, position = position_dodge(0.6), linewidth=1.0) +
+  
+  geom_point(data=Fig4A_Acc, aes(x=variable, y=pmax(estimate-lb_A,0)), color="#FA766E", size=7) + 
+  geom_line(data=Fig4A_Acc, aes(x=variable, y=pmax(estimate-lb_A,0)), color="#FA766E", linewidth=2, linetype="dashed") + 
+  
+  geom_point(data=Fig4A_AUC, aes(x=variable, y=pmax(estimate-lb_A,0)), color="#FFC001", size=7) + 
+  geom_line(data=Fig4A_AUC, aes(x=variable, y=pmax(estimate-lb_A,0)), color="#FFC001", linewidth=2, linetype="solid") + 
+
+  scale_x_continuous(breaks=seq(0,100-lb_A,by=1)) +
+  scale_y_continuous(
+    limits = c(0, 100-lb_A),
+    breaks  = seq(0, 100-lb_A, by = 5),
+    labels  = function(b) sprintf("%d", b + lb_A)) +
+  xlab(xlabel) +
+  ylab(ylabel) +
+  theme(plot.title = element_text(colour = "black", size=36),
+        axis.text.x = element_text(colour = "black"),
+        axis.text.y = element_text(colour = "black"),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_line(colour = "black"),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position='none',
+        axis.title.x = element_text(colour = "black"),
+        axis.title.y = element_text(colour = "black"))
+print( pnl_4A )
+dev.off()
+
+
+
+
+#######################################################################################################################
+##################################### Figure4B | Comparison between distributions #####################################
+#######################################################################################################################
+
+# Fig4B_Sen <- rbind(Fig4A_Sen[0+1,],
+#                    Fig4A_Sen[1+1,],
+#                    Fig4A_Sen[2+1,],
+#                    Fig4A_Sen[5+1,])
+# Fig4B_Sen$variable <- as.character(Fig4B_Sen$variable)
+# 
+# sig_df <- data.frame(
+#   group1 = c("0","0","0"),
+#   group2 = c("1","2","5"),
+#   y.position = c(8.6,9.0,9.4),
+#   label = c("NS", "NS", "NS") 
+# )
+# 
+# 
+# fn <- "Fig4B.pdf"
+# pdf(fn,width=20,height=14)
+# theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+# xlabel <- "Time since symptom onset (days)"
+# ylabel <- "Sensitivity (%)"
+# pnl_4B <- ggplot() +
+#   geom_bar(data=Fig4B_Sen, aes(x=variable, y=pmax(estimate-90,0)), fill="#5F9AFB", position="dodge", stat="identity", width = 0.6) + 
+#   geom_errorbar(data=Fig4B_Sen, aes(x=variable, ymin=pmax(lower-90,0), ymax=pmax(upper-90,0)), width = 0.3, position = position_dodge(0.6), size=1.0) +
+#   stat_pvalue_manual(
+#     sig_df,
+#     label = "label",
+#     xmin  = "group1",
+#     xmax  = "group2",
+#     y.position  = "y.position",
+#     tip.length  = 0.01,
+#     bracket.size = 1,
+#     size = 10
+#   ) +
+#   scale_x_discrete(labels=c("0","1","2","5")) +
+#   scale_y_continuous(
+#     limits = c(0, 10),
+#     breaks  = seq(0, 10, by = 2),
+#     labels  = function(b) sprintf("%d", b + 90),
+#     expand  = c(0, 0)
+#   ) +
+#   xlab(xlabel) +
+#   ylab(ylabel) +
+#   theme(plot.title = element_text(colour = "black", size=36),
+#         axis.text.x = element_text(colour = "black"),
+#         axis.text.y = element_text(colour = "black"),
+#         axis.ticks.x = element_blank(),
+#         axis.ticks.y = element_line(colour = "black"),
+#         axis.line = element_line(colour = "black"),
+#         panel.grid.major.x = element_blank(),
+#         panel.grid.major.y = element_blank(),
+#         panel.grid.minor = element_blank(),
+#         panel.background = element_blank(),
+#         legend.position='none',
+#         axis.title.x = element_text(colour = "black"),
+#         axis.title.y = element_text(colour = "black"))
+# print( pnl_4B )
+# dev.off()
+
+##################################### 1) Estimated gamma distribution of onset-to-severe using severe cases in this study
+s <- 1.3936628 # shape
+r <- 0.1892671 # rate
+
+Gamma_mean <- s/r
+Gamma_median <- qgamma(0.5, shape = s, rate = r)
+
+##################################### 2) Lognormal distribution of onset-to-diagnosis from Shim et al
+mu <- 3.12
+sigma <- 3.22
+
+Shim_lnorm <- data.frame(estimate=c(log(mu)-(log(1+(sigma/mu)^2))/2,sqrt(log(1+(sigma/mu)^2))))
+
+Shim_lnorm_mean <- exp(Shim_lnorm$estimate[1] + (1/2)*Shim_lnorm$estimate[2]^2)
+Shim_lnorm_median <- qlnorm(0.5, meanlog = Shim_lnorm$estimate[1], sdlog = Shim_lnorm$estimate[2])
+
+shift <- 2
+
+fn <- "Fig4B.pdf"
+pdf(fn,width=24,height=14)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+xlabel <- "Time since symptom onset (days)"
+ylabel <- "Density"
+pnl_4B <- ggplot() +
+  
+  stat_function(fun = function(x) dgamma(x, shape = s, rate = r), 
+                linewidth = 2.5,
+                color = "black",
+                n=5000) +
+  stat_function(fun = function(x) dgamma(x, shape = s, rate = r), 
+                geom = "area",
+                fill = "black",
+                alpha = 0.2,
+                n=5000) +
+  geom_vline(xintercept = Gamma_mean, linetype = "dashed", linewidth = 3, color = "black") +
+  
+  stat_function(fun = function(x) ifelse(x <= shift, 0, dlnorm(x - shift, meanlog = Shim_lnorm$estimate[1], sdlog = Shim_lnorm$estimate[2])), 
+                linewidth = 2.5,
+                color = "#002060",
+                n=5000) +
+  stat_function(fun = function(x) ifelse(x <= shift, 0, dlnorm(x - shift, meanlog = Shim_lnorm$estimate[1], sdlog = Shim_lnorm$estimate[2])), 
+                geom = "area",
+                fill = "#002060",
+                alpha = 0.2,
+                n=5000) +
+  geom_vline(xintercept = Shim_lnorm_mean + shift, linetype = "dashed", linewidth = 3, color = "#002060") +
+  
+  scale_x_continuous(limits=c(0,14), breaks=seq(0,14,by=2)) +
+  scale_y_continuous(limits=c(0,0.4), breaks=seq(0,0.4,by=0.1)) +
+  
+  xlab(xlabel) +
+  ylab(ylabel) +
+  theme(plot.title = element_text(colour = "black", size=36),
+        axis.text.x = element_text(colour = "black"),
+        axis.text.y = element_text(colour = "black"),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_line(colour = "black"),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position='none',
+        axis.title.x = element_text(colour = "black"),
+        axis.title.y = element_text(colour = "black"))
+print( pnl_4B )
+dev.off()
+
+
+
+
+##########################################################################################################
+##################################### Figure4C | Different scenarios #####################################
+##########################################################################################################
+
+Fig4C_Sen <- subset(model_perf_comp2, Metrics=="Sensitivity")
+Fig4C_Acc <- subset(model_perf_comp2, Metrics=="Accuracy")
+Fig4C_AUC <- subset(model_perf_comp2, Metrics=="AUROC")
+
+Fig4C_Sen$group <- c("0","1","3","2")
+Fig4C_Acc$group <- c("0","1","3","2")
+Fig4C_AUC$group <- c("0","1","3","2")
+
+lb_C <- 60
+
+sig_df <- data.frame(
+  group1 = c("0","1","2","1","0","0"),
+  group2 = c("1","2","3","3","2","3"),
+  y.position = c(14+30,16+30,18+30,20+30,22+30,24+30),
+  label = c("****","****","","****","","") 
+)
+
+text_df_AUC <- Fig4C_Sen %>%
+  dplyr::transmute(group, y_top = pmin(pmax(upper - lb_C, 0), 50)) %>%  # 에러바 윗끝(내부좌표), 상한 캡핑
+  dplyr::left_join(
+    Fig4C_AUC %>% dplyr::select(group, estimate),            # <- 텍스트 내용(다른 df)
+    by = "group"
+  ) %>%
+  dplyr::mutate(
+    label = sprintf("AUROC = %.1f%%", estimate),      # 원하면 포맷 바꿔도 됨
+    y = y_top + 3.3
+  )
+
+text_df_Acc <- Fig4C_Sen %>%
+  dplyr::transmute(group, y_top = pmin(pmax(upper - lb_C, 0), 50)) %>%  # 에러바 윗끝(내부좌표), 상한 캡핑
+  dplyr::left_join(
+    Fig4C_Acc %>% dplyr::select(group, estimate),            # <- 텍스트 내용(다른 df)
+    by = "group"
+  ) %>%
+  dplyr::mutate(
+    label = sprintf("Accuracy = %.1f%%", estimate),      # 원하면 포맷 바꿔도 됨
+    y = y_top + 1.3
+  )
+
+
+fn <- "Fig4C.pdf"
+pdf(fn,width=24,height=14)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+xlabel <- ""
+ylabel <- "Sensitivity (%)"
+pnl_4C <- ggplot() +
+  geom_bar(data=Fig4C_Sen, aes(x=group, y=pmax(estimate-lb_C,0), fill = group), position="dodge", stat="identity", width = 0.4) +
+  scale_fill_manual(values=c("#D86ECC","#348EC2","#0070C0","#002060")) +
+  geom_errorbar(data=Fig4C_Sen, aes(x=group, ymin=pmax(lower-lb_C,0), ymax=pmax(upper-lb_C,0)), width = 0.2, position = position_dodge(0.4), size=1.0) +
+  stat_pvalue_manual(
+    sig_df,
+    label = "label",
+    xmin  = "group1",
+    xmax  = "group2",
+    y.position  = "y.position",
+    tip.length  = 0.01,
+    bracket.size = 1,
+    size = 10
+  ) +
+  scale_x_discrete(labels=c("Onset only","Diagnosis only","Diagnosis + Day 1","Diagnosis + Day 2"), limits=c("0","1","2","3")) +
+  scale_y_continuous(
+    limits = c(0, 100-lb_C+15),
+    breaks  = seq(0, 100-lb_C, by = 10),
+    labels  = function(b) sprintf("%d", b + lb_C)) +
+  geom_text(
+    data = text_df_AUC,
+    aes(x = group, y = y, label = label),
+    position = position_dodge(0.6), vjust = 0, size = 10, color = "#FFC001"
+  ) +
+  geom_text(
+    data = text_df_Acc,
+    aes(x = group, y = y, label = label),
+    position = position_dodge(0.6), vjust = 0, size = 10, color = "#FA766E"
+  ) +
+  xlab(xlabel) +
+  ylab(ylabel) +
+  theme(plot.title = element_text(colour = "black", size=36),
+        axis.text.x = element_text(colour = "black"),
+        axis.text.y = element_text(colour = "black"),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_line(colour = "black"),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position='none',
+        axis.title.x = element_text(colour = "black"),
+        axis.title.y = element_text(colour = "black"))
+print( pnl_4C )
+dev.off()
+
+
+
+
+###########################################################################################################
+##################################### Figure4D | Different categories #####################################
+###########################################################################################################
+
+Fig4D_Sen <- subset(agg_df2, Metrics=="Sensitivity")
+Fig4D_Acc <- subset(agg_df2, Metrics=="Accuracy")
+Fig4D_AUC <- subset(agg_df2, Metrics=="AUROC")
+
+Fig4D_Sen <- Fig4D_Sen[Fig4D_Sen$model_sce != "Onset + day 2",]
+Fig4D_Sen$group <- rep(c("0","1","3","2"),times=6)
+
+lb_D <- 60
+
+fn <- "Fig4D.pdf"
+pdf(fn,width=24,height=14)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+xlabel <- ""
+ylabel <- "Sensitivity (%)"
+pnl_4D <- ggplot() +
+  geom_bar(data=Fig4D_Sen, aes(x=factor(scenario), y=pmax(estimate-lb_D,0), fill=factor(model_sce)), position="dodge", stat="identity", width = 0.6) +
+  scale_fill_manual(values=c("#D86ECC","#348EC2","#0070C0","#002060")) +
+  geom_errorbar(data=Fig4D_Sen, aes(x=factor(scenario), ymin=pmax(lower-lb_D,0), ymax=pmax(upper-lb_D,0), group=factor(model_sce)), width = 0.2, position = position_dodge(0.6), size=1.0) +
+  scale_x_discrete(labels = function(x) {
+    x <- gsub(">=", "≥", x)                    
+    x <- sub("\\s+(?=(?:≥|\\d))", "\n", x, perl = TRUE)
+    x
+  }) +
+  scale_y_continuous(
+    limits = c(0, 100-lb_D+15),
+    breaks  = seq(0, 100-lb_D, by = 10),
+    labels  = function(b) sprintf("%d", b + lb_C)) +
+  # geom_text(
+  #   data = text_df_AUC,
+  #   aes(x = group, y = y, label = label),
+  #   position = position_dodge(0.6), vjust = 0, size = 10, color = "#FFC001"
+  # ) +
+  # geom_text(
+  #   data = text_df_Acc,
+  #   aes(x = group, y = y, label = label),
+  #   position = position_dodge(0.6), vjust = 0, size = 10, color = "#FA766E"
+  # ) +
+  xlab(xlabel) +
+  ylab(ylabel) +
+  theme(plot.title = element_text(colour = "black", size=36),
+        axis.text.x = element_text(colour = "black"),
+        axis.text.y = element_text(colour = "black"),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_line(colour = "black"),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position='none',
+        axis.title.x = element_text(colour = "black"),
+        axis.title.y = element_text(colour = "black"))
+print( pnl_4D )
+dev.off()
+
+
+
+
+
+###################################################################################
+##################################### Figure4 #####################################
+###################################################################################
+fn <- "Figure4.pdf"
+pdf(fn,width=24*2,height=14*2)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+fig4 <- ggarrange(pnl_4A,pnl_4B,pnl_4C,pnl_4D,
+                  nrow=2,ncol=2,align="hv",widths=c(1,1))
+print( fig4 )
+dev.off()
+
+
+
