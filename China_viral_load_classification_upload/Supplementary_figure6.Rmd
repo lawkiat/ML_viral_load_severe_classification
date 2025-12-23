@@ -1211,7 +1211,7 @@ sig_df <- data.frame(
 text_df_AUC <- SF6B_Sen %>%
   dplyr::transmute(group, y_top = pmin(pmax(upper - lb_C, 0), 50)) %>%
   dplyr::left_join(
-    Fig4C_AUC %>% dplyr::select(group, estimate),
+    SF6B_AUC %>% dplyr::select(group, estimate),
     by = "group"
   ) %>%
   dplyr::mutate(
@@ -1222,13 +1222,62 @@ text_df_AUC <- SF6B_Sen %>%
 text_df_Acc <- SF6B_Sen %>%
   dplyr::transmute(group, y_top = pmin(pmax(upper - lb_C, 0), 50)) %>%
   dplyr::left_join(
-    Fig4C_Acc %>% dplyr::select(group, estimate),
+    SF6B_Acc %>% dplyr::select(group, estimate),
     by = "group"
   ) %>%
   dplyr::mutate(
     label = sprintf("Accuracy = %.1f%%", estimate),
     y = y_top + 1.3
   )
+
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+xlabel <- ""
+ylabel <- "Sensitivity (%)"
+pnl_sf6b <- ggplot() +
+  geom_bar(data = SF6B_Sen, aes(x = group, y = pmax(estimate - lb_C, 0), fill = group), position = "dodge", stat = "identity", width = 0.4) +
+  scale_fill_manual(values=c("#D86ECC","#348EC2","#0070C0","#002060")) +
+  geom_errorbar(data = SF6B_Sen, aes(x = group, ymin = pmax(lower - lb_C, 0), ymax = pmax(upper - lb_C, 0)), width = 0.2, position = position_dodge(0.4), size = 1.0) +
+  stat_pvalue_manual(
+    sig_df,
+    label = "label",
+    xmin  = "group1",
+    xmax  = "group2",
+    y.position  = "y.position",
+    tip.length  = 0.01,
+    bracket.size = 1,
+    size = 10
+  ) +
+  scale_x_discrete(labels = c("Onset only", "Diagnosis only", "Diagnosis + Day 1", "Diagnosis + Day 2"), limits = c("0", "1", "2", "3")) +
+  scale_y_continuous(
+    limits = c(0, 100 - lb_C + 15),
+    breaks  = seq(0, 100 - lb_C, by = 10),
+    labels  = function(b) sprintf("%d", b + lb_C)) +
+  geom_text(
+    data = text_df_AUC,
+    aes(x = group, y = y, label = label),
+    position = position_dodge(0.6), vjust = 0, size = 10, color = "#FFC001"
+  ) +
+  geom_text(
+    data = text_df_Acc,
+    aes(x = group, y = y, label = label),
+    position = position_dodge(0.6), vjust = 0, size = 10, color = "#FA766E"
+  ) +
+  xlab(xlabel) +
+  ylab(ylabel) +
+  theme(plot.title = element_text(colour = "black", size=36),
+        axis.text.x = element_text(colour = "black"),
+        axis.text.y = element_text(colour = "black"),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_line(colour = "black"),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        legend.position='none',
+        axis.title.x = element_text(colour = "black"),
+        axis.title.y = element_text(colour = "black"))
+pnl_sf6b
 ```
 
 # Comparison of sensitivity with features aggregated
@@ -1587,6 +1636,13 @@ fig4d_rf <- ggplot() +
         axis.title.x = element_text(colour = "black"),
         axis.title.y = element_text(colour = "black"))
 fig4d_rf
+```
+
+```{r, SF6}
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+sf6 <- ggarrange(fig4a_rf_diag, pnl_sf6b, fig4d_rf,
+                  nrow = 2, ncol = 2, widths = c(1, 1))
+sf6
 ```
 
 # Saving all data in this session
