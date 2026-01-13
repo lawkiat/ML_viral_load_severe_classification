@@ -1798,9 +1798,9 @@ xgb_vlsymp_only_list <- foreach(i = 1: 100, .packages = c("dplyr", "xgboost", "p
 
     # Convert categorical variables to numeric format using one-hot encoding
     train_x_vlsymp <- model.matrix(outcome ~ ., data = train_df)
-    train_x_vlsymp <- train_x_vlsymp[, -1]
+    train_x_vlsymp <- train_x_vlsymp[, -1, drop = FALSE]
     test_x_vlsymp <- model.matrix(outcome ~ ., data = test_df)
-    test_x_vlsymp <- test_x_vlsymp[, -1]
+    test_x_vlsymp <- test_x_vlsymp[, -1, drop = FALSE]
 
     # Convert data to XGBoost matrix format
     dtrain_vlsymp <- xgb.DMatrix(data = train_x_vlsymp, label = as.numeric(as.factor(train_df$outcome)) - 1)
@@ -1944,9 +1944,9 @@ xgb_vldiag_only_list <- foreach(i = 1: 100, .packages = c("dplyr", "xgboost", "p
 
     # Convert categorical variables to numeric format using one-hot encoding
     train_x_vldiag <- model.matrix(outcome ~ ., data = train_df)
-    train_x_vldiag <- train_x_vldiag[, -1]
+    train_x_vldiag <- train_x_vldiag[, -1, drop = FALSE]
     test_x_vldiag <- model.matrix(outcome ~ ., data = test_df)
-    test_x_vldiag <- test_x_vldiag[, -1]
+    test_x_vldiag <- test_x_vldiag[, -1, drop = FALSE]
 
     # Convert data to XGBoost matrix format
     dtrain_vldiag <- xgb.DMatrix(data = train_x_vldiag, label = as.numeric(as.factor(train_df$outcome)) - 1)

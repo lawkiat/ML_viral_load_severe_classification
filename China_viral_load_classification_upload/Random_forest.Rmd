@@ -1729,7 +1729,8 @@ rf_vlsymp_only_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest"
     shp_rf_vlsymp$X <- shp_rf_vlsymp$X %>% rename("Viral load at symptom onset" = "vl_sim_symp")
     colnames(shp_rf_vlsymp$S) <- c("Viral load at symptom onset")
 
-    list(model = rf_vlsymp, confusion_matrix = cfm_rf_vlsymp, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+    list(#model = rf_vlsymp, 
+         confusion_matrix = cfm_rf_vlsymp, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
           sensitivity = sensitivity_rf_vlsymp, specificity = specificity_rf_vlsymp, precision = prec_rf_vlsymp,
           F1_score = f1_sc_rf_vlsymp, AUC_value = auc_val_rf_vlsymp, SHAP_values = shp_rf_vlsymp, prediction = prediction_rf_vlsymp)
 }
@@ -1867,7 +1868,8 @@ rf_vldiag_only_list <- foreach(i = 1: 100, .packages = c("dplyr", "randomForest"
     shp_rf_vldiag$X <- shp_rf_vldiag$X %>% rename("Viral load at diagnosis" = "vl_sim")
     colnames(shp_rf_vldiag$S) <- c("Viral load at diagnosis")
     
-    list(model = rf_vldiag, confusion_matrix = cfm_rf_vldiag, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
+    list(#model = rf_vldiag, 
+         confusion_matrix = cfm_rf_vldiag, accuracy_training = acc_rf_train, accuracy_testing = acc_rf_test,
           sensitivity = sensitivity_rf_vldiag, specificity = specificity_rf_vldiag, precision = prec_rf_vldiag,
           F1_score = f1_sc_rf_vldiag, AUC_value = auc_val_rf_vldiag, SHAP_values = shp_rf_vldiag, prediction = prediction_rf_vldiag)
 }
