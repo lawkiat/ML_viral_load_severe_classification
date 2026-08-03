@@ -1,0 +1,261 @@
+---
+title: "Figure_3_and_4_and_SF2"
+output: html_document
+---
+
+-----
+Setting environment
+-----
+
+```{r, setting path}
+path <- "~path_to_data_file"
+source(paste0(path, '/plot_func.r'))
+Metric <- read.csv(paste0(path, "/model_performance_SMOTE.csv"))
+Win <- read.csv(paste0(path, "/comp_win_ratio.csv"))
+Metric <- Metric %>%
+  mutate(Model = case_when(
+    Model == "ElasticNet regression" ~ "Elastic Net regression",
+    TRUE ~ Model))
+Win <- Win %>%
+  mutate(Model = case_when(
+    Model == "ElasticNet regression" ~ "Elastic Net regression",
+    TRUE ~ Model))
+Metric
+Win
+```
+
+-----
+Figure3
+-----
+
+```{r, Baseline scenario plots (Model performance)}
+panel_xgb <- perf_plot_func(Metric, "XGBoost", 1)
+panel_lgb <- perf_plot_func(Metric, "LightGBM", 1)
+panel_rf <- perf_plot_func(Metric, "Random Forest", 1)
+
+panel_xgb
+panel_lgb
+panel_rf
+```
+
+```{r, Arrange three linear models into single figure}
+fig3B <- ggarrange(
+  panel_xgb,
+  panel_lgb,
+  panel_rf,
+  nrow = 1,
+  ncol = 3,
+  align = "hv",
+  widths = c(1, 1, 1)
+)
+print(fig3B)
+
+output_dir <- paste0(path, "/Figures")
+
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+fn <- file.path(output_dir, "Figure3B.pdf")
+
+pdf(fn, width = 12 * 3, height = 10)
+theme_set(theme_classic(base_size = 45, base_family = "Helvetica"))
+
+fig3B <- ggarrange(
+  panel_xgb,
+  panel_lgb,
+  panel_rf,
+  nrow = 1,
+  ncol = 3,
+  align = "hv",
+  widths = c(1, 1, 1)
+)
+print(fig3B)
+dev.off()
+```
+
+```{r, Baseline scenario comparison plots (Lolipop plot)}
+fig3C <- loli_plot_func(Win, "tree", 1)
+print(fig3C)
+
+fn <- file.path(output_dir, "Figure3C.pdf")
+
+pdf(fn, width = 36, height = 10)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+
+print(fig3C)
+dev.off()
+```
+
+```{r, Performance metrics of models with VL at diagnosis and days followed}
+panel_xgb2 <- perf_plot_func(Metric, "XGBoost", 2)
+panel_lgb2 <- perf_plot_func(Metric, "LightGBM", 2)
+panel_rf2 <- perf_plot_func(Metric, "Random Forest", 2)
+
+panel_xgb2
+panel_lgb2
+panel_rf2
+```
+
+-----
+Figure 4
+-----
+
+```{r, Arrange three models plots with VL at diagnosis and days followed into a single panel}
+fig4B <- ggarrange(
+  panel_xgb2,
+  panel_lgb2,
+  panel_rf2,
+  nrow = 1,
+  ncol = 3,
+  align = "hv",
+  widths = c(1, 1, 1)
+)
+print(fig4B)
+
+fn <- file.path(output_dir, "FigureSF2C.pdf")
+
+pdf(fn, width = 12 * 3, height = 10)
+theme_set(theme_classic(base_size = 45, base_family = "Helvetica"))
+
+fig4B <- ggarrange(
+  panel_xgb2,
+  panel_lgb2,
+  panel_rf2,
+  nrow = 1,
+  ncol = 3,
+  align = "hv",
+  widths = c(1, 1, 1)
+)
+print(fig4B)
+dev.off()
+```
+
+```{r, VL-based scenario comparison plots (Lolipop plot)}
+fig4C <- loli_plot_func(Win, "tree", 2)
+print(fig4C)
+
+fn <- file.path(output_dir, "Figure4C.pdf")
+
+pdf(fn, width = 36, height = 10)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+
+print(fig4C)
+dev.off()
+```
+
+-----
+Supplementary Figure 2
+-----
+
+```{r, Baseline scenario plots (Model performance)}
+panel_lasso <- perf_plot_func(Metric, "Lasso regression", 1)
+panel_ridge <- perf_plot_func(Metric, "Ridge regression", 1)
+panel_enet <- perf_plot_func(Metric, "Elastic Net regression", 1)
+
+panel_lasso
+panel_ridge
+panel_enet
+```
+
+```{r, Arrange three linear models into single figure}
+panel_A <- ggarrange(
+  panel_lasso,
+  panel_ridge,
+  panel_enet,
+  nrow = 1,
+  ncol = 3,
+  align = "hv",
+  widths = c(1.2, 1.2, 1.2)
+)
+print(panel_A)
+
+output_dir <- paste0(path, "/Figures")
+
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+fn <- file.path(output_dir, "FigureSF2A.pdf")
+
+pdf(fn, width = 12 * 3, height = 10)
+theme_set(theme_classic(base_size = 45, base_family = "Helvetica"))
+
+panel_A <- ggarrange(
+  panel_lasso,
+  panel_ridge,
+  panel_enet,
+  nrow = 1,
+  ncol = 3,
+  align = "hv",
+  widths = c(1, 1, 1)
+)
+print(panel_A)
+dev.off()
+```
+
+```{r, Baseline scenario comparison plots (Lolipop plot)}
+panel_B <- loli_plot_func(Win, "linear", 1)
+print(panel_B)
+
+fn <- file.path(output_dir, "FigureS2B.pdf")
+
+pdf(fn, width = 36, height = 10)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+
+print(panel_B)
+dev.off()
+```
+
+```{r, Performance metrics of models with VL at diagnosis and days followed}
+panel_lasso2 <- perf_plot_func(Metric, "Lasso regression", 2)
+panel_ridge2 <- perf_plot_func(Metric, "Ridge regression", 2)
+panel_enet2 <- perf_plot_func(Metric, "Elastic Net regression", 2)
+
+panel_lasso2
+panel_ridge2
+panel_enet2
+```
+
+```{r, Arrange three models plots with VL at diagnosis and days followed into a single panel}
+panel_C <- ggarrange(
+  panel_lasso2,
+  panel_ridge2,
+  panel_enet2,
+  nrow = 1,
+  ncol = 3,
+  align = "hv",
+  widths = c(1, 1, 1)
+)
+print(panel_C)
+
+fn <- file.path(output_dir, "FigureSF2C.pdf")
+
+pdf(fn, width = 12 * 3, height = 10)
+theme_set(theme_classic(base_size = 45, base_family = "Helvetica"))
+
+panel_C <- ggarrange(
+  panel_lasso2,
+  panel_ridge2,
+  panel_enet2,
+  nrow = 1,
+  ncol = 3,
+  align = "hv",
+  widths = c(1, 1, 1)
+)
+print(panel_C)
+dev.off()
+```
+
+```{r, VL-based scenario comparison plots (Lolipop plot)}
+panel_D <- loli_plot_func(Win, "linear", 2)
+print(panel_D)
+
+fn <- file.path(output_dir, "FigureS2D.pdf")
+
+pdf(fn, width = 36, height = 10)
+theme_set(theme_classic(base_size = 50, base_family = "Helvetica"))
+
+print(panel_D)
+dev.off()
+```
