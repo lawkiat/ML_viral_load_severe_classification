@@ -1,0 +1,135 @@
+********************************************************************************
+*                          Trial1.mlxtran                                      *
+*                          July 21, 2026 at 01:32:00                           *
+*                          Monolix version : 2024R1                            *
+********************************************************************************
+
+
+ESTIMATION OF THE POPULATION PARAMETERS ________________________________________
+
+Fixed Effects ----------------------------     se_sa    rse(%)   P2.5_sa  P97.5_sa
+log10beta_pop     :                  -7.31
+log10phi_pop      :                  -4.87    0.0624      1.28     -4.99     -4.75
+log10rho_pop      :                  -3.41    0.0879      2.58     -3.58     -3.24
+log10pi_pop       :                   2.54    0.0146     0.575      2.51      2.56
+gamma_pop         :                     15
+delta_pop         :                    1.7    0.0461      2.71      1.61      1.79
+beta_delta_lcat_2 :                  0.219       nan         0       nan       nan
+tau_pop           :                   1.22      0.37      30.3     0.698      2.14
+beta_tau_lcat_2   :                  0.378     0.473       125     -0.55      1.31
+
+Standard Deviation of the Random Effects -
+omega_log10phi    :                  0.996    0.0561      5.64     0.892      1.11
+omega_log10rho    :                  0.443     0.068      15.4     0.329     0.595
+omega_log10pi     :                   0.13    0.0104      8.02     0.111     0.152
+omega_delta       :                   0.42    0.0205      4.89     0.382     0.462
+omega_tau         :                  0.656    0.0668      10.2     0.538       0.8
+
+Error Model Parameters -------------------
+a                 :                   1.89    0.0171     0.907      1.85      1.92
+
+Latent Probabilities ---------------------
+plcat_1           :                  0.473       nan         0         0         0
+plcat_2           :                  0.527       nan         0         0         0
+
+Elapsed time (seconds):  4.6e+02
+Exploratory phase iterations:      231 (Autostop)
+Smoothing phase iterations:         95 (Autostop)
+
+ _______________________________________________________________________________
+
+
+
+ESTIMATION OF THE INDIVIDUAL PARAMETERS ________________________________________
+
+
+Estimation of the individual parameters by Conditional Distribution ------------
+                      min            Q1        median            Q3           max  shrinkage(%)
+log10beta :         -7.31         -7.31         -7.31         -7.31         -7.31           nan
+log10phi  :         -6.93         -5.26         -4.85         -4.47         -2.96          43.2
+log10rho  :          -3.6         -3.45         -3.41         -3.37         -2.45          83.5
+log10pi   :          1.94          2.51          2.54          2.57           2.7          59.4
+gamma     :            15            15            15            15            15           nan
+delta     :           0.5          1.81          2.17          2.46          4.23          38.6
+tau       :         0.705          1.39          1.65          2.06          24.6          46.8
+
+Elapsed time (seconds):       39
+Iterations:       73 (Autostop)
+
+ -------------------------------------------------------------------------------
+
+
+Estimation of the individual parameters by Conditional Mode --------------------
+                      min            Q1        median            Q3           max  shrinkage(%)
+log10beta :         -7.31         -7.31         -7.31         -7.31         -7.31           nan
+log10phi  :         -6.93         -5.28         -4.89         -4.48         -2.92          45.9
+log10rho  :         -3.43         -3.41         -3.41         -3.41         -2.41            89
+log10pi   :          1.93          2.52          2.54          2.56          2.65            60
+gamma     :            15            15            15            15            15           nan
+delta     :         0.502          1.65          2.08          2.46          4.12          42.1
+tau       :         0.653          1.22          1.47           1.9          23.2          47.9
+
+Elapsed time (seconds):    1e+02
+
+ -------------------------------------------------------------------------------
+
+ _______________________________________________________________________________
+
+
+
+ESTIMATION OF THE FISHER INFORMATION MATRIX ____________________________________
+
+
+Estimation of the Fisher information matrix by Stochastic Approximation --------
+
+Correlation Matrix :
+     log10phi_pop         1
+     log10rho_pop  -0.06773         1
+      log10pi_pop  0.030228  -0.13931         1
+        delta_pop   -0.2123   0.19439   -0.3214         1
+beta_delta_lcat_2       nan       nan       nan       nan       nan
+          tau_pop   -0.2974  -0.12393 -0.062839  -0.27656       nan         1
+  beta_tau_lcat_2   0.20417   0.15344 -0.092287   0.29987       nan  -0.96981         1
+   omega_log10phi  -0.28325 0.0055293   0.13394  -0.10586       nan     0.209   -0.2352         1
+   omega_log10rho  -0.10969  0.059959 -0.054155   0.18851       nan  -0.14011   0.16521-0.0025146         1
+    omega_log10pi    0.1397   -0.1394   0.64791  -0.42476       nan  0.050339  -0.14311  0.097865 -0.018934         1
+      omega_delta -0.011672  -0.07295  -0.29068   0.57611       nan  -0.12214   0.14417  -0.16515  -0.11684  -0.49102         1
+        omega_tau -0.048473  -0.16814    0.3089  -0.25356       nan   0.67821  -0.80379   0.15978  -0.17716   0.21528  -0.12666         1
+                a  0.038215-0.0033884  -0.01032 -0.090308       nan -0.013366   0.04013 -0.094569 -0.016937 -0.026427 -0.082582 -0.092957         1
+          plcat_1       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan
+          plcat_2       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan       nan
+
+WARNING : Impossible to compute the eigen values of the correlation matrix.
+
+Elapsed time (seconds):  1.4e+02
+Iterations:      200 (Stopped at the maximum number of iterations/Fisher matrix was not correctly estimated)
+
+ -------------------------------------------------------------------------------
+
+ _______________________________________________________________________________
+
+
+
+ESTIMATION OF THE LOG-LIKELIHOOD _______________________________________________
+
+                                                            (is)
+-2 x log-likelihood                       (OFV) :       48533.23
+Akaike Information Criteria               (AIC) :       48561.23
+Corrected Bayesian Information Criteria  (BICc) :       48642.14
+Bayesian Information Criteria             (BIC) :       48636.97
+
+Elapsed time                          (seconds) :         276.75
+CPU time                              (seconds) :         276.00
+MonteCarlo size (is):    10000 (Fixed number of iterations)
+
+
+[Importance Sampling] Standard error        : 2.371
+                      Sampling distribution : T-distribution with 5 degrees of freedom
+
+ _______________________________________________________________________________
+
+DATASET INFORMATION
+Number of individuals: 1652
+Number of observations (VL): 13452
+Number of doses: 0
+
