@@ -1,0 +1,751 @@
+Model,Metric,diff_setup,diff_count,sce1,sce2
+XGBoost,AUPRC value,Total S1 - S2 Balanced,47.0,S1,S2
+LightGBM,AUPRC value,Total S1 - S2 Balanced,51.0,S1,S2
+Random Forest,AUPRC value,Total S1 - S2 Balanced,48.0,S1,S2
+Ridge regression,AUPRC value,Total S1 - S2 Balanced,48.0,S1,S2
+Lasso regression,AUPRC value,Total S1 - S2 Balanced,53.5,S1,S2
+ElasticNet regression,AUPRC value,Total S1 - S2 Balanced,46.5,S1,S2
+XGBoost,AUROC value,Total S1 - S2 Balanced,52.0,S1,S2
+LightGBM,AUROC value,Total S1 - S2 Balanced,58.0,S1,S2
+Random Forest,AUROC value,Total S1 - S2 Balanced,59.0,S1,S2
+Ridge regression,AUROC value,Total S1 - S2 Balanced,53.0,S1,S2
+Lasso regression,AUROC value,Total S1 - S2 Balanced,58.5,S1,S2
+ElasticNet regression,AUROC value,Total S1 - S2 Balanced,54.0,S1,S2
+XGBoost,Precision,Total S1 - S2 Balanced,31.0,S1,S2
+LightGBM,Precision,Total S1 - S2 Balanced,41.5,S1,S2
+Random Forest,Precision,Total S1 - S2 Balanced,32.0,S1,S2
+Ridge regression,Precision,Total S1 - S2 Balanced,54.5,S1,S2
+Lasso regression,Precision,Total S1 - S2 Balanced,56.0,S1,S2
+ElasticNet regression,Precision,Total S1 - S2 Balanced,55.5,S1,S2
+XGBoost,Sensitivity,Total S1 - S2 Balanced,66.5,S1,S2
+LightGBM,Sensitivity,Total S1 - S2 Balanced,56.5,S1,S2
+Random Forest,Sensitivity,Total S1 - S2 Balanced,61.0,S1,S2
+Ridge regression,Sensitivity,Total S1 - S2 Balanced,52.5,S1,S2
+Lasso regression,Sensitivity,Total S1 - S2 Balanced,51.0,S1,S2
+ElasticNet regression,Sensitivity,Total S1 - S2 Balanced,52.0,S1,S2
+XGBoost,Specificity,Total S1 - S2 Balanced,17.5,S1,S2
+LightGBM,Specificity,Total S1 - S2 Balanced,43.0,S1,S2
+Random Forest,Specificity,Total S1 - S2 Balanced,26.0,S1,S2
+Ridge regression,Specificity,Total S1 - S2 Balanced,52.0,S1,S2
+Lasso regression,Specificity,Total S1 - S2 Balanced,54.5,S1,S2
+ElasticNet regression,Specificity,Total S1 - S2 Balanced,54.0,S1,S2
+XGBoost,AUPRC value,Total S1 - S3 Balanced,32.0,S1,S3
+LightGBM,AUPRC value,Total S1 - S3 Balanced,34.5,S1,S3
+Random Forest,AUPRC value,Total S1 - S3 Balanced,35.0,S1,S3
+Ridge regression,AUPRC value,Total S1 - S3 Balanced,27.0,S1,S3
+Lasso regression,AUPRC value,Total S1 - S3 Balanced,28.0,S1,S3
+ElasticNet regression,AUPRC value,Total S1 - S3 Balanced,28.0,S1,S3
+XGBoost,AUROC value,Total S1 - S3 Balanced,32.0,S1,S3
+LightGBM,AUROC value,Total S1 - S3 Balanced,31.0,S1,S3
+Random Forest,AUROC value,Total S1 - S3 Balanced,26.0,S1,S3
+Ridge regression,AUROC value,Total S1 - S3 Balanced,29.0,S1,S3
+Lasso regression,AUROC value,Total S1 - S3 Balanced,21.5,S1,S3
+ElasticNet regression,AUROC value,Total S1 - S3 Balanced,28.0,S1,S3
+XGBoost,Precision,Total S1 - S3 Balanced,29.0,S1,S3
+LightGBM,Precision,Total S1 - S3 Balanced,27.0,S1,S3
+Random Forest,Precision,Total S1 - S3 Balanced,23.5,S1,S3
+Ridge regression,Precision,Total S1 - S3 Balanced,37.0,S1,S3
+Lasso regression,Precision,Total S1 - S3 Balanced,41.5,S1,S3
+ElasticNet regression,Precision,Total S1 - S3 Balanced,41.5,S1,S3
+XGBoost,Sensitivity,Total S1 - S3 Balanced,62.5,S1,S3
+LightGBM,Sensitivity,Total S1 - S3 Balanced,72.0,S1,S3
+Random Forest,Sensitivity,Total S1 - S3 Balanced,53.0,S1,S3
+Ridge regression,Sensitivity,Total S1 - S3 Balanced,53.5,S1,S3
+Lasso regression,Sensitivity,Total S1 - S3 Balanced,48.5,S1,S3
+ElasticNet regression,Sensitivity,Total S1 - S3 Balanced,53.5,S1,S3
+XGBoost,Specificity,Total S1 - S3 Balanced,27.0,S1,S3
+LightGBM,Specificity,Total S1 - S3 Balanced,23.0,S1,S3
+Random Forest,Specificity,Total S1 - S3 Balanced,23.5,S1,S3
+Ridge regression,Specificity,Total S1 - S3 Balanced,34.0,S1,S3
+Lasso regression,Specificity,Total S1 - S3 Balanced,43.5,S1,S3
+ElasticNet regression,Specificity,Total S1 - S3 Balanced,37.5,S1,S3
+XGBoost,AUPRC value,Total S1 - S4 Balanced,38.0,S1,S4
+LightGBM,AUPRC value,Total S1 - S4 Balanced,29.0,S1,S4
+Random Forest,AUPRC value,Total S1 - S4 Balanced,29.0,S1,S4
+Ridge regression,AUPRC value,Total S1 - S4 Balanced,29.0,S1,S4
+Lasso regression,AUPRC value,Total S1 - S4 Balanced,34.0,S1,S4
+ElasticNet regression,AUPRC value,Total S1 - S4 Balanced,34.0,S1,S4
+XGBoost,AUROC value,Total S1 - S4 Balanced,27.0,S1,S4
+LightGBM,AUROC value,Total S1 - S4 Balanced,32.5,S1,S4
+Random Forest,AUROC value,Total S1 - S4 Balanced,19.0,S1,S4
+Ridge regression,AUROC value,Total S1 - S4 Balanced,29.0,S1,S4
+Lasso regression,AUROC value,Total S1 - S4 Balanced,19.0,S1,S4
+ElasticNet regression,AUROC value,Total S1 - S4 Balanced,27.0,S1,S4
+XGBoost,Precision,Total S1 - S4 Balanced,54.0,S1,S4
+LightGBM,Precision,Total S1 - S4 Balanced,15.5,S1,S4
+Random Forest,Precision,Total S1 - S4 Balanced,29.0,S1,S4
+Ridge regression,Precision,Total S1 - S4 Balanced,26.5,S1,S4
+Lasso regression,Precision,Total S1 - S4 Balanced,30.5,S1,S4
+ElasticNet regression,Precision,Total S1 - S4 Balanced,35.5,S1,S4
+XGBoost,Sensitivity,Total S1 - S4 Balanced,52.5,S1,S4
+LightGBM,Sensitivity,Total S1 - S4 Balanced,77.0,S1,S4
+Random Forest,Sensitivity,Total S1 - S4 Balanced,51.0,S1,S4
+Ridge regression,Sensitivity,Total S1 - S4 Balanced,54.5,S1,S4
+Lasso regression,Sensitivity,Total S1 - S4 Balanced,51.5,S1,S4
+ElasticNet regression,Sensitivity,Total S1 - S4 Balanced,53.5,S1,S4
+XGBoost,Specificity,Total S1 - S4 Balanced,53.5,S1,S4
+LightGBM,Specificity,Total S1 - S4 Balanced,14.0,S1,S4
+Random Forest,Specificity,Total S1 - S4 Balanced,26.0,S1,S4
+Ridge regression,Specificity,Total S1 - S4 Balanced,28.0,S1,S4
+Lasso regression,Specificity,Total S1 - S4 Balanced,36.5,S1,S4
+ElasticNet regression,Specificity,Total S1 - S4 Balanced,34.5,S1,S4
+XGBoost,AUPRC value,Total S1 - S5 Balanced,30.0,S1,S5
+LightGBM,AUPRC value,Total S1 - S5 Balanced,34.0,S1,S5
+Random Forest,AUPRC value,Total S1 - S5 Balanced,26.0,S1,S5
+Ridge regression,AUPRC value,Total S1 - S5 Balanced,26.0,S1,S5
+Lasso regression,AUPRC value,Total S1 - S5 Balanced,30.0,S1,S5
+ElasticNet regression,AUPRC value,Total S1 - S5 Balanced,26.0,S1,S5
+XGBoost,AUROC value,Total S1 - S5 Balanced,21.0,S1,S5
+LightGBM,AUROC value,Total S1 - S5 Balanced,28.5,S1,S5
+Random Forest,AUROC value,Total S1 - S5 Balanced,14.0,S1,S5
+Ridge regression,AUROC value,Total S1 - S5 Balanced,25.0,S1,S5
+Lasso regression,AUROC value,Total S1 - S5 Balanced,15.0,S1,S5
+ElasticNet regression,AUROC value,Total S1 - S5 Balanced,24.0,S1,S5
+XGBoost,Precision,Total S1 - S5 Balanced,38.5,S1,S5
+LightGBM,Precision,Total S1 - S5 Balanced,10.5,S1,S5
+Random Forest,Precision,Total S1 - S5 Balanced,19.0,S1,S5
+Ridge regression,Precision,Total S1 - S5 Balanced,29.5,S1,S5
+Lasso regression,Precision,Total S1 - S5 Balanced,33.5,S1,S5
+ElasticNet regression,Precision,Total S1 - S5 Balanced,34.0,S1,S5
+XGBoost,Sensitivity,Total S1 - S5 Balanced,52.5,S1,S5
+LightGBM,Sensitivity,Total S1 - S5 Balanced,76.0,S1,S5
+Random Forest,Sensitivity,Total S1 - S5 Balanced,51.5,S1,S5
+Ridge regression,Sensitivity,Total S1 - S5 Balanced,53.0,S1,S5
+Lasso regression,Sensitivity,Total S1 - S5 Balanced,52.0,S1,S5
+ElasticNet regression,Sensitivity,Total S1 - S5 Balanced,52.5,S1,S5
+XGBoost,Specificity,Total S1 - S5 Balanced,37.5,S1,S5
+LightGBM,Specificity,Total S1 - S5 Balanced,10.5,S1,S5
+Random Forest,Specificity,Total S1 - S5 Balanced,21.5,S1,S5
+Ridge regression,Specificity,Total S1 - S5 Balanced,25.0,S1,S5
+Lasso regression,Specificity,Total S1 - S5 Balanced,37.5,S1,S5
+ElasticNet regression,Specificity,Total S1 - S5 Balanced,32.5,S1,S5
+XGBoost,AUPRC value,Total S2 - S3 Balanced,27.0,S2,S3
+LightGBM,AUPRC value,Total S2 - S3 Balanced,36.5,S2,S3
+Random Forest,AUPRC value,Total S2 - S3 Balanced,33.0,S2,S3
+Ridge regression,AUPRC value,Total S2 - S3 Balanced,33.0,S2,S3
+Lasso regression,AUPRC value,Total S2 - S3 Balanced,33.0,S2,S3
+ElasticNet regression,AUPRC value,Total S2 - S3 Balanced,33.0,S2,S3
+XGBoost,AUROC value,Total S2 - S3 Balanced,28.0,S2,S3
+LightGBM,AUROC value,Total S2 - S3 Balanced,28.5,S2,S3
+Random Forest,AUROC value,Total S2 - S3 Balanced,19.0,S2,S3
+Ridge regression,AUROC value,Total S2 - S3 Balanced,31.0,S2,S3
+Lasso regression,AUROC value,Total S2 - S3 Balanced,20.0,S2,S3
+ElasticNet regression,AUROC value,Total S2 - S3 Balanced,30.5,S2,S3
+XGBoost,Precision,Total S2 - S3 Balanced,37.0,S2,S3
+LightGBM,Precision,Total S2 - S3 Balanced,40.0,S2,S3
+Random Forest,Precision,Total S2 - S3 Balanced,27.5,S2,S3
+Ridge regression,Precision,Total S2 - S3 Balanced,37.5,S2,S3
+Lasso regression,Precision,Total S2 - S3 Balanced,39.0,S2,S3
+ElasticNet regression,Precision,Total S2 - S3 Balanced,42.0,S2,S3
+XGBoost,Sensitivity,Total S2 - S3 Balanced,47.5,S2,S3
+LightGBM,Sensitivity,Total S2 - S3 Balanced,62.5,S2,S3
+Random Forest,Sensitivity,Total S2 - S3 Balanced,42.0,S2,S3
+Ridge regression,Sensitivity,Total S2 - S3 Balanced,50.5,S2,S3
+Lasso regression,Sensitivity,Total S2 - S3 Balanced,46.5,S2,S3
+ElasticNet regression,Sensitivity,Total S2 - S3 Balanced,52.0,S2,S3
+XGBoost,Specificity,Total S2 - S3 Balanced,37.0,S2,S3
+LightGBM,Specificity,Total S2 - S3 Balanced,35.5,S2,S3
+Random Forest,Specificity,Total S2 - S3 Balanced,34.0,S2,S3
+Ridge regression,Specificity,Total S2 - S3 Balanced,35.0,S2,S3
+Lasso regression,Specificity,Total S2 - S3 Balanced,39.5,S2,S3
+ElasticNet regression,Specificity,Total S2 - S3 Balanced,35.5,S2,S3
+XGBoost,AUPRC value,Total S2 - S4 Balanced,29.0,S2,S4
+LightGBM,AUPRC value,Total S2 - S4 Balanced,31.0,S2,S4
+Random Forest,AUPRC value,Total S2 - S4 Balanced,30.0,S2,S4
+Ridge regression,AUPRC value,Total S2 - S4 Balanced,30.0,S2,S4
+Lasso regression,AUPRC value,Total S2 - S4 Balanced,30.0,S2,S4
+ElasticNet regression,AUPRC value,Total S2 - S4 Balanced,32.0,S2,S4
+XGBoost,AUROC value,Total S2 - S4 Balanced,26.5,S2,S4
+LightGBM,AUROC value,Total S2 - S4 Balanced,39.0,S2,S4
+Random Forest,AUROC value,Total S2 - S4 Balanced,18.0,S2,S4
+Ridge regression,AUROC value,Total S2 - S4 Balanced,26.0,S2,S4
+Lasso regression,AUROC value,Total S2 - S4 Balanced,20.0,S2,S4
+ElasticNet regression,AUROC value,Total S2 - S4 Balanced,28.0,S2,S4
+XGBoost,Precision,Total S2 - S4 Balanced,66.5,S2,S4
+LightGBM,Precision,Total S2 - S4 Balanced,31.0,S2,S4
+Random Forest,Precision,Total S2 - S4 Balanced,32.5,S2,S4
+Ridge regression,Precision,Total S2 - S4 Balanced,28.5,S2,S4
+Lasso regression,Precision,Total S2 - S4 Balanced,31.0,S2,S4
+ElasticNet regression,Precision,Total S2 - S4 Balanced,33.0,S2,S4
+XGBoost,Sensitivity,Total S2 - S4 Balanced,40.0,S2,S4
+LightGBM,Sensitivity,Total S2 - S4 Balanced,66.0,S2,S4
+Random Forest,Sensitivity,Total S2 - S4 Balanced,42.0,S2,S4
+Ridge regression,Sensitivity,Total S2 - S4 Balanced,50.0,S2,S4
+Lasso regression,Sensitivity,Total S2 - S4 Balanced,50.5,S2,S4
+ElasticNet regression,Sensitivity,Total S2 - S4 Balanced,52.0,S2,S4
+XGBoost,Specificity,Total S2 - S4 Balanced,69.5,S2,S4
+LightGBM,Specificity,Total S2 - S4 Balanced,28.5,S2,S4
+Random Forest,Specificity,Total S2 - S4 Balanced,33.5,S2,S4
+Ridge regression,Specificity,Total S2 - S4 Balanced,27.5,S2,S4
+Lasso regression,Specificity,Total S2 - S4 Balanced,35.0,S2,S4
+ElasticNet regression,Specificity,Total S2 - S4 Balanced,30.5,S2,S4
+XGBoost,AUPRC value,Total S2 - S5 Balanced,26.0,S2,S5
+LightGBM,AUPRC value,Total S2 - S5 Balanced,39.0,S2,S5
+Random Forest,AUPRC value,Total S2 - S5 Balanced,25.0,S2,S5
+Ridge regression,AUPRC value,Total S2 - S5 Balanced,28.0,S2,S5
+Lasso regression,AUPRC value,Total S2 - S5 Balanced,29.0,S2,S5
+ElasticNet regression,AUPRC value,Total S2 - S5 Balanced,27.0,S2,S5
+XGBoost,AUROC value,Total S2 - S5 Balanced,19.0,S2,S5
+LightGBM,AUROC value,Total S2 - S5 Balanced,32.5,S2,S5
+Random Forest,AUROC value,Total S2 - S5 Balanced,7.0,S2,S5
+Ridge regression,AUROC value,Total S2 - S5 Balanced,23.0,S2,S5
+Lasso regression,AUROC value,Total S2 - S5 Balanced,16.0,S2,S5
+ElasticNet regression,AUROC value,Total S2 - S5 Balanced,23.5,S2,S5
+XGBoost,Precision,Total S2 - S5 Balanced,48.0,S2,S5
+LightGBM,Precision,Total S2 - S5 Balanced,26.0,S2,S5
+Random Forest,Precision,Total S2 - S5 Balanced,25.5,S2,S5
+Ridge regression,Precision,Total S2 - S5 Balanced,27.0,S2,S5
+Lasso regression,Precision,Total S2 - S5 Balanced,32.0,S2,S5
+ElasticNet regression,Precision,Total S2 - S5 Balanced,33.5,S2,S5
+XGBoost,Sensitivity,Total S2 - S5 Balanced,39.5,S2,S5
+LightGBM,Sensitivity,Total S2 - S5 Balanced,65.5,S2,S5
+Random Forest,Sensitivity,Total S2 - S5 Balanced,42.5,S2,S5
+Ridge regression,Sensitivity,Total S2 - S5 Balanced,49.0,S2,S5
+Lasso regression,Sensitivity,Total S2 - S5 Balanced,50.5,S2,S5
+ElasticNet regression,Sensitivity,Total S2 - S5 Balanced,51.0,S2,S5
+XGBoost,Specificity,Total S2 - S5 Balanced,58.0,S2,S5
+LightGBM,Specificity,Total S2 - S5 Balanced,28.5,S2,S5
+Random Forest,Specificity,Total S2 - S5 Balanced,26.5,S2,S5
+Ridge regression,Specificity,Total S2 - S5 Balanced,24.0,S2,S5
+Lasso regression,Specificity,Total S2 - S5 Balanced,34.5,S2,S5
+ElasticNet regression,Specificity,Total S2 - S5 Balanced,30.0,S2,S5
+XGBoost,AUPRC value,Total S3 - S4 Balanced,47.0,S3,S4
+LightGBM,AUPRC value,Total S3 - S4 Balanced,48.0,S3,S4
+Random Forest,AUPRC value,Total S3 - S4 Balanced,45.0,S3,S4
+Ridge regression,AUPRC value,Total S3 - S4 Balanced,44.0,S3,S4
+Lasso regression,AUPRC value,Total S3 - S4 Balanced,49.0,S3,S4
+ElasticNet regression,AUPRC value,Total S3 - S4 Balanced,50.0,S3,S4
+XGBoost,AUROC value,Total S3 - S4 Balanced,50.0,S3,S4
+LightGBM,AUROC value,Total S3 - S4 Balanced,54.0,S3,S4
+Random Forest,AUROC value,Total S3 - S4 Balanced,41.0,S3,S4
+Ridge regression,AUROC value,Total S3 - S4 Balanced,39.0,S3,S4
+Lasso regression,AUROC value,Total S3 - S4 Balanced,31.5,S3,S4
+ElasticNet regression,AUROC value,Total S3 - S4 Balanced,44.0,S3,S4
+XGBoost,Precision,Total S3 - S4 Balanced,77.5,S3,S4
+LightGBM,Precision,Total S3 - S4 Balanced,46.5,S3,S4
+Random Forest,Precision,Total S3 - S4 Balanced,52.5,S3,S4
+Ridge regression,Precision,Total S3 - S4 Balanced,39.0,S3,S4
+Lasso regression,Precision,Total S3 - S4 Balanced,35.5,S3,S4
+ElasticNet regression,Precision,Total S3 - S4 Balanced,41.0,S3,S4
+XGBoost,Sensitivity,Total S3 - S4 Balanced,39.0,S3,S4
+LightGBM,Sensitivity,Total S3 - S4 Balanced,53.0,S3,S4
+Random Forest,Sensitivity,Total S3 - S4 Balanced,49.5,S3,S4
+Ridge regression,Sensitivity,Total S3 - S4 Balanced,47.5,S3,S4
+Lasso regression,Sensitivity,Total S3 - S4 Balanced,50.0,S3,S4
+ElasticNet regression,Sensitivity,Total S3 - S4 Balanced,48.5,S3,S4
+XGBoost,Specificity,Total S3 - S4 Balanced,81.0,S3,S4
+LightGBM,Specificity,Total S3 - S4 Balanced,50.0,S3,S4
+Random Forest,Specificity,Total S3 - S4 Balanced,53.0,S3,S4
+Ridge regression,Specificity,Total S3 - S4 Balanced,39.0,S3,S4
+Lasso regression,Specificity,Total S3 - S4 Balanced,34.5,S3,S4
+ElasticNet regression,Specificity,Total S3 - S4 Balanced,38.5,S3,S4
+XGBoost,AUPRC value,Total S3 - S5 Balanced,38.0,S3,S5
+LightGBM,AUPRC value,Total S3 - S5 Balanced,46.0,S3,S5
+Random Forest,AUPRC value,Total S3 - S5 Balanced,36.0,S3,S5
+Ridge regression,AUPRC value,Total S3 - S5 Balanced,38.0,S3,S5
+Lasso regression,AUPRC value,Total S3 - S5 Balanced,41.0,S3,S5
+ElasticNet regression,AUPRC value,Total S3 - S5 Balanced,37.0,S3,S5
+XGBoost,AUROC value,Total S3 - S5 Balanced,40.0,S3,S5
+LightGBM,AUROC value,Total S3 - S5 Balanced,43.5,S3,S5
+Random Forest,AUROC value,Total S3 - S5 Balanced,35.0,S3,S5
+Ridge regression,AUROC value,Total S3 - S5 Balanced,38.0,S3,S5
+Lasso regression,AUROC value,Total S3 - S5 Balanced,35.0,S3,S5
+ElasticNet regression,AUROC value,Total S3 - S5 Balanced,40.0,S3,S5
+XGBoost,Precision,Total S3 - S5 Balanced,66.5,S3,S5
+LightGBM,Precision,Total S3 - S5 Balanced,41.5,S3,S5
+Random Forest,Precision,Total S3 - S5 Balanced,40.5,S3,S5
+Ridge regression,Precision,Total S3 - S5 Balanced,37.0,S3,S5
+Lasso regression,Precision,Total S3 - S5 Balanced,36.5,S3,S5
+ElasticNet regression,Precision,Total S3 - S5 Balanced,38.5,S3,S5
+XGBoost,Sensitivity,Total S3 - S5 Balanced,40.5,S3,S5
+LightGBM,Sensitivity,Total S3 - S5 Balanced,53.0,S3,S5
+Random Forest,Sensitivity,Total S3 - S5 Balanced,49.5,S3,S5
+Ridge regression,Sensitivity,Total S3 - S5 Balanced,46.5,S3,S5
+Lasso regression,Sensitivity,Total S3 - S5 Balanced,51.5,S3,S5
+ElasticNet regression,Sensitivity,Total S3 - S5 Balanced,46.5,S3,S5
+XGBoost,Specificity,Total S3 - S5 Balanced,69.5,S3,S5
+LightGBM,Specificity,Total S3 - S5 Balanced,45.0,S3,S5
+Random Forest,Specificity,Total S3 - S5 Balanced,38.5,S3,S5
+Ridge regression,Specificity,Total S3 - S5 Balanced,36.5,S3,S5
+Lasso regression,Specificity,Total S3 - S5 Balanced,32.0,S3,S5
+ElasticNet regression,Specificity,Total S3 - S5 Balanced,36.0,S3,S5
+XGBoost,AUPRC value,Total S4 - S5 Balanced,36.0,S4,S5
+LightGBM,AUPRC value,Total S4 - S5 Balanced,54.5,S4,S5
+Random Forest,AUPRC value,Total S4 - S5 Balanced,35.0,S4,S5
+Ridge regression,AUPRC value,Total S4 - S5 Balanced,26.0,S4,S5
+Lasso regression,AUPRC value,Total S4 - S5 Balanced,31.0,S4,S5
+ElasticNet regression,AUPRC value,Total S4 - S5 Balanced,25.0,S4,S5
+XGBoost,AUROC value,Total S4 - S5 Balanced,33.5,S4,S5
+LightGBM,AUROC value,Total S4 - S5 Balanced,41.5,S4,S5
+Random Forest,AUROC value,Total S4 - S5 Balanced,31.0,S4,S5
+Ridge regression,AUROC value,Total S4 - S5 Balanced,34.0,S4,S5
+Lasso regression,AUROC value,Total S4 - S5 Balanced,37.0,S4,S5
+ElasticNet regression,AUROC value,Total S4 - S5 Balanced,28.5,S4,S5
+XGBoost,Precision,Total S4 - S5 Balanced,20.5,S4,S5
+LightGBM,Precision,Total S4 - S5 Balanced,41.5,S4,S5
+Random Forest,Precision,Total S4 - S5 Balanced,33.5,S4,S5
+Ridge regression,Precision,Total S4 - S5 Balanced,38.0,S4,S5
+Lasso regression,Precision,Total S4 - S5 Balanced,43.5,S4,S5
+ElasticNet regression,Precision,Total S4 - S5 Balanced,38.5,S4,S5
+XGBoost,Sensitivity,Total S4 - S5 Balanced,49.5,S4,S5
+LightGBM,Sensitivity,Total S4 - S5 Balanced,50.0,S4,S5
+Random Forest,Sensitivity,Total S4 - S5 Balanced,49.0,S4,S5
+Ridge regression,Sensitivity,Total S4 - S5 Balanced,48.0,S4,S5
+Lasso regression,Sensitivity,Total S4 - S5 Balanced,51.0,S4,S5
+ElasticNet regression,Sensitivity,Total S4 - S5 Balanced,48.0,S4,S5
+XGBoost,Specificity,Total S4 - S5 Balanced,22.5,S4,S5
+LightGBM,Specificity,Total S4 - S5 Balanced,40.0,S4,S5
+Random Forest,Specificity,Total S4 - S5 Balanced,33.5,S4,S5
+Ridge regression,Specificity,Total S4 - S5 Balanced,38.5,S4,S5
+Lasso regression,Specificity,Total S4 - S5 Balanced,41.0,S4,S5
+ElasticNet regression,Specificity,Total S4 - S5 Balanced,37.5,S4,S5
+XGBoost,AUPRC value,Total S2 - S1 Balanced,53.0,S2,S1
+LightGBM,AUPRC value,Total S2 - S1 Balanced,49.0,S2,S1
+Random Forest,AUPRC value,Total S2 - S1 Balanced,52.0,S2,S1
+Ridge regression,AUPRC value,Total S2 - S1 Balanced,52.0,S2,S1
+Lasso regression,AUPRC value,Total S2 - S1 Balanced,46.5,S2,S1
+ElasticNet regression,AUPRC value,Total S2 - S1 Balanced,53.5,S2,S1
+XGBoost,AUROC value,Total S2 - S1 Balanced,48.0,S2,S1
+LightGBM,AUROC value,Total S2 - S1 Balanced,42.0,S2,S1
+Random Forest,AUROC value,Total S2 - S1 Balanced,41.0,S2,S1
+Ridge regression,AUROC value,Total S2 - S1 Balanced,47.0,S2,S1
+Lasso regression,AUROC value,Total S2 - S1 Balanced,41.5,S2,S1
+ElasticNet regression,AUROC value,Total S2 - S1 Balanced,46.0,S2,S1
+XGBoost,Precision,Total S2 - S1 Balanced,69.0,S2,S1
+LightGBM,Precision,Total S2 - S1 Balanced,58.5,S2,S1
+Random Forest,Precision,Total S2 - S1 Balanced,68.0,S2,S1
+Ridge regression,Precision,Total S2 - S1 Balanced,45.5,S2,S1
+Lasso regression,Precision,Total S2 - S1 Balanced,44.0,S2,S1
+ElasticNet regression,Precision,Total S2 - S1 Balanced,44.5,S2,S1
+XGBoost,Sensitivity,Total S2 - S1 Balanced,33.5,S2,S1
+LightGBM,Sensitivity,Total S2 - S1 Balanced,43.5,S2,S1
+Random Forest,Sensitivity,Total S2 - S1 Balanced,39.0,S2,S1
+Ridge regression,Sensitivity,Total S2 - S1 Balanced,47.5,S2,S1
+Lasso regression,Sensitivity,Total S2 - S1 Balanced,49.0,S2,S1
+ElasticNet regression,Sensitivity,Total S2 - S1 Balanced,48.0,S2,S1
+XGBoost,Specificity,Total S2 - S1 Balanced,82.5,S2,S1
+LightGBM,Specificity,Total S2 - S1 Balanced,57.0,S2,S1
+Random Forest,Specificity,Total S2 - S1 Balanced,74.0,S2,S1
+Ridge regression,Specificity,Total S2 - S1 Balanced,48.0,S2,S1
+Lasso regression,Specificity,Total S2 - S1 Balanced,45.5,S2,S1
+ElasticNet regression,Specificity,Total S2 - S1 Balanced,46.0,S2,S1
+XGBoost,AUPRC value,Total S3 - S1 Balanced,68.0,S3,S1
+LightGBM,AUPRC value,Total S3 - S1 Balanced,65.5,S3,S1
+Random Forest,AUPRC value,Total S3 - S1 Balanced,65.0,S3,S1
+Ridge regression,AUPRC value,Total S3 - S1 Balanced,73.0,S3,S1
+Lasso regression,AUPRC value,Total S3 - S1 Balanced,72.0,S3,S1
+ElasticNet regression,AUPRC value,Total S3 - S1 Balanced,72.0,S3,S1
+XGBoost,AUROC value,Total S3 - S1 Balanced,68.0,S3,S1
+LightGBM,AUROC value,Total S3 - S1 Balanced,69.0,S3,S1
+Random Forest,AUROC value,Total S3 - S1 Balanced,74.0,S3,S1
+Ridge regression,AUROC value,Total S3 - S1 Balanced,71.0,S3,S1
+Lasso regression,AUROC value,Total S3 - S1 Balanced,78.5,S3,S1
+ElasticNet regression,AUROC value,Total S3 - S1 Balanced,72.0,S3,S1
+XGBoost,Precision,Total S3 - S1 Balanced,71.0,S3,S1
+LightGBM,Precision,Total S3 - S1 Balanced,73.0,S3,S1
+Random Forest,Precision,Total S3 - S1 Balanced,76.5,S3,S1
+Ridge regression,Precision,Total S3 - S1 Balanced,63.0,S3,S1
+Lasso regression,Precision,Total S3 - S1 Balanced,58.5,S3,S1
+ElasticNet regression,Precision,Total S3 - S1 Balanced,58.5,S3,S1
+XGBoost,Sensitivity,Total S3 - S1 Balanced,37.5,S3,S1
+LightGBM,Sensitivity,Total S3 - S1 Balanced,28.0,S3,S1
+Random Forest,Sensitivity,Total S3 - S1 Balanced,47.0,S3,S1
+Ridge regression,Sensitivity,Total S3 - S1 Balanced,46.5,S3,S1
+Lasso regression,Sensitivity,Total S3 - S1 Balanced,51.5,S3,S1
+ElasticNet regression,Sensitivity,Total S3 - S1 Balanced,46.5,S3,S1
+XGBoost,Specificity,Total S3 - S1 Balanced,73.0,S3,S1
+LightGBM,Specificity,Total S3 - S1 Balanced,77.0,S3,S1
+Random Forest,Specificity,Total S3 - S1 Balanced,76.5,S3,S1
+Ridge regression,Specificity,Total S3 - S1 Balanced,66.0,S3,S1
+Lasso regression,Specificity,Total S3 - S1 Balanced,56.5,S3,S1
+ElasticNet regression,Specificity,Total S3 - S1 Balanced,62.5,S3,S1
+XGBoost,AUPRC value,Total S4 - S1 Balanced,62.0,S4,S1
+LightGBM,AUPRC value,Total S4 - S1 Balanced,71.0,S4,S1
+Random Forest,AUPRC value,Total S4 - S1 Balanced,71.0,S4,S1
+Ridge regression,AUPRC value,Total S4 - S1 Balanced,71.0,S4,S1
+Lasso regression,AUPRC value,Total S4 - S1 Balanced,66.0,S4,S1
+ElasticNet regression,AUPRC value,Total S4 - S1 Balanced,66.0,S4,S1
+XGBoost,AUROC value,Total S4 - S1 Balanced,73.0,S4,S1
+LightGBM,AUROC value,Total S4 - S1 Balanced,67.5,S4,S1
+Random Forest,AUROC value,Total S4 - S1 Balanced,81.0,S4,S1
+Ridge regression,AUROC value,Total S4 - S1 Balanced,71.0,S4,S1
+Lasso regression,AUROC value,Total S4 - S1 Balanced,81.0,S4,S1
+ElasticNet regression,AUROC value,Total S4 - S1 Balanced,73.0,S4,S1
+XGBoost,Precision,Total S4 - S1 Balanced,46.0,S4,S1
+LightGBM,Precision,Total S4 - S1 Balanced,84.5,S4,S1
+Random Forest,Precision,Total S4 - S1 Balanced,71.0,S4,S1
+Ridge regression,Precision,Total S4 - S1 Balanced,73.5,S4,S1
+Lasso regression,Precision,Total S4 - S1 Balanced,69.5,S4,S1
+ElasticNet regression,Precision,Total S4 - S1 Balanced,64.5,S4,S1
+XGBoost,Sensitivity,Total S4 - S1 Balanced,47.5,S4,S1
+LightGBM,Sensitivity,Total S4 - S1 Balanced,23.0,S4,S1
+Random Forest,Sensitivity,Total S4 - S1 Balanced,49.0,S4,S1
+Ridge regression,Sensitivity,Total S4 - S1 Balanced,45.5,S4,S1
+Lasso regression,Sensitivity,Total S4 - S1 Balanced,48.5,S4,S1
+ElasticNet regression,Sensitivity,Total S4 - S1 Balanced,46.5,S4,S1
+XGBoost,Specificity,Total S4 - S1 Balanced,46.5,S4,S1
+LightGBM,Specificity,Total S4 - S1 Balanced,86.0,S4,S1
+Random Forest,Specificity,Total S4 - S1 Balanced,74.0,S4,S1
+Ridge regression,Specificity,Total S4 - S1 Balanced,72.0,S4,S1
+Lasso regression,Specificity,Total S4 - S1 Balanced,63.5,S4,S1
+ElasticNet regression,Specificity,Total S4 - S1 Balanced,65.5,S4,S1
+XGBoost,AUPRC value,Total S5 - S1 Balanced,70.0,S5,S1
+LightGBM,AUPRC value,Total S5 - S1 Balanced,66.0,S5,S1
+Random Forest,AUPRC value,Total S5 - S1 Balanced,74.0,S5,S1
+Ridge regression,AUPRC value,Total S5 - S1 Balanced,74.0,S5,S1
+Lasso regression,AUPRC value,Total S5 - S1 Balanced,70.0,S5,S1
+ElasticNet regression,AUPRC value,Total S5 - S1 Balanced,74.0,S5,S1
+XGBoost,AUROC value,Total S5 - S1 Balanced,79.0,S5,S1
+LightGBM,AUROC value,Total S5 - S1 Balanced,71.5,S5,S1
+Random Forest,AUROC value,Total S5 - S1 Balanced,86.0,S5,S1
+Ridge regression,AUROC value,Total S5 - S1 Balanced,75.0,S5,S1
+Lasso regression,AUROC value,Total S5 - S1 Balanced,85.0,S5,S1
+ElasticNet regression,AUROC value,Total S5 - S1 Balanced,76.0,S5,S1
+XGBoost,Precision,Total S5 - S1 Balanced,61.5,S5,S1
+LightGBM,Precision,Total S5 - S1 Balanced,89.5,S5,S1
+Random Forest,Precision,Total S5 - S1 Balanced,81.0,S5,S1
+Ridge regression,Precision,Total S5 - S1 Balanced,70.5,S5,S1
+Lasso regression,Precision,Total S5 - S1 Balanced,66.5,S5,S1
+ElasticNet regression,Precision,Total S5 - S1 Balanced,66.0,S5,S1
+XGBoost,Sensitivity,Total S5 - S1 Balanced,47.5,S5,S1
+LightGBM,Sensitivity,Total S5 - S1 Balanced,24.0,S5,S1
+Random Forest,Sensitivity,Total S5 - S1 Balanced,48.5,S5,S1
+Ridge regression,Sensitivity,Total S5 - S1 Balanced,47.0,S5,S1
+Lasso regression,Sensitivity,Total S5 - S1 Balanced,48.0,S5,S1
+ElasticNet regression,Sensitivity,Total S5 - S1 Balanced,47.5,S5,S1
+XGBoost,Specificity,Total S5 - S1 Balanced,62.5,S5,S1
+LightGBM,Specificity,Total S5 - S1 Balanced,89.5,S5,S1
+Random Forest,Specificity,Total S5 - S1 Balanced,78.5,S5,S1
+Ridge regression,Specificity,Total S5 - S1 Balanced,75.0,S5,S1
+Lasso regression,Specificity,Total S5 - S1 Balanced,62.5,S5,S1
+ElasticNet regression,Specificity,Total S5 - S1 Balanced,67.5,S5,S1
+XGBoost,AUPRC value,Total S3 - S2 Balanced,73.0,S3,S2
+LightGBM,AUPRC value,Total S3 - S2 Balanced,63.5,S3,S2
+Random Forest,AUPRC value,Total S3 - S2 Balanced,67.0,S3,S2
+Ridge regression,AUPRC value,Total S3 - S2 Balanced,67.0,S3,S2
+Lasso regression,AUPRC value,Total S3 - S2 Balanced,67.0,S3,S2
+ElasticNet regression,AUPRC value,Total S3 - S2 Balanced,67.0,S3,S2
+XGBoost,AUROC value,Total S3 - S2 Balanced,72.0,S3,S2
+LightGBM,AUROC value,Total S3 - S2 Balanced,71.5,S3,S2
+Random Forest,AUROC value,Total S3 - S2 Balanced,81.0,S3,S2
+Ridge regression,AUROC value,Total S3 - S2 Balanced,69.0,S3,S2
+Lasso regression,AUROC value,Total S3 - S2 Balanced,80.0,S3,S2
+ElasticNet regression,AUROC value,Total S3 - S2 Balanced,69.5,S3,S2
+XGBoost,Precision,Total S3 - S2 Balanced,63.0,S3,S2
+LightGBM,Precision,Total S3 - S2 Balanced,60.0,S3,S2
+Random Forest,Precision,Total S3 - S2 Balanced,72.5,S3,S2
+Ridge regression,Precision,Total S3 - S2 Balanced,62.5,S3,S2
+Lasso regression,Precision,Total S3 - S2 Balanced,61.0,S3,S2
+ElasticNet regression,Precision,Total S3 - S2 Balanced,58.0,S3,S2
+XGBoost,Sensitivity,Total S3 - S2 Balanced,52.5,S3,S2
+LightGBM,Sensitivity,Total S3 - S2 Balanced,37.5,S3,S2
+Random Forest,Sensitivity,Total S3 - S2 Balanced,58.0,S3,S2
+Ridge regression,Sensitivity,Total S3 - S2 Balanced,49.5,S3,S2
+Lasso regression,Sensitivity,Total S3 - S2 Balanced,53.5,S3,S2
+ElasticNet regression,Sensitivity,Total S3 - S2 Balanced,48.0,S3,S2
+XGBoost,Specificity,Total S3 - S2 Balanced,63.0,S3,S2
+LightGBM,Specificity,Total S3 - S2 Balanced,64.5,S3,S2
+Random Forest,Specificity,Total S3 - S2 Balanced,66.0,S3,S2
+Ridge regression,Specificity,Total S3 - S2 Balanced,65.0,S3,S2
+Lasso regression,Specificity,Total S3 - S2 Balanced,60.5,S3,S2
+ElasticNet regression,Specificity,Total S3 - S2 Balanced,64.5,S3,S2
+XGBoost,AUPRC value,Total S4 - S2 Balanced,71.0,S4,S2
+LightGBM,AUPRC value,Total S4 - S2 Balanced,69.0,S4,S2
+Random Forest,AUPRC value,Total S4 - S2 Balanced,70.0,S4,S2
+Ridge regression,AUPRC value,Total S4 - S2 Balanced,70.0,S4,S2
+Lasso regression,AUPRC value,Total S4 - S2 Balanced,70.0,S4,S2
+ElasticNet regression,AUPRC value,Total S4 - S2 Balanced,68.0,S4,S2
+XGBoost,AUROC value,Total S4 - S2 Balanced,73.5,S4,S2
+LightGBM,AUROC value,Total S4 - S2 Balanced,61.0,S4,S2
+Random Forest,AUROC value,Total S4 - S2 Balanced,82.0,S4,S2
+Ridge regression,AUROC value,Total S4 - S2 Balanced,74.0,S4,S2
+Lasso regression,AUROC value,Total S4 - S2 Balanced,80.0,S4,S2
+ElasticNet regression,AUROC value,Total S4 - S2 Balanced,72.0,S4,S2
+XGBoost,Precision,Total S4 - S2 Balanced,33.5,S4,S2
+LightGBM,Precision,Total S4 - S2 Balanced,69.0,S4,S2
+Random Forest,Precision,Total S4 - S2 Balanced,67.5,S4,S2
+Ridge regression,Precision,Total S4 - S2 Balanced,71.5,S4,S2
+Lasso regression,Precision,Total S4 - S2 Balanced,69.0,S4,S2
+ElasticNet regression,Precision,Total S4 - S2 Balanced,67.0,S4,S2
+XGBoost,Sensitivity,Total S4 - S2 Balanced,60.0,S4,S2
+LightGBM,Sensitivity,Total S4 - S2 Balanced,34.0,S4,S2
+Random Forest,Sensitivity,Total S4 - S2 Balanced,58.0,S4,S2
+Ridge regression,Sensitivity,Total S4 - S2 Balanced,50.0,S4,S2
+Lasso regression,Sensitivity,Total S4 - S2 Balanced,49.5,S4,S2
+ElasticNet regression,Sensitivity,Total S4 - S2 Balanced,48.0,S4,S2
+XGBoost,Specificity,Total S4 - S2 Balanced,30.5,S4,S2
+LightGBM,Specificity,Total S4 - S2 Balanced,71.5,S4,S2
+Random Forest,Specificity,Total S4 - S2 Balanced,66.5,S4,S2
+Ridge regression,Specificity,Total S4 - S2 Balanced,72.5,S4,S2
+Lasso regression,Specificity,Total S4 - S2 Balanced,65.0,S4,S2
+ElasticNet regression,Specificity,Total S4 - S2 Balanced,69.5,S4,S2
+XGBoost,AUPRC value,Total S5 - S2 Balanced,74.0,S5,S2
+LightGBM,AUPRC value,Total S5 - S2 Balanced,61.0,S5,S2
+Random Forest,AUPRC value,Total S5 - S2 Balanced,75.0,S5,S2
+Ridge regression,AUPRC value,Total S5 - S2 Balanced,72.0,S5,S2
+Lasso regression,AUPRC value,Total S5 - S2 Balanced,71.0,S5,S2
+ElasticNet regression,AUPRC value,Total S5 - S2 Balanced,73.0,S5,S2
+XGBoost,AUROC value,Total S5 - S2 Balanced,81.0,S5,S2
+LightGBM,AUROC value,Total S5 - S2 Balanced,67.5,S5,S2
+Random Forest,AUROC value,Total S5 - S2 Balanced,93.0,S5,S2
+Ridge regression,AUROC value,Total S5 - S2 Balanced,77.0,S5,S2
+Lasso regression,AUROC value,Total S5 - S2 Balanced,84.0,S5,S2
+ElasticNet regression,AUROC value,Total S5 - S2 Balanced,76.5,S5,S2
+XGBoost,Precision,Total S5 - S2 Balanced,52.0,S5,S2
+LightGBM,Precision,Total S5 - S2 Balanced,74.0,S5,S2
+Random Forest,Precision,Total S5 - S2 Balanced,74.5,S5,S2
+Ridge regression,Precision,Total S5 - S2 Balanced,73.0,S5,S2
+Lasso regression,Precision,Total S5 - S2 Balanced,68.0,S5,S2
+ElasticNet regression,Precision,Total S5 - S2 Balanced,66.5,S5,S2
+XGBoost,Sensitivity,Total S5 - S2 Balanced,60.5,S5,S2
+LightGBM,Sensitivity,Total S5 - S2 Balanced,34.5,S5,S2
+Random Forest,Sensitivity,Total S5 - S2 Balanced,57.5,S5,S2
+Ridge regression,Sensitivity,Total S5 - S2 Balanced,51.0,S5,S2
+Lasso regression,Sensitivity,Total S5 - S2 Balanced,49.5,S5,S2
+ElasticNet regression,Sensitivity,Total S5 - S2 Balanced,49.0,S5,S2
+XGBoost,Specificity,Total S5 - S2 Balanced,42.0,S5,S2
+LightGBM,Specificity,Total S5 - S2 Balanced,71.5,S5,S2
+Random Forest,Specificity,Total S5 - S2 Balanced,73.5,S5,S2
+Ridge regression,Specificity,Total S5 - S2 Balanced,76.0,S5,S2
+Lasso regression,Specificity,Total S5 - S2 Balanced,65.5,S5,S2
+ElasticNet regression,Specificity,Total S5 - S2 Balanced,70.0,S5,S2
+XGBoost,AUPRC value,Total S4 - S3 Balanced,53.0,S4,S3
+LightGBM,AUPRC value,Total S4 - S3 Balanced,52.0,S4,S3
+Random Forest,AUPRC value,Total S4 - S3 Balanced,55.0,S4,S3
+Ridge regression,AUPRC value,Total S4 - S3 Balanced,56.0,S4,S3
+Lasso regression,AUPRC value,Total S4 - S3 Balanced,51.0,S4,S3
+ElasticNet regression,AUPRC value,Total S4 - S3 Balanced,50.0,S4,S3
+XGBoost,AUROC value,Total S4 - S3 Balanced,50.0,S4,S3
+LightGBM,AUROC value,Total S4 - S3 Balanced,46.0,S4,S3
+Random Forest,AUROC value,Total S4 - S3 Balanced,59.0,S4,S3
+Ridge regression,AUROC value,Total S4 - S3 Balanced,61.0,S4,S3
+Lasso regression,AUROC value,Total S4 - S3 Balanced,68.5,S4,S3
+ElasticNet regression,AUROC value,Total S4 - S3 Balanced,56.0,S4,S3
+XGBoost,Precision,Total S4 - S3 Balanced,22.5,S4,S3
+LightGBM,Precision,Total S4 - S3 Balanced,53.5,S4,S3
+Random Forest,Precision,Total S4 - S3 Balanced,47.5,S4,S3
+Ridge regression,Precision,Total S4 - S3 Balanced,61.0,S4,S3
+Lasso regression,Precision,Total S4 - S3 Balanced,64.5,S4,S3
+ElasticNet regression,Precision,Total S4 - S3 Balanced,59.0,S4,S3
+XGBoost,Sensitivity,Total S4 - S3 Balanced,61.0,S4,S3
+LightGBM,Sensitivity,Total S4 - S3 Balanced,47.0,S4,S3
+Random Forest,Sensitivity,Total S4 - S3 Balanced,50.5,S4,S3
+Ridge regression,Sensitivity,Total S4 - S3 Balanced,52.5,S4,S3
+Lasso regression,Sensitivity,Total S4 - S3 Balanced,50.0,S4,S3
+ElasticNet regression,Sensitivity,Total S4 - S3 Balanced,51.5,S4,S3
+XGBoost,Specificity,Total S4 - S3 Balanced,19.0,S4,S3
+LightGBM,Specificity,Total S4 - S3 Balanced,50.0,S4,S3
+Random Forest,Specificity,Total S4 - S3 Balanced,47.0,S4,S3
+Ridge regression,Specificity,Total S4 - S3 Balanced,61.0,S4,S3
+Lasso regression,Specificity,Total S4 - S3 Balanced,65.5,S4,S3
+ElasticNet regression,Specificity,Total S4 - S3 Balanced,61.5,S4,S3
+XGBoost,AUPRC value,Total S5 - S3 Balanced,62.0,S5,S3
+LightGBM,AUPRC value,Total S5 - S3 Balanced,54.0,S5,S3
+Random Forest,AUPRC value,Total S5 - S3 Balanced,64.0,S5,S3
+Ridge regression,AUPRC value,Total S5 - S3 Balanced,62.0,S5,S3
+Lasso regression,AUPRC value,Total S5 - S3 Balanced,59.0,S5,S3
+ElasticNet regression,AUPRC value,Total S5 - S3 Balanced,63.0,S5,S3
+XGBoost,AUROC value,Total S5 - S3 Balanced,60.0,S5,S3
+LightGBM,AUROC value,Total S5 - S3 Balanced,56.5,S5,S3
+Random Forest,AUROC value,Total S5 - S3 Balanced,65.0,S5,S3
+Ridge regression,AUROC value,Total S5 - S3 Balanced,62.0,S5,S3
+Lasso regression,AUROC value,Total S5 - S3 Balanced,65.0,S5,S3
+ElasticNet regression,AUROC value,Total S5 - S3 Balanced,60.0,S5,S3
+XGBoost,Precision,Total S5 - S3 Balanced,33.5,S5,S3
+LightGBM,Precision,Total S5 - S3 Balanced,58.5,S5,S3
+Random Forest,Precision,Total S5 - S3 Balanced,59.5,S5,S3
+Ridge regression,Precision,Total S5 - S3 Balanced,63.0,S5,S3
+Lasso regression,Precision,Total S5 - S3 Balanced,63.5,S5,S3
+ElasticNet regression,Precision,Total S5 - S3 Balanced,61.5,S5,S3
+XGBoost,Sensitivity,Total S5 - S3 Balanced,59.5,S5,S3
+LightGBM,Sensitivity,Total S5 - S3 Balanced,47.0,S5,S3
+Random Forest,Sensitivity,Total S5 - S3 Balanced,50.5,S5,S3
+Ridge regression,Sensitivity,Total S5 - S3 Balanced,53.5,S5,S3
+Lasso regression,Sensitivity,Total S5 - S3 Balanced,48.5,S5,S3
+ElasticNet regression,Sensitivity,Total S5 - S3 Balanced,53.5,S5,S3
+XGBoost,Specificity,Total S5 - S3 Balanced,30.5,S5,S3
+LightGBM,Specificity,Total S5 - S3 Balanced,55.0,S5,S3
+Random Forest,Specificity,Total S5 - S3 Balanced,61.5,S5,S3
+Ridge regression,Specificity,Total S5 - S3 Balanced,63.5,S5,S3
+Lasso regression,Specificity,Total S5 - S3 Balanced,68.0,S5,S3
+ElasticNet regression,Specificity,Total S5 - S3 Balanced,64.0,S5,S3
+XGBoost,AUPRC value,Total S5 - S4 Balanced,64.0,S5,S4
+LightGBM,AUPRC value,Total S5 - S4 Balanced,45.5,S5,S4
+Random Forest,AUPRC value,Total S5 - S4 Balanced,65.0,S5,S4
+Ridge regression,AUPRC value,Total S5 - S4 Balanced,74.0,S5,S4
+Lasso regression,AUPRC value,Total S5 - S4 Balanced,69.0,S5,S4
+ElasticNet regression,AUPRC value,Total S5 - S4 Balanced,75.0,S5,S4
+XGBoost,AUROC value,Total S5 - S4 Balanced,66.5,S5,S4
+LightGBM,AUROC value,Total S5 - S4 Balanced,58.5,S5,S4
+Random Forest,AUROC value,Total S5 - S4 Balanced,69.0,S5,S4
+Ridge regression,AUROC value,Total S5 - S4 Balanced,66.0,S5,S4
+Lasso regression,AUROC value,Total S5 - S4 Balanced,63.0,S5,S4
+ElasticNet regression,AUROC value,Total S5 - S4 Balanced,71.5,S5,S4
+XGBoost,Precision,Total S5 - S4 Balanced,79.5,S5,S4
+LightGBM,Precision,Total S5 - S4 Balanced,58.5,S5,S4
+Random Forest,Precision,Total S5 - S4 Balanced,66.5,S5,S4
+Ridge regression,Precision,Total S5 - S4 Balanced,62.0,S5,S4
+Lasso regression,Precision,Total S5 - S4 Balanced,56.5,S5,S4
+ElasticNet regression,Precision,Total S5 - S4 Balanced,61.5,S5,S4
+XGBoost,Sensitivity,Total S5 - S4 Balanced,50.5,S5,S4
+LightGBM,Sensitivity,Total S5 - S4 Balanced,50.0,S5,S4
+Random Forest,Sensitivity,Total S5 - S4 Balanced,51.0,S5,S4
+Ridge regression,Sensitivity,Total S5 - S4 Balanced,52.0,S5,S4
+Lasso regression,Sensitivity,Total S5 - S4 Balanced,49.0,S5,S4
+ElasticNet regression,Sensitivity,Total S5 - S4 Balanced,52.0,S5,S4
+XGBoost,Specificity,Total S5 - S4 Balanced,77.5,S5,S4
+LightGBM,Specificity,Total S5 - S4 Balanced,60.0,S5,S4
+Random Forest,Specificity,Total S5 - S4 Balanced,66.5,S5,S4
+Ridge regression,Specificity,Total S5 - S4 Balanced,61.5,S5,S4
+Lasso regression,Specificity,Total S5 - S4 Balanced,59.0,S5,S4
+ElasticNet regression,Specificity,Total S5 - S4 Balanced,62.5,S5,S4
+XGBoost,AUPRC value,Total S1 - S1 Balanced,0.0,S1,S1
+LightGBM,AUPRC value,Total S1 - S1 Balanced,0.0,S1,S1
+Random Forest,AUPRC value,Total S1 - S1 Balanced,0.0,S1,S1
+Ridge regression,AUPRC value,Total S1 - S1 Balanced,0.0,S1,S1
+Lasso regression,AUPRC value,Total S1 - S1 Balanced,0.0,S1,S1
+ElasticNet regression,AUPRC value,Total S1 - S1 Balanced,0.0,S1,S1
+XGBoost,AUROC value,Total S1 - S1 Balanced,0.0,S1,S1
+LightGBM,AUROC value,Total S1 - S1 Balanced,0.0,S1,S1
+Random Forest,AUROC value,Total S1 - S1 Balanced,0.0,S1,S1
+Ridge regression,AUROC value,Total S1 - S1 Balanced,0.0,S1,S1
+Lasso regression,AUROC value,Total S1 - S1 Balanced,0.0,S1,S1
+ElasticNet regression,AUROC value,Total S1 - S1 Balanced,0.0,S1,S1
+XGBoost,Precision,Total S1 - S1 Balanced,0.0,S1,S1
+LightGBM,Precision,Total S1 - S1 Balanced,0.0,S1,S1
+Random Forest,Precision,Total S1 - S1 Balanced,0.0,S1,S1
+Ridge regression,Precision,Total S1 - S1 Balanced,0.0,S1,S1
+Lasso regression,Precision,Total S1 - S1 Balanced,0.0,S1,S1
+ElasticNet regression,Precision,Total S1 - S1 Balanced,0.0,S1,S1
+XGBoost,Sensitivity,Total S1 - S1 Balanced,0.0,S1,S1
+LightGBM,Sensitivity,Total S1 - S1 Balanced,0.0,S1,S1
+Random Forest,Sensitivity,Total S1 - S1 Balanced,0.0,S1,S1
+Ridge regression,Sensitivity,Total S1 - S1 Balanced,0.0,S1,S1
+Lasso regression,Sensitivity,Total S1 - S1 Balanced,0.0,S1,S1
+ElasticNet regression,Sensitivity,Total S1 - S1 Balanced,0.0,S1,S1
+XGBoost,Specificity,Total S1 - S1 Balanced,0.0,S1,S1
+LightGBM,Specificity,Total S1 - S1 Balanced,0.0,S1,S1
+Random Forest,Specificity,Total S1 - S1 Balanced,0.0,S1,S1
+Ridge regression,Specificity,Total S1 - S1 Balanced,0.0,S1,S1
+Lasso regression,Specificity,Total S1 - S1 Balanced,0.0,S1,S1
+ElasticNet regression,Specificity,Total S1 - S1 Balanced,0.0,S1,S1
+XGBoost,AUPRC value,Total S2 - S2 Balanced,0.0,S2,S2
+LightGBM,AUPRC value,Total S2 - S2 Balanced,0.0,S2,S2
+Random Forest,AUPRC value,Total S2 - S2 Balanced,0.0,S2,S2
+Ridge regression,AUPRC value,Total S2 - S2 Balanced,0.0,S2,S2
+Lasso regression,AUPRC value,Total S2 - S2 Balanced,0.0,S2,S2
+ElasticNet regression,AUPRC value,Total S2 - S2 Balanced,0.0,S2,S2
+XGBoost,AUROC value,Total S2 - S2 Balanced,0.0,S2,S2
+LightGBM,AUROC value,Total S2 - S2 Balanced,0.0,S2,S2
+Random Forest,AUROC value,Total S2 - S2 Balanced,0.0,S2,S2
+Ridge regression,AUROC value,Total S2 - S2 Balanced,0.0,S2,S2
+Lasso regression,AUROC value,Total S2 - S2 Balanced,0.0,S2,S2
+ElasticNet regression,AUROC value,Total S2 - S2 Balanced,0.0,S2,S2
+XGBoost,Precision,Total S2 - S2 Balanced,0.0,S2,S2
+LightGBM,Precision,Total S2 - S2 Balanced,0.0,S2,S2
+Random Forest,Precision,Total S2 - S2 Balanced,0.0,S2,S2
+Ridge regression,Precision,Total S2 - S2 Balanced,0.0,S2,S2
+Lasso regression,Precision,Total S2 - S2 Balanced,0.0,S2,S2
+ElasticNet regression,Precision,Total S2 - S2 Balanced,0.0,S2,S2
+XGBoost,Sensitivity,Total S2 - S2 Balanced,0.0,S2,S2
+LightGBM,Sensitivity,Total S2 - S2 Balanced,0.0,S2,S2
+Random Forest,Sensitivity,Total S2 - S2 Balanced,0.0,S2,S2
+Ridge regression,Sensitivity,Total S2 - S2 Balanced,0.0,S2,S2
+Lasso regression,Sensitivity,Total S2 - S2 Balanced,0.0,S2,S2
+ElasticNet regression,Sensitivity,Total S2 - S2 Balanced,0.0,S2,S2
+XGBoost,Specificity,Total S2 - S2 Balanced,0.0,S2,S2
+LightGBM,Specificity,Total S2 - S2 Balanced,0.0,S2,S2
+Random Forest,Specificity,Total S2 - S2 Balanced,0.0,S2,S2
+Ridge regression,Specificity,Total S2 - S2 Balanced,0.0,S2,S2
+Lasso regression,Specificity,Total S2 - S2 Balanced,0.0,S2,S2
+ElasticNet regression,Specificity,Total S2 - S2 Balanced,0.0,S2,S2
+XGBoost,AUPRC value,Total S3 - S3 Balanced,0.0,S3,S3
+LightGBM,AUPRC value,Total S3 - S3 Balanced,0.0,S3,S3
+Random Forest,AUPRC value,Total S3 - S3 Balanced,0.0,S3,S3
+Ridge regression,AUPRC value,Total S3 - S3 Balanced,0.0,S3,S3
+Lasso regression,AUPRC value,Total S3 - S3 Balanced,0.0,S3,S3
+ElasticNet regression,AUPRC value,Total S3 - S3 Balanced,0.0,S3,S3
+XGBoost,AUROC value,Total S3 - S3 Balanced,0.0,S3,S3
+LightGBM,AUROC value,Total S3 - S3 Balanced,0.0,S3,S3
+Random Forest,AUROC value,Total S3 - S3 Balanced,0.0,S3,S3
+Ridge regression,AUROC value,Total S3 - S3 Balanced,0.0,S3,S3
+Lasso regression,AUROC value,Total S3 - S3 Balanced,0.0,S3,S3
+ElasticNet regression,AUROC value,Total S3 - S3 Balanced,0.0,S3,S3
+XGBoost,Precision,Total S3 - S3 Balanced,0.0,S3,S3
+LightGBM,Precision,Total S3 - S3 Balanced,0.0,S3,S3
+Random Forest,Precision,Total S3 - S3 Balanced,0.0,S3,S3
+Ridge regression,Precision,Total S3 - S3 Balanced,0.0,S3,S3
+Lasso regression,Precision,Total S3 - S3 Balanced,0.0,S3,S3
+ElasticNet regression,Precision,Total S3 - S3 Balanced,0.0,S3,S3
+XGBoost,Sensitivity,Total S3 - S3 Balanced,0.0,S3,S3
+LightGBM,Sensitivity,Total S3 - S3 Balanced,0.0,S3,S3
+Random Forest,Sensitivity,Total S3 - S3 Balanced,0.0,S3,S3
+Ridge regression,Sensitivity,Total S3 - S3 Balanced,0.0,S3,S3
+Lasso regression,Sensitivity,Total S3 - S3 Balanced,0.0,S3,S3
+ElasticNet regression,Sensitivity,Total S3 - S3 Balanced,0.0,S3,S3
+XGBoost,Specificity,Total S3 - S3 Balanced,0.0,S3,S3
+LightGBM,Specificity,Total S3 - S3 Balanced,0.0,S3,S3
+Random Forest,Specificity,Total S3 - S3 Balanced,0.0,S3,S3
+Ridge regression,Specificity,Total S3 - S3 Balanced,0.0,S3,S3
+Lasso regression,Specificity,Total S3 - S3 Balanced,0.0,S3,S3
+ElasticNet regression,Specificity,Total S3 - S3 Balanced,0.0,S3,S3
+XGBoost,AUPRC value,Total S4 - S4 Balanced,0.0,S4,S4
+LightGBM,AUPRC value,Total S4 - S4 Balanced,0.0,S4,S4
+Random Forest,AUPRC value,Total S4 - S4 Balanced,0.0,S4,S4
+Ridge regression,AUPRC value,Total S4 - S4 Balanced,0.0,S4,S4
+Lasso regression,AUPRC value,Total S4 - S4 Balanced,0.0,S4,S4
+ElasticNet regression,AUPRC value,Total S4 - S4 Balanced,0.0,S4,S4
+XGBoost,AUROC value,Total S4 - S4 Balanced,0.0,S4,S4
+LightGBM,AUROC value,Total S4 - S4 Balanced,0.0,S4,S4
+Random Forest,AUROC value,Total S4 - S4 Balanced,0.0,S4,S4
+Ridge regression,AUROC value,Total S4 - S4 Balanced,0.0,S4,S4
+Lasso regression,AUROC value,Total S4 - S4 Balanced,0.0,S4,S4
+ElasticNet regression,AUROC value,Total S4 - S4 Balanced,0.0,S4,S4
+XGBoost,Precision,Total S4 - S4 Balanced,0.0,S4,S4
+LightGBM,Precision,Total S4 - S4 Balanced,0.0,S4,S4
+Random Forest,Precision,Total S4 - S4 Balanced,0.0,S4,S4
+Ridge regression,Precision,Total S4 - S4 Balanced,0.0,S4,S4
+Lasso regression,Precision,Total S4 - S4 Balanced,0.0,S4,S4
+ElasticNet regression,Precision,Total S4 - S4 Balanced,0.0,S4,S4
+XGBoost,Sensitivity,Total S4 - S4 Balanced,0.0,S4,S4
+LightGBM,Sensitivity,Total S4 - S4 Balanced,0.0,S4,S4
+Random Forest,Sensitivity,Total S4 - S4 Balanced,0.0,S4,S4
+Ridge regression,Sensitivity,Total S4 - S4 Balanced,0.0,S4,S4
+Lasso regression,Sensitivity,Total S4 - S4 Balanced,0.0,S4,S4
+ElasticNet regression,Sensitivity,Total S4 - S4 Balanced,0.0,S4,S4
+XGBoost,Specificity,Total S4 - S4 Balanced,0.0,S4,S4
+LightGBM,Specificity,Total S4 - S4 Balanced,0.0,S4,S4
+Random Forest,Specificity,Total S4 - S4 Balanced,0.0,S4,S4
+Ridge regression,Specificity,Total S4 - S4 Balanced,0.0,S4,S4
+Lasso regression,Specificity,Total S4 - S4 Balanced,0.0,S4,S4
+ElasticNet regression,Specificity,Total S4 - S4 Balanced,0.0,S4,S4
+XGBoost,AUPRC value,Total S5 - S5 Balanced,0.0,S5,S5
+LightGBM,AUPRC value,Total S5 - S5 Balanced,0.0,S5,S5
+Random Forest,AUPRC value,Total S5 - S5 Balanced,0.0,S5,S5
+Ridge regression,AUPRC value,Total S5 - S5 Balanced,0.0,S5,S5
+Lasso regression,AUPRC value,Total S5 - S5 Balanced,0.0,S5,S5
+ElasticNet regression,AUPRC value,Total S5 - S5 Balanced,0.0,S5,S5
+XGBoost,AUROC value,Total S5 - S5 Balanced,0.0,S5,S5
+LightGBM,AUROC value,Total S5 - S5 Balanced,0.0,S5,S5
+Random Forest,AUROC value,Total S5 - S5 Balanced,0.0,S5,S5
+Ridge regression,AUROC value,Total S5 - S5 Balanced,0.0,S5,S5
+Lasso regression,AUROC value,Total S5 - S5 Balanced,0.0,S5,S5
+ElasticNet regression,AUROC value,Total S5 - S5 Balanced,0.0,S5,S5
+XGBoost,Precision,Total S5 - S5 Balanced,0.0,S5,S5
+LightGBM,Precision,Total S5 - S5 Balanced,0.0,S5,S5
+Random Forest,Precision,Total S5 - S5 Balanced,0.0,S5,S5
+Ridge regression,Precision,Total S5 - S5 Balanced,0.0,S5,S5
+Lasso regression,Precision,Total S5 - S5 Balanced,0.0,S5,S5
+ElasticNet regression,Precision,Total S5 - S5 Balanced,0.0,S5,S5
+XGBoost,Sensitivity,Total S5 - S5 Balanced,0.0,S5,S5
+LightGBM,Sensitivity,Total S5 - S5 Balanced,0.0,S5,S5
+Random Forest,Sensitivity,Total S5 - S5 Balanced,0.0,S5,S5
+Ridge regression,Sensitivity,Total S5 - S5 Balanced,0.0,S5,S5
+Lasso regression,Sensitivity,Total S5 - S5 Balanced,0.0,S5,S5
+ElasticNet regression,Sensitivity,Total S5 - S5 Balanced,0.0,S5,S5
+XGBoost,Specificity,Total S5 - S5 Balanced,0.0,S5,S5
+LightGBM,Specificity,Total S5 - S5 Balanced,0.0,S5,S5
+Random Forest,Specificity,Total S5 - S5 Balanced,0.0,S5,S5
+Ridge regression,Specificity,Total S5 - S5 Balanced,0.0,S5,S5
+Lasso regression,Specificity,Total S5 - S5 Balanced,0.0,S5,S5
+ElasticNet regression,Specificity,Total S5 - S5 Balanced,0.0,S5,S5

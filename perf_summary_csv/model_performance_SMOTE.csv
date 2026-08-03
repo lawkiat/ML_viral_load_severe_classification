@@ -1,0 +1,241 @@
+Metrics,estimate,lower,upper,models,Model,scenario
+AUPRC value,40.4812,22.3328,65.7593,XGBoost (No VL info & SMOTE),XGBoost,S1
+AUROC_value,91.5237,80.6452,97.6636,XGBoost (No VL info & SMOTE),XGBoost,S1
+Accuracy,87.6314,81.3822,93.0665,XGBoost (No VL info & SMOTE),XGBoost,S1
+Accuracy_train,86.4616,81.2513,90.4322,XGBoost (No VL info & SMOTE),XGBoost,S1
+NPV,99.3997,98.3108,100.0,XGBoost (No VL info & SMOTE),XGBoost,S1
+Precision,18.1561,12.3177,26.8013,XGBoost (No VL info & SMOTE),XGBoost,S1
+Sensitivity,82.7,50.0,100.0,XGBoost (No VL info & SMOTE),XGBoost,S1
+Specificity,87.785,80.9657,94.081,XGBoost (No VL info & SMOTE),XGBoost,S1
+AUPRC value,39.6819,19.6116,61.3963,XGBoost (VL symp simulated & SMOTE),XGBoost,S2
+AUROC_value,91.176,79.7924,97.5389,XGBoost (VL symp simulated & SMOTE),XGBoost,S2
+Accuracy,88.8338,83.9879,93.5272,XGBoost (VL symp simulated & SMOTE),XGBoost,S2
+Accuracy_train,86.3551,81.6965,90.4102,XGBoost (VL symp simulated & SMOTE),XGBoost,S2
+NPV,99.2729,98.3301,100.0,XGBoost (VL symp simulated & SMOTE),XGBoost,S2
+Precision,19.076,13.6383,29.1028,XGBoost (VL symp simulated & SMOTE),XGBoost,S2
+Sensitivity,78.8,50.0,100.0,XGBoost (VL symp simulated & SMOTE),XGBoost,S2
+Specificity,89.1464,84.1121,94.2601,XGBoost (VL symp simulated & SMOTE),XGBoost,S2
+AUPRC value,43.5403,24.7038,64.8809,XGBoost (VL diag & SMOTE),XGBoost,S3
+AUROC_value,92.8433,84.2551,98.2773,XGBoost (VL diag & SMOTE),XGBoost,S3
+Accuracy,89.8429,84.7356,93.6556,XGBoost (VL diag & SMOTE),XGBoost,S3
+Accuracy_train,86.3126,81.7952,91.4901,XGBoost (VL diag & SMOTE),XGBoost,S3
+NPV,99.3111,98.6506,100.0,XGBoost (VL diag & SMOTE),XGBoost,S3
+Precision,20.8185,14.0774,30.5478,XGBoost (VL diag & SMOTE),XGBoost,S3
+Sensitivity,79.8,60.0,100.0,XGBoost (VL diag & SMOTE),XGBoost,S3
+Specificity,90.1558,84.8676,94.0966,XGBoost (VL diag & SMOTE),XGBoost,S3
+AUPRC value,43.3939,21.7415,65.9645,XGBoost (VL diag + 1 & SMOTE),XGBoost,S4
+AUROC_value,93.2148,85.7114,98.2488,XGBoost (VL diag + 1 & SMOTE),XGBoost,S4
+Accuracy,87.4743,82.6208,91.5408,XGBoost (VL diag + 1 & SMOTE),XGBoost,S4
+Accuracy_train,86.5997,82.3196,90.736,XGBoost (VL diag + 1 & SMOTE),XGBoost,S4
+NPV,99.3785,98.4374,100.0,XGBoost (VL diag + 1 & SMOTE),XGBoost,S4
+Precision,17.5414,12.7716,24.3015,XGBoost (VL diag + 1 & SMOTE),XGBoost,S4
+Sensitivity,82.3,54.75,100.0,XGBoost (VL diag + 1 & SMOTE),XGBoost,S4
+Specificity,87.6355,82.5389,91.6044,XGBoost (VL diag + 1 & SMOTE),XGBoost,S4
+AUPRC value,44.7082,22.3797,63.8181,XGBoost (VL diag + 2 & SMOTE),XGBoost,S5
+AUROC_value,93.6593,87.3107,98.2103,XGBoost (VL diag + 2 & SMOTE),XGBoost,S5
+Accuracy,88.6979,84.5921,92.145,XGBoost (VL diag + 2 & SMOTE),XGBoost,S5
+Accuracy_train,87.2825,83.2269,91.4901,XGBoost (VL diag + 2 & SMOTE),XGBoost,S5
+NPV,99.3846,98.3271,100.0,XGBoost (VL diag + 2 & SMOTE),XGBoost,S5
+Precision,19.1441,13.5135,25.7627,XGBoost (VL diag + 2 & SMOTE),XGBoost,S5
+Sensitivity,82.2,50.0,100.0,XGBoost (VL diag + 2 & SMOTE),XGBoost,S5
+Specificity,88.9003,84.4237,92.8349,XGBoost (VL diag + 2 & SMOTE),XGBoost,S5
+AUPRC value,38.1486,17.7473,62.3,LightGBM (No VL info & SMOTE),LightGBM,S1
+AUROC_value,91.3522,80.2948,96.9942,LightGBM (No VL info & SMOTE),LightGBM,S1
+Accuracy,77.6828,57.5453,89.139,LightGBM (No VL info & SMOTE),LightGBM,S1
+Accuracy_train,83.8505,72.4312,89.8585,LightGBM (No VL info & SMOTE),LightGBM,S1
+NPV,99.5654,98.369,100.0,LightGBM (No VL info & SMOTE),LightGBM,S1
+Precision,12.5191,5.3598,20.4884,LightGBM (No VL info & SMOTE),LightGBM,S1
+Sensitivity,89.1,64.75,100.0,LightGBM (No VL info & SMOTE),LightGBM,S1
+Specificity,77.3271,56.3863,89.2601,LightGBM (No VL info & SMOTE),LightGBM,S1
+AUPRC value,39.0655,18.7118,61.7642,LightGBM (VL symp simulated & SMOTE),LightGBM,S2
+AUROC_value,91.6016,80.5093,96.6713,LightGBM (VL symp simulated & SMOTE),LightGBM,S2
+Accuracy,80.4139,58.1495,95.0227,LightGBM (VL symp simulated & SMOTE),LightGBM,S2
+Accuracy_train,84.0447,73.8162,90.0584,LightGBM (VL symp simulated & SMOTE),LightGBM,S2
+NPV,99.4324,98.0921,100.0,LightGBM (VL symp simulated & SMOTE),LightGBM,S2
+Precision,15.9241,5.6703,33.3333,LightGBM (VL symp simulated & SMOTE),LightGBM,S2
+Sensitivity,84.1,50.0,100.0,LightGBM (VL symp simulated & SMOTE),LightGBM,S2
+Specificity,80.2991,57.1573,96.1137,LightGBM (VL symp simulated & SMOTE),LightGBM,S2
+AUPRC value,41.2322,23.9557,60.7583,LightGBM (VL diag & SMOTE),LightGBM,S3
+AUROC_value,92.5391,79.1507,97.6402,LightGBM (VL diag & SMOTE),LightGBM,S3
+Accuracy,85.6314,63.1269,95.0227,LightGBM (VL diag & SMOTE),LightGBM,S3
+Accuracy_train,85.8396,77.2884,90.6893,LightGBM (VL diag & SMOTE),LightGBM,S3
+NPV,99.3207,98.2282,100.0,LightGBM (VL diag & SMOTE),LightGBM,S3
+Precision,18.7926,7.0556,34.7333,LightGBM (VL diag & SMOTE),LightGBM,S3
+Sensitivity,80.5,50.0,100.0,LightGBM (VL diag & SMOTE),LightGBM,S3
+Specificity,85.7913,62.7648,96.1137,LightGBM (VL diag & SMOTE),LightGBM,S3
+AUPRC value,42.6251,24.2361,64.3404,LightGBM (VL diag + 1 & SMOTE),LightGBM,S4
+AUROC_value,92.5816,84.1452,97.986,LightGBM (VL diag + 1 & SMOTE),LightGBM,S4
+Accuracy,87.5589,64.3051,95.1662,LightGBM (VL diag + 1 & SMOTE),LightGBM,S4
+Accuracy_train,85.6796,77.4831,90.8917,LightGBM (VL diag + 1 & SMOTE),LightGBM,S4
+NPV,99.3083,98.3187,100.0,LightGBM (VL diag + 1 & SMOTE),LightGBM,S4
+Precision,20.6215,7.77,34.9242,LightGBM (VL diag + 1 & SMOTE),LightGBM,S4
+Sensitivity,79.7,50.0,100.0,LightGBM (VL diag + 1 & SMOTE),LightGBM,S4
+Specificity,87.8037,63.1931,96.2617,LightGBM (VL diag + 1 & SMOTE),LightGBM,S4
+AUPRC value,41.8833,20.8132,61.6987,LightGBM (VL diag + 2 & SMOTE),LightGBM,S5
+AUROC_value,92.9051,82.8201,98.0495,LightGBM (VL diag + 2 & SMOTE),LightGBM,S5
+Accuracy,88.4955,68.2704,95.1662,LightGBM (VL diag + 2 & SMOTE),LightGBM,S5
+Accuracy_train,86.5493,80.8827,91.263,LightGBM (VL diag + 2 & SMOTE),LightGBM,S5
+NPV,99.2908,98.3735,100.0,LightGBM (VL diag + 2 & SMOTE),LightGBM,S5
+Precision,21.0364,8.7673,36.1909,LightGBM (VL diag + 2 & SMOTE),LightGBM,S5
+Sensitivity,79.1,50.0,100.0,LightGBM (VL diag + 2 & SMOTE),LightGBM,S5
+Specificity,88.7882,67.2819,96.2617,LightGBM (VL diag + 2 & SMOTE),LightGBM,S5
+AUPRC value,37.9473,19.9196,61.9078,Random Forest (No VL info & SMOTE),Random Forest,S1
+AUROC_value,92.7111,85.6441,97.6429,Random Forest (No VL info & SMOTE),Random Forest,S1
+Accuracy,87.6828,79.9018,94.4184,Random Forest (No VL info & SMOTE),Random Forest,S1
+Accuracy_train,88.4408,84.5145,92.0145,Random Forest (No VL info & SMOTE),Random Forest,S1
+NPV,99.3575,98.6076,100.0,Random Forest (No VL info & SMOTE),Random Forest,S1
+Precision,18.3367,11.7246,31.0714,Random Forest (No VL info & SMOTE),Random Forest,S1
+Sensitivity,81.5,60.0,100.0,Random Forest (No VL info & SMOTE),Random Forest,S1
+Specificity,87.8754,79.5872,95.0156,Random Forest (No VL info & SMOTE),Random Forest,S1
+AUPRC value,37.6844,19.1849,63.6578,Random Forest (VL symp simulated & SMOTE),Random Forest,S2
+AUROC_value,92.4702,84.7445,97.4264,Random Forest (VL symp simulated & SMOTE),Random Forest,S2
+Accuracy,88.5076,81.571,93.3535,Random Forest (VL symp simulated & SMOTE),Random Forest,S2
+Accuracy_train,89.2586,86.0774,92.6571,Random Forest (VL symp simulated & SMOTE),Random Forest,S2
+NPV,99.279,98.6365,100.0,Random Forest (VL symp simulated & SMOTE),Random Forest,S2
+Precision,18.9007,11.7966,27.9545,Random Forest (VL symp simulated & SMOTE),Random Forest,S2
+Sensitivity,79.1,60.0,100.0,Random Forest (VL symp simulated & SMOTE),Random Forest,S2
+Specificity,88.8006,80.9969,94.5561,Random Forest (VL symp simulated & SMOTE),Random Forest,S2
+AUPRC value,42.6382,20.641,67.2396,Random Forest (VL diag & SMOTE),Random Forest,S3
+AUROC_value,93.5528,84.785,98.148,Random Forest (VL diag & SMOTE),Random Forest,S3
+Accuracy,89.4894,83.0665,93.3535,Random Forest (VL diag & SMOTE),Random Forest,S3
+Accuracy_train,89.716,86.8614,92.9712,Random Forest (VL diag & SMOTE),Random Forest,S3
+NPV,99.3577,98.6732,100.0,Random Forest (VL diag & SMOTE),Random Forest,S3
+Precision,20.6041,12.7484,29.1028,Random Forest (VL diag & SMOTE),Random Forest,S3
+Sensitivity,81.2,60.0,100.0,Random Forest (VL diag & SMOTE),Random Forest,S3
+Specificity,89.7477,82.7025,94.081,Random Forest (VL diag & SMOTE),Random Forest,S3
+AUPRC value,44.3261,21.3254,69.4472,Random Forest (VL diag + 1 & SMOTE),Random Forest,S4
+AUROC_value,93.8879,85.3224,98.567,Random Forest (VL diag + 1 & SMOTE),Random Forest,S4
+Accuracy,89.5257,84.577,93.21,Random Forest (VL diag + 1 & SMOTE),Random Forest,S4
+Accuracy_train,90.6391,87.8453,93.4631,Random Forest (VL diag + 1 & SMOTE),Random Forest,S4
+NPV,99.3473,98.3441,100.0,Random Forest (VL diag + 1 & SMOTE),Random Forest,S4
+Precision,20.4276,14.1961,28.125,Random Forest (VL diag + 1 & SMOTE),Random Forest,S4
+Sensitivity,80.9,50.0,100.0,Random Forest (VL diag + 1 & SMOTE),Random Forest,S4
+Specificity,89.7944,84.2601,93.6215,Random Forest (VL diag + 1 & SMOTE),Random Forest,S4
+AUPRC value,45.3322,22.2453,67.6982,Random Forest (VL diag + 2 & SMOTE),Random Forest,S5
+AUROC_value,94.2847,87.243,98.4899,Random Forest (VL diag + 2 & SMOTE),Random Forest,S5
+Accuracy,89.8248,84.2749,93.3535,Random Forest (VL diag + 2 & SMOTE),Random Forest,S5
+Accuracy_train,90.9979,88.2386,93.7967,Random Forest (VL diag + 2 & SMOTE),Random Forest,S5
+NPV,99.3557,98.3813,100.0,Random Forest (VL diag + 2 & SMOTE),Random Forest,S5
+Precision,20.9718,13.9916,29.1094,Random Forest (VL diag + 2 & SMOTE),Random Forest,S5
+Sensitivity,81.1,50.0,100.0,Random Forest (VL diag + 2 & SMOTE),Random Forest,S5
+Specificity,90.0966,83.9486,94.081,Random Forest (VL diag + 2 & SMOTE),Random Forest,S5
+AUPRC value,36.7286,17.4064,58.7036,Ridge regression (No VL info & SMOTE),Ridge regression,S1
+AUROC_value,92.1612,82.4295,97.5012,Ridge regression (No VL info & SMOTE),Ridge regression,S1
+Accuracy,86.8912,80.3474,92.1601,Ridge regression (No VL info & SMOTE),Ridge regression,S1
+Accuracy_train,87.8702,83.2386,91.851,Ridge regression (No VL info & SMOTE),Ridge regression,S1
+NPV,99.4612,98.6607,100.0,Ridge regression (No VL info & SMOTE),Ridge regression,S1
+Precision,17.4454,11.5661,25.7143,Ridge regression (No VL info & SMOTE),Ridge regression,S1
+Sensitivity,84.7,60.0,100.0,Ridge regression (No VL info & SMOTE),Ridge regression,S1
+Specificity,86.9595,79.7352,92.6869,Ridge regression (No VL info & SMOTE),Ridge regression,S1
+AUPRC value,37.4123,17.554,60.8927,Ridge regression (VL symp simulated & SMOTE),Ridge regression,S2
+AUROC_value,92.0629,82.7718,97.7072,Ridge regression (VL symp simulated & SMOTE),Ridge regression,S2
+Accuracy,86.9154,80.3474,92.1601,Ridge regression (VL symp simulated & SMOTE),Ridge regression,S2
+Accuracy_train,87.96,83.2217,91.7718,Ridge regression (VL symp simulated & SMOTE),Ridge regression,S2
+NPV,99.4416,98.6348,100.0,Ridge regression (VL symp simulated & SMOTE),Ridge regression,S2
+Precision,17.3145,11.7708,24.32,Ridge regression (VL symp simulated & SMOTE),Ridge regression,S2
+Sensitivity,84.1,60.0,100.0,Ridge regression (VL symp simulated & SMOTE),Ridge regression,S2
+Specificity,87.0031,80.2103,93.014,Ridge regression (VL symp simulated & SMOTE),Ridge regression,S2
+AUPRC value,41.373,18.7843,63.1072,Ridge regression (VL diag & SMOTE),Ridge regression,S3
+AUROC_value,92.8991,83.6643,98.0093,Ridge regression (VL diag & SMOTE),Ridge regression,S3
+Accuracy,87.6042,81.1103,92.145,Ridge regression (VL diag & SMOTE),Ridge regression,S3
+Accuracy_train,88.8603,85.0714,92.2144,Ridge regression (VL diag & SMOTE),Ridge regression,S3
+NPV,99.4302,98.5988,100.0,Ridge regression (VL diag & SMOTE),Ridge regression,S3
+Precision,18.0843,12.3211,25.3365,Ridge regression (VL diag & SMOTE),Ridge regression,S3
+Sensitivity,83.7,60.0,100.0,Ridge regression (VL diag & SMOTE),Ridge regression,S3
+Specificity,87.7259,80.8333,92.6869,Ridge regression (VL diag & SMOTE),Ridge regression,S3
+AUPRC value,41.6144,19.1506,62.4719,Ridge regression (VL diag + 1 & SMOTE),Ridge regression,S4
+AUROC_value,93.0857,83.5171,98.1519,Ridge regression (VL diag + 1 & SMOTE),Ridge regression,S4
+Accuracy,87.8671,81.1103,92.4622,Ridge regression (VL diag + 1 & SMOTE),Ridge regression,S4
+Accuracy_train,89.4585,86.1072,92.8647,Ridge regression (VL diag + 1 & SMOTE),Ridge regression,S4
+NPV,99.4454,98.662,100.0,Ridge regression (VL diag + 1 & SMOTE),Ridge regression,S4
+Precision,18.4942,12.5836,26.9143,Ridge regression (VL diag + 1 & SMOTE),Ridge regression,S4
+Sensitivity,84.1,60.0,100.0,Ridge regression (VL diag + 1 & SMOTE),Ridge regression,S4
+Specificity,87.9844,80.9969,92.8349,Ridge regression (VL diag + 1 & SMOTE),Ridge regression,S4
+AUPRC value,42.9488,18.8227,65.1358,Ridge regression (VL diag + 2 & SMOTE),Ridge regression,S5
+AUROC_value,93.2667,83.9634,98.1994,Ridge regression (VL diag + 2 & SMOTE),Ridge regression,S5
+Accuracy,88.0967,81.8731,92.4471,Ridge regression (VL diag + 2 & SMOTE),Ridge regression,S5
+Accuracy_train,89.7638,86.4213,93.0971,Ridge regression (VL diag + 2 & SMOTE),Ridge regression,S5
+NPV,99.4608,98.662,100.0,Ridge regression (VL diag + 2 & SMOTE),Ridge regression,S5
+Precision,18.859,12.8882,26.8917,Ridge regression (VL diag + 2 & SMOTE),Ridge regression,S5
+Sensitivity,84.5,60.0,100.0,Ridge regression (VL diag + 2 & SMOTE),Ridge regression,S5
+Specificity,88.2087,81.7679,92.8505,Ridge regression (VL diag + 2 & SMOTE),Ridge regression,S5
+AUPRC value,36.2211,16.5175,59.5285,Lasso regression (No VL info & SMOTE),Lasso regression,S1
+AUROC_value,92.1385,83.2469,97.5273,Lasso regression (No VL info & SMOTE),Lasso regression,S1
+Accuracy,86.8308,80.1888,92.4471,Lasso regression (No VL info & SMOTE),Lasso regression,S1
+Accuracy_train,87.9117,83.2931,91.9821,Lasso regression (No VL info & SMOTE),Lasso regression,S1
+NPV,99.4476,98.6274,100.0,Lasso regression (No VL info & SMOTE),Lasso regression,S1
+Precision,17.3534,11.1708,25.4234,Lasso regression (No VL info & SMOTE),Lasso regression,S1
+Sensitivity,84.3,60.0,100.0,Lasso regression (No VL info & SMOTE),Lasso regression,S1
+Specificity,86.9097,79.7352,93.162,Lasso regression (No VL info & SMOTE),Lasso regression,S1
+AUPRC value,35.0961,16.4274,61.0831,Lasso regression (VL symp simulated & SMOTE),Lasso regression,S2
+AUROC_value,91.9813,83.4186,97.7321,Lasso regression (VL symp simulated & SMOTE),Lasso regression,S2
+Accuracy,86.6586,78.6782,92.4471,Lasso regression (VL symp simulated & SMOTE),Lasso regression,S2
+Accuracy_train,87.9154,83.3749,92.0093,Lasso regression (VL symp simulated & SMOTE),Lasso regression,S2
+NPV,99.436,98.6274,100.0,Lasso regression (VL symp simulated & SMOTE),Lasso regression,S2
+Precision,17.1672,11.0167,25.4234,Lasso regression (VL symp simulated & SMOTE),Lasso regression,S2
+Sensitivity,84.0,60.0,100.0,Lasso regression (VL symp simulated & SMOTE),Lasso regression,S2
+Specificity,86.7414,78.3411,93.162,Lasso regression (VL symp simulated & SMOTE),Lasso regression,S2
+AUPRC value,40.4548,17.9522,64.7,Lasso regression (VL diag & SMOTE),Lasso regression,S3
+AUROC_value,92.9492,83.3583,97.852,Lasso regression (VL diag & SMOTE),Lasso regression,S3
+Accuracy,87.142,79.4562,92.6057,Lasso regression (VL diag & SMOTE),Lasso regression,S3
+Accuracy_train,88.8307,85.0169,92.4714,Lasso regression (VL diag & SMOTE),Lasso regression,S3
+NPV,99.4584,98.6532,100.0,Lasso regression (VL diag & SMOTE),Lasso regression,S3
+Precision,17.8153,11.5994,27.3667,Lasso regression (VL diag & SMOTE),Lasso regression,S3
+Sensitivity,84.6,60.0,100.0,Lasso regression (VL diag & SMOTE),Lasso regression,S3
+Specificity,87.2212,78.9642,92.8505,Lasso regression (VL diag & SMOTE),Lasso regression,S3
+AUPRC value,39.4551,16.8041,65.9939,Lasso regression (VL diag + 1 & SMOTE),Lasso regression,S4
+AUROC_value,93.2361,84.5413,98.1877,Lasso regression (VL diag + 1 & SMOTE),Lasso regression,S4
+Accuracy,87.4743,80.0453,92.4471,Lasso regression (VL diag + 1 & SMOTE),Lasso regression,S4
+Accuracy_train,89.3583,85.6179,92.966,Lasso regression (VL diag + 1 & SMOTE),Lasso regression,S4
+NPV,99.4514,98.6124,100.0,Lasso regression (VL diag + 1 & SMOTE),Lasso regression,S4
+Precision,18.1258,11.9171,27.2727,Lasso regression (VL diag + 1 & SMOTE),Lasso regression,S4
+Sensitivity,84.3,60.0,100.0,Lasso regression (VL diag + 1 & SMOTE),Lasso regression,S4
+Specificity,87.5732,79.7352,92.8349,Lasso regression (VL diag + 1 & SMOTE),Lasso regression,S4
+AUPRC value,40.4784,17.1303,64.0892,Lasso regression (VL diag + 2 & SMOTE),Lasso regression,S5
+AUROC_value,93.4022,86.2344,98.1238,Lasso regression (VL diag + 2 & SMOTE),Lasso regression,S5
+Accuracy,87.6284,80.7931,92.7492,Lasso regression (VL diag + 2 & SMOTE),Lasso regression,S5
+Accuracy_train,89.6085,86.1371,92.9141,Lasso regression (VL diag + 2 & SMOTE),Lasso regression,S5
+NPV,99.4458,98.6182,100.0,Lasso regression (VL diag + 2 & SMOTE),Lasso regression,S5
+Precision,18.2773,12.3661,26.8013,Lasso regression (VL diag + 2 & SMOTE),Lasso regression,S5
+Sensitivity,84.1,60.0,100.0,Lasso regression (VL diag + 2 & SMOTE),Lasso regression,S5
+Specificity,87.7383,80.6698,93.31,Lasso regression (VL diag + 2 & SMOTE),Lasso regression,S5
+AUPRC value,36.7492,17.3134,59.3404,ElasticNet regression (No VL info & SMOTE),ElasticNet regression,S1
+AUROC_value,92.155,82.7551,97.5012,ElasticNet regression (No VL info & SMOTE),ElasticNet regression,S1
+Accuracy,87.0665,80.3474,93.0816,ElasticNet regression (No VL info & SMOTE),ElasticNet regression,S1
+Accuracy_train,87.8645,83.2386,91.851,ElasticNet regression (No VL info & SMOTE),ElasticNet regression,S1
+NPV,99.4555,98.6509,100.0,ElasticNet regression (No VL info & SMOTE),ElasticNet regression,S1
+Precision,17.728,10.8492,25.9099,ElasticNet regression (No VL info & SMOTE),ElasticNet regression,S1
+Sensitivity,84.5,60.0,100.0,ElasticNet regression (No VL info & SMOTE),ElasticNet regression,S1
+Specificity,87.1464,79.7352,93.9486,ElasticNet regression (No VL info & SMOTE),ElasticNet regression,S1
+AUPRC value,37.1994,17.6288,60.8743,ElasticNet regression (VL symp simulated & SMOTE),ElasticNet regression,S2
+AUROC_value,92.0346,82.9949,97.7188,ElasticNet regression (VL symp simulated & SMOTE),ElasticNet regression,S2
+Accuracy,87.0665,80.2039,92.3036,ElasticNet regression (VL symp simulated & SMOTE),ElasticNet regression,S2
+Accuracy_train,87.9065,83.4268,91.8017,ElasticNet regression (VL symp simulated & SMOTE),ElasticNet regression,S2
+NPV,99.4383,98.6441,100.0,ElasticNet regression (VL symp simulated & SMOTE),ElasticNet regression,S2
+Precision,17.5079,11.6895,24.6791,ElasticNet regression (VL symp simulated & SMOTE),ElasticNet regression,S2
+Sensitivity,84.0,60.0,100.0,ElasticNet regression (VL symp simulated & SMOTE),ElasticNet regression,S2
+Specificity,87.162,80.0623,93.014,ElasticNet regression (VL symp simulated & SMOTE),ElasticNet regression,S2
+AUPRC value,41.2717,18.539,63.8921,ElasticNet regression (VL diag & SMOTE),ElasticNet regression,S3
+AUROC_value,92.909,83.7048,97.9634,ElasticNet regression (VL diag & SMOTE),ElasticNet regression,S3
+Accuracy,87.6344,80.8082,92.1601,ElasticNet regression (VL diag & SMOTE),ElasticNet regression,S3
+Accuracy_train,88.8583,85.0415,92.2391,ElasticNet regression (VL diag & SMOTE),ElasticNet regression,S3
+NPV,99.4227,98.5939,100.0,ElasticNet regression (VL diag & SMOTE),ElasticNet regression,S3
+Precision,18.1155,11.9621,25.0156,ElasticNet regression (VL diag & SMOTE),ElasticNet regression,S3
+Sensitivity,83.5,60.0,100.0,ElasticNet regression (VL diag & SMOTE),ElasticNet regression,S3
+Specificity,87.7632,80.5218,92.7025,ElasticNet regression (VL diag & SMOTE),ElasticNet regression,S3
+AUPRC value,41.1384,19.0248,64.4434,ElasticNet regression (VL diag + 1 & SMOTE),ElasticNet regression,S4
+AUROC_value,93.0988,83.7991,98.1846,ElasticNet regression (VL diag + 1 & SMOTE),ElasticNet regression,S4
+Accuracy,87.9033,80.9668,92.4622,ElasticNet regression (VL diag + 1 & SMOTE),ElasticNet regression,S4
+Accuracy_train,89.4517,86.2357,92.9491,ElasticNet regression (VL diag + 1 & SMOTE),ElasticNet regression,S4
+NPV,99.435,98.6553,100.0,ElasticNet regression (VL diag + 1 & SMOTE),ElasticNet regression,S4
+Precision,18.4826,12.5,26.9143,ElasticNet regression (VL diag + 1 & SMOTE),ElasticNet regression,S4
+Sensitivity,83.8,60.0,100.0,ElasticNet regression (VL diag + 1 & SMOTE),ElasticNet regression,S4
+Specificity,88.0312,80.8333,92.6869,ElasticNet regression (VL diag + 1 & SMOTE),ElasticNet regression,S4
+AUPRC value,42.7955,19.045,66.5341,ElasticNet regression (VL diag + 2 & SMOTE),ElasticNet regression,S5
+AUROC_value,93.2847,84.116,98.2305,ElasticNet regression (VL diag + 2 & SMOTE),ElasticNet regression,S5
+Accuracy,88.0634,81.7145,92.4622,ElasticNet regression (VL diag + 2 & SMOTE),ElasticNet regression,S5
+Accuracy_train,89.7549,86.5524,93.0724,ElasticNet regression (VL diag + 2 & SMOTE),ElasticNet regression,S5
+NPV,99.4501,98.6643,100.0,ElasticNet regression (VL diag + 2 & SMOTE),ElasticNet regression,S5
+Precision,18.8,12.8882,27.3392,ElasticNet regression (VL diag + 2 & SMOTE),ElasticNet regression,S5
+Sensitivity,84.2,60.0,100.0,ElasticNet regression (VL diag + 2 & SMOTE),ElasticNet regression,S5
+Specificity,88.1838,81.6199,92.9984,ElasticNet regression (VL diag + 2 & SMOTE),ElasticNet regression,S5

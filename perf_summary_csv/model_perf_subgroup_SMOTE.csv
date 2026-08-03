@@ -1,0 +1,2017 @@
+Metrics,estimate,lower,upper,Model,scenario,criteria_fil
+AUPRC_value,24.7928,1.4076,58.0885,XGBoost,Without VL information,"Comorbidity
+1-2"
+AUROC_value,83.3832,55.917,97.555,XGBoost,Without VL information,"Comorbidity
+1-2"
+Accuracy,88.9536,80.7346,96.3768,XGBoost,Without VL information,"Comorbidity
+1-2"
+NPV,99.0278,97.2403,100.0,XGBoost,Without VL information,"Comorbidity
+1-2"
+Precision,7.6595,0.0,19.4062,XGBoost,Without VL information,"Comorbidity
+1-2"
+Sensitivity,49.65,0.0,100.0,XGBoost,Without VL information,"Comorbidity
+1-2"
+Specificity,89.6764,80.6298,98.1955,XGBoost,Without VL information,"Comorbidity
+1-2"
+AUPRC_value,51.6966,27.7448,76.8236,XGBoost,Without VL information,"Comorbidity
+≥3"
+AUROC_value,59.2711,35.4573,81.6184,XGBoost,Without VL information,"Comorbidity
+≥3"
+Accuracy,34.0204,22.5806,48.9674,XGBoost,Without VL information,"Comorbidity
+≥3"
+NPV,55.6333,0.0,100.0,XGBoost,Without VL information,"Comorbidity
+≥3"
+Precision,31.372,20.5,44.1146,XGBoost,Without VL information,"Comorbidity
+≥3"
+Sensitivity,99.1393,87.5,100.0,XGBoost,Without VL information,"Comorbidity
+≥3"
+Specificity,6.0291,0.0,21.1667,XGBoost,Without VL information,"Comorbidity
+≥3"
+AUPRC_value,31.3166,2.1011,56.0,LightGBM,Without VL information,"Comorbidity
+1-2"
+AUROC_value,85.0844,66.7586,96.5512,LightGBM,Without VL information,"Comorbidity
+1-2"
+Accuracy,78.1036,56.4983,91.1114,LightGBM,Without VL information,"Comorbidity
+1-2"
+NPV,99.4727,98.1603,100.0,LightGBM,Without VL information,"Comorbidity
+1-2"
+Precision,5.7846,0.6013,13.129,LightGBM,Without VL information,"Comorbidity
+1-2"
+Sensitivity,75.15,11.875,100.0,LightGBM,Without VL information,"Comorbidity
+1-2"
+Specificity,78.1883,55.7277,91.8366,LightGBM,Without VL information,"Comorbidity
+1-2"
+AUPRC_value,48.6311,19.9167,72.0421,LightGBM,Without VL information,"Comorbidity
+≥3"
+AUROC_value,53.4286,31.5871,77.7866,LightGBM,Without VL information,"Comorbidity
+≥3"
+Accuracy,32.1579,21.9758,47.6087,LightGBM,Without VL information,"Comorbidity
+≥3"
+NPV,35.1937,0.0,100.0,LightGBM,Without VL information,"Comorbidity
+≥3"
+Precision,30.3496,17.7668,43.3259,LightGBM,Without VL information,"Comorbidity
+≥3"
+Sensitivity,97.1857,42.8571,100.0,LightGBM,Without VL information,"Comorbidity
+≥3"
+Specificity,4.0911,0.0,20.5729,LightGBM,Without VL information,"Comorbidity
+≥3"
+AUPRC_value,17.1359,2.0119,77.1875,Random Forest,Without VL information,"Comorbidity
+1-2"
+AUROC_value,83.3741,62.7821,99.5422,Random Forest,Without VL information,"Comorbidity
+1-2"
+Accuracy,87.2819,73.9004,97.6623,Random Forest,Without VL information,"Comorbidity
+1-2"
+NPV,99.0579,97.3936,100.0,Random Forest,Without VL information,"Comorbidity
+1-2"
+Precision,7.6043,0.0,27.0,Random Forest,Without VL information,"Comorbidity
+1-2"
+Sensitivity,52.7833,0.0,100.0,Random Forest,Without VL information,"Comorbidity
+1-2"
+Specificity,87.9474,73.6102,100.0,Random Forest,Without VL information,"Comorbidity
+1-2"
+AUPRC_value,48.8668,23.4101,75.2917,Random Forest,Without VL information,"Comorbidity
+≥3"
+AUROC_value,63.8426,39.8556,84.2537,Random Forest,Without VL information,"Comorbidity
+≥3"
+Accuracy,30.7362,20.6786,43.3333,Random Forest,Without VL information,"Comorbidity
+≥3"
+NPV,6.0833,0.0,100.0,Random Forest,Without VL information,"Comorbidity
+≥3"
+Precision,30.3219,20.6786,41.6641,Random Forest,Without VL information,"Comorbidity
+≥3"
+Sensitivity,99.6071,93.4375,100.0,Random Forest,Without VL information,"Comorbidity
+≥3"
+Specificity,1.0693,0.0,14.2857,Random Forest,Without VL information,"Comorbidity
+≥3"
+AUPRC_value,23.24,1.5697,81.3542,Lasso regression,Without VL information,"Comorbidity
+1-2"
+AUROC_value,84.1145,54.3871,99.7167,Lasso regression,Without VL information,"Comorbidity
+1-2"
+Accuracy,85.0911,73.1917,95.7504,Lasso regression,Without VL information,"Comorbidity
+1-2"
+NPV,99.2118,97.3936,100.0,Lasso regression,Without VL information,"Comorbidity
+1-2"
+Precision,6.9954,0.0,18.8824,Lasso regression,Without VL information,"Comorbidity
+1-2"
+Sensitivity,63.1333,0.0,100.0,Lasso regression,Without VL information,"Comorbidity
+1-2"
+Specificity,85.5641,72.964,97.7053,Lasso regression,Without VL information,"Comorbidity
+1-2"
+AUPRC_value,44.354,17.6976,76.9654,Lasso regression,Without VL information,"Comorbidity
+≥3"
+AUROC_value,56.6801,30.9081,80.2702,Lasso regression,Without VL information,"Comorbidity
+≥3"
+Accuracy,31.893,21.9758,45.6111,Lasso regression,Without VL information,"Comorbidity
+≥3"
+NPV,25.3333,0.0,100.0,Lasso regression,Without VL information,"Comorbidity
+≥3"
+Precision,30.6727,20.6786,42.1053,Lasso regression,Without VL information,"Comorbidity
+≥3"
+Sensitivity,99.7321,100.0,100.0,Lasso regression,Without VL information,"Comorbidity
+≥3"
+Specificity,2.5833,0.0,16.25,Lasso regression,Without VL information,"Comorbidity
+≥3"
+AUPRC_value,23.1749,1.544,81.3542,Ridge regression,Without VL information,"Comorbidity
+1-2"
+AUROC_value,83.825,57.6434,99.7167,Ridge regression,Without VL information,"Comorbidity
+1-2"
+Accuracy,85.1811,72.8289,94.5947,Ridge regression,Without VL information,"Comorbidity
+1-2"
+NPV,99.2429,97.6931,100.0,Ridge regression,Without VL information,"Comorbidity
+1-2"
+Precision,7.2187,0.0,18.4167,Ridge regression,Without VL information,"Comorbidity
+1-2"
+Sensitivity,64.3333,0.0,100.0,Ridge regression,Without VL information,"Comorbidity
+1-2"
+Specificity,85.6239,72.7177,95.5042,Ridge regression,Without VL information,"Comorbidity
+1-2"
+AUPRC_value,45.1123,17.8139,76.9654,Ridge regression,Without VL information,"Comorbidity
+≥3"
+AUROC_value,57.3479,31.3125,80.2702,Ridge regression,Without VL information,"Comorbidity
+≥3"
+Accuracy,32.2728,21.9758,47.3684,Ridge regression,Without VL information,"Comorbidity
+≥3"
+NPV,29.9667,0.0,100.0,Ridge regression,Without VL information,"Comorbidity
+≥3"
+Precision,30.8294,20.6786,43.6905,Ridge regression,Without VL information,"Comorbidity
+≥3"
+Sensitivity,99.6071,93.4375,100.0,Ridge regression,Without VL information,"Comorbidity
+≥3"
+Specificity,3.2962,0.0,16.6667,Ridge regression,Without VL information,"Comorbidity
+≥3"
+AUPRC_value,23.8732,1.5855,81.3542,ElasticNet regression,Without VL information,"Comorbidity
+1-2"
+AUROC_value,83.999,57.6434,99.7167,ElasticNet regression,Without VL information,"Comorbidity
+1-2"
+Accuracy,85.3343,72.8289,96.3375,ElasticNet regression,Without VL information,"Comorbidity
+1-2"
+NPV,99.2323,97.6769,100.0,ElasticNet regression,Without VL information,"Comorbidity
+1-2"
+Precision,7.4631,0.0,27.0,ElasticNet regression,Without VL information,"Comorbidity
+1-2"
+Sensitivity,63.7333,0.0,100.0,ElasticNet regression,Without VL information,"Comorbidity
+1-2"
+Specificity,85.7925,72.7177,97.779,ElasticNet regression,Without VL information,"Comorbidity
+1-2"
+AUPRC_value,45.0536,17.8139,76.9654,ElasticNet regression,Without VL information,"Comorbidity
+≥3"
+AUROC_value,57.1313,30.9081,80.2702,ElasticNet regression,Without VL information,"Comorbidity
+≥3"
+Accuracy,32.0258,21.9758,47.0351,ElasticNet regression,Without VL information,"Comorbidity
+≥3"
+NPV,26.9667,0.0,100.0,ElasticNet regression,Without VL information,"Comorbidity
+≥3"
+Precision,30.7361,20.6786,43.6905,ElasticNet regression,Without VL information,"Comorbidity
+≥3"
+Sensitivity,99.6071,93.4375,100.0,ElasticNet regression,Without VL information,"Comorbidity
+≥3"
+Specificity,2.9169,0.0,16.25,ElasticNet regression,Without VL information,"Comorbidity
+≥3"
+AUPRC_value,13.6414,1.5417,57.1755,XGBoost,VL at symptom onset,"Comorbidity
+1-2"
+AUROC_value,81.004,57.8842,97.7547,XGBoost,VL at symptom onset,"Comorbidity
+1-2"
+Accuracy,90.4162,82.6211,96.827,XGBoost,VL at symptom onset,"Comorbidity
+1-2"
+NPV,98.8039,97.067,100.0,XGBoost,VL at symptom onset,"Comorbidity
+1-2"
+Precision,5.5181,0.0,17.4621,XGBoost,VL at symptom onset,"Comorbidity
+1-2"
+Sensitivity,37.0167,0.0,100.0,XGBoost,VL at symptom onset,"Comorbidity
+1-2"
+Specificity,91.3844,83.3251,97.9485,XGBoost,VL at symptom onset,"Comorbidity
+1-2"
+AUPRC_value,51.2196,25.3481,82.0053,XGBoost,VL at symptom onset,"Comorbidity
+≥3"
+AUROC_value,62.1829,38.6545,87.1376,XGBoost,VL at symptom onset,"Comorbidity
+≥3"
+Accuracy,34.7538,22.7273,51.5441,XGBoost,VL at symptom onset,"Comorbidity
+≥3"
+NPV,62.3833,0.0,100.0,XGBoost,VL at symptom onset,"Comorbidity
+≥3"
+Precision,31.5929,20.6786,46.4231,XGBoost,VL at symptom onset,"Comorbidity
+≥3"
+Sensitivity,99.1036,85.7143,100.0,XGBoost,VL at symptom onset,"Comorbidity
+≥3"
+Specificity,7.0455,0.0,22.2222,XGBoost,VL at symptom onset,"Comorbidity
+≥3"
+AUPRC_value,34.3023,2.4857,55.7271,LightGBM,VL at symptom onset,"Comorbidity
+1-2"
+AUROC_value,85.1322,70.1485,96.5512,LightGBM,VL at symptom onset,"Comorbidity
+1-2"
+Accuracy,81.3529,57.5365,98.7848,LightGBM,VL at symptom onset,"Comorbidity
+1-2"
+NPV,99.2067,97.1878,100.0,LightGBM,VL at symptom onset,"Comorbidity
+1-2"
+Precision,3.9716,0.0,11.1111,LightGBM,VL at symptom onset,"Comorbidity
+1-2"
+Sensitivity,59.5833,0.0,100.0,LightGBM,VL at symptom onset,"Comorbidity
+1-2"
+Specificity,81.806,57.0556,100.0,LightGBM,VL at symptom onset,"Comorbidity
+1-2"
+AUPRC_value,49.4975,21.7262,72.6786,LightGBM,VL at symptom onset,"Comorbidity
+≥3"
+AUROC_value,52.8692,33.2036,79.482,LightGBM,VL at symptom onset,"Comorbidity
+≥3"
+Accuracy,31.0818,20.6786,47.4616,LightGBM,VL at symptom onset,"Comorbidity
+≥3"
+NPV,15.8889,0.0,100.0,LightGBM,VL at symptom onset,"Comorbidity
+≥3"
+Precision,30.3053,19.6613,44.1146,LightGBM,VL at symptom onset,"Comorbidity
+≥3"
+Sensitivity,98.8571,100.0,100.0,LightGBM,VL at symptom onset,"Comorbidity
+≥3"
+Specificity,1.8945,0.0,17.0455,LightGBM,VL at symptom onset,"Comorbidity
+≥3"
+AUPRC_value,15.1745,1.8411,84.6402,Random Forest,VL at symptom onset,"Comorbidity
+1-2"
+AUROC_value,81.7849,58.0973,99.7418,Random Forest,VL at symptom onset,"Comorbidity
+1-2"
+Accuracy,88.5694,75.6977,97.007,Random Forest,VL at symptom onset,"Comorbidity
+1-2"
+NPV,98.9237,97.3936,100.0,Random Forest,VL at symptom onset,"Comorbidity
+1-2"
+Precision,6.532,0.0,20.0,Random Forest,VL at symptom onset,"Comorbidity
+1-2"
+Sensitivity,44.7667,0.0,100.0,Random Forest,VL at symptom onset,"Comorbidity
+1-2"
+Specificity,89.3839,75.9782,98.5693,Random Forest,VL at symptom onset,"Comorbidity
+1-2"
+AUPRC_value,48.5492,23.5323,80.0778,Random Forest,VL at symptom onset,"Comorbidity
+≥3"
+AUROC_value,65.5679,39.9405,89.1634,Random Forest,VL at symptom onset,"Comorbidity
+≥3"
+Accuracy,31.0602,20.6786,43.3333,Random Forest,VL at symptom onset,"Comorbidity
+≥3"
+NPV,11.7667,0.0,100.0,Random Forest,VL at symptom onset,"Comorbidity
+≥3"
+Precision,30.3952,20.6786,41.6641,Random Forest,VL at symptom onset,"Comorbidity
+≥3"
+Sensitivity,99.3571,87.5,100.0,Random Forest,VL at symptom onset,"Comorbidity
+≥3"
+Specificity,1.6544,0.0,19.4062,Random Forest,VL at symptom onset,"Comorbidity
+≥3"
+AUPRC_value,19.9287,1.8801,100.0,Lasso regression,VL at symptom onset,"Comorbidity
+1-2"
+AUROC_value,83.6624,54.1546,100.0,Lasso regression,VL at symptom onset,"Comorbidity
+1-2"
+Accuracy,84.7331,70.3283,95.4691,Lasso regression,VL at symptom onset,"Comorbidity
+1-2"
+NPV,99.1995,97.3936,100.0,Lasso regression,VL at symptom onset,"Comorbidity
+1-2"
+Precision,6.931,0.0,18.4167,Lasso regression,VL at symptom onset,"Comorbidity
+1-2"
+Sensitivity,62.2167,0.0,100.0,Lasso regression,VL at symptom onset,"Comorbidity
+1-2"
+Specificity,85.2123,70.3076,97.2546,Lasso regression,VL at symptom onset,"Comorbidity
+1-2"
+AUPRC_value,42.898,19.5022,73.9436,Lasso regression,VL at symptom onset,"Comorbidity
+≥3"
+AUROC_value,56.5344,30.1515,80.4015,Lasso regression,VL at symptom onset,"Comorbidity
+≥3"
+Accuracy,32.0265,21.8056,45.6111,Lasso regression,VL at symptom onset,"Comorbidity
+≥3"
+NPV,26.1333,0.0,100.0,Lasso regression,VL at symptom onset,"Comorbidity
+≥3"
+Precision,30.7367,20.6786,42.5,Lasso regression,VL at symptom onset,"Comorbidity
+≥3"
+Sensitivity,99.5893,100.0,100.0,Lasso regression,VL at symptom onset,"Comorbidity
+≥3"
+Specificity,2.912,0.0,17.1814,Lasso regression,VL at symptom onset,"Comorbidity
+≥3"
+AUPRC_value,16.3211,1.8906,70.2472,Ridge regression,VL at symptom onset,"Comorbidity
+1-2"
+AUROC_value,83.4369,57.898,99.4596,Ridge regression,VL at symptom onset,"Comorbidity
+1-2"
+Accuracy,85.382,73.3997,94.5947,Ridge regression,VL at symptom onset,"Comorbidity
+1-2"
+NPV,99.2085,97.3839,100.0,Ridge regression,VL at symptom onset,"Comorbidity
+1-2"
+Precision,6.7518,0.0,16.0577,Ridge regression,VL at symptom onset,"Comorbidity
+1-2"
+Sensitivity,62.4667,0.0,100.0,Ridge regression,VL at symptom onset,"Comorbidity
+1-2"
+Specificity,85.8637,73.374,96.6476,Ridge regression,VL at symptom onset,"Comorbidity
+1-2"
+AUPRC_value,46.5722,21.7244,77.976,Ridge regression,VL at symptom onset,"Comorbidity
+≥3"
+AUROC_value,59.1851,34.8827,80.8863,Ridge regression,VL at symptom onset,"Comorbidity
+≥3"
+Accuracy,32.3198,20.6786,47.3684,Ridge regression,VL at symptom onset,"Comorbidity
+≥3"
+NPV,32.9667,0.0,100.0,Ridge regression,VL at symptom onset,"Comorbidity
+≥3"
+Precision,30.8493,20.6786,43.6905,Ridge regression,VL at symptom onset,"Comorbidity
+≥3"
+Sensitivity,99.6071,93.4375,100.0,Ridge regression,VL at symptom onset,"Comorbidity
+≥3"
+Specificity,3.3762,0.0,16.6667,Ridge regression,VL at symptom onset,"Comorbidity
+≥3"
+AUPRC_value,17.0675,1.8622,70.4451,ElasticNet regression,VL at symptom onset,"Comorbidity
+1-2"
+AUROC_value,83.5223,57.1625,99.4596,ElasticNet regression,VL at symptom onset,"Comorbidity
+1-2"
+Accuracy,85.5,73.0795,95.1528,ElasticNet regression,VL at symptom onset,"Comorbidity
+1-2"
+NPV,99.2101,97.5,100.0,ElasticNet regression,VL at symptom onset,"Comorbidity
+1-2"
+Precision,6.8684,0.0,17.4621,ElasticNet regression,VL at symptom onset,"Comorbidity
+1-2"
+Sensitivity,62.4167,0.0,100.0,ElasticNet regression,VL at symptom onset,"Comorbidity
+1-2"
+Specificity,85.9824,73.0519,97.2304,ElasticNet regression,VL at symptom onset,"Comorbidity
+1-2"
+AUPRC_value,46.0911,21.4603,76.3748,ElasticNet regression,VL at symptom onset,"Comorbidity
+≥3"
+AUROC_value,58.6275,33.3705,80.8863,ElasticNet regression,VL at symptom onset,"Comorbidity
+≥3"
+Accuracy,32.1219,21.9758,47.3684,ElasticNet regression,VL at symptom onset,"Comorbidity
+≥3"
+NPV,29.8,0.0,100.0,ElasticNet regression,VL at symptom onset,"Comorbidity
+≥3"
+Precision,30.747,20.6786,43.6905,ElasticNet regression,VL at symptom onset,"Comorbidity
+≥3"
+Sensitivity,99.4643,93.4375,100.0,ElasticNet regression,VL at symptom onset,"Comorbidity
+≥3"
+Specificity,3.1278,0.0,16.6667,ElasticNet regression,VL at symptom onset,"Comorbidity
+≥3"
+AUPRC_value,16.7365,1.3209,64.0278,XGBoost,VL at diagnosis,"Comorbidity
+1-2"
+AUROC_value,84.6095,64.0059,99.0918,XGBoost,VL at diagnosis,"Comorbidity
+1-2"
+Accuracy,92.4043,87.0338,96.7317,XGBoost,VL at diagnosis,"Comorbidity
+1-2"
+NPV,98.9329,97.4577,100.0,XGBoost,VL at diagnosis,"Comorbidity
+1-2"
+Precision,9.1404,0.0,25.0,XGBoost,VL at diagnosis,"Comorbidity
+1-2"
+Sensitivity,41.2667,0.0,100.0,XGBoost,VL at diagnosis,"Comorbidity
+1-2"
+Specificity,93.2935,87.6856,97.874,XGBoost,VL at diagnosis,"Comorbidity
+1-2"
+AUPRC_value,55.573,28.5053,81.0159,XGBoost,VL at diagnosis,"Comorbidity
+≥3"
+AUROC_value,69.7983,47.9824,85.9226,XGBoost,VL at diagnosis,"Comorbidity
+≥3"
+Accuracy,37.015,22.5806,58.5227,XGBoost,VL at diagnosis,"Comorbidity
+≥3"
+NPV,77.8333,0.0,100.0,XGBoost,VL at diagnosis,"Comorbidity
+≥3"
+Precision,32.3983,20.5,48.75,XGBoost,VL at diagnosis,"Comorbidity
+≥3"
+Sensitivity,98.1571,85.7143,100.0,XGBoost,VL at diagnosis,"Comorbidity
+≥3"
+Specificity,10.8041,0.0,35.5147,XGBoost,VL at diagnosis,"Comorbidity
+≥3"
+AUPRC_value,25.1222,1.2011,72.7778,LightGBM,VL at diagnosis,"Comorbidity
+1-2"
+AUROC_value,85.0795,62.8353,98.9958,LightGBM,VL at diagnosis,"Comorbidity
+1-2"
+Accuracy,86.8372,59.541,98.5994,LightGBM,VL at diagnosis,"Comorbidity
+1-2"
+NPV,99.001,97.1716,100.0,LightGBM,VL at diagnosis,"Comorbidity
+1-2"
+Precision,5.2025,0.0,21.0417,LightGBM,VL at diagnosis,"Comorbidity
+1-2"
+Sensitivity,46.3833,0.0,100.0,LightGBM,VL at diagnosis,"Comorbidity
+1-2"
+Specificity,87.582,58.9634,100.0,LightGBM,VL at diagnosis,"Comorbidity
+1-2"
+AUPRC_value,52.3539,28.8367,82.1919,LightGBM,VL at diagnosis,"Comorbidity
+≥3"
+AUROC_value,62.9057,40.2767,82.937,LightGBM,VL at diagnosis,"Comorbidity
+≥3"
+Accuracy,30.4147,20.6786,42.1053,LightGBM,VL at diagnosis,"Comorbidity
+≥3"
+NPV,4.7667,0.0,81.0,LightGBM,VL at diagnosis,"Comorbidity
+≥3"
+Precision,30.0427,20.0,41.6641,LightGBM,VL at diagnosis,"Comorbidity
+≥3"
+Sensitivity,98.7286,77.375,100.0,LightGBM,VL at diagnosis,"Comorbidity
+≥3"
+Specificity,0.9391,0.0,15.0752,LightGBM,VL at diagnosis,"Comorbidity
+≥3"
+AUPRC_value,17.8628,2.1302,100.0,Random Forest,VL at diagnosis,"Comorbidity
+1-2"
+AUROC_value,85.6364,60.8494,100.0,Random Forest,VL at diagnosis,"Comorbidity
+1-2"
+Accuracy,90.0044,79.4515,97.6048,Random Forest,VL at diagnosis,"Comorbidity
+1-2"
+NPV,99.0405,97.4749,100.0,Random Forest,VL at diagnosis,"Comorbidity
+1-2"
+Precision,9.263,0.0,33.3333,Random Forest,VL at diagnosis,"Comorbidity
+1-2"
+Sensitivity,50.1333,0.0,100.0,Random Forest,VL at diagnosis,"Comorbidity
+1-2"
+Specificity,90.7438,79.2795,98.766,Random Forest,VL at diagnosis,"Comorbidity
+1-2"
+AUPRC_value,54.4279,25.3478,83.1606,Random Forest,VL at diagnosis,"Comorbidity
+≥3"
+AUROC_value,70.6557,47.7946,88.9918,Random Forest,VL at diagnosis,"Comorbidity
+≥3"
+Accuracy,31.3672,20.6786,44.2333,Random Forest,VL at diagnosis,"Comorbidity
+≥3"
+NPV,12.1,0.0,100.0,Random Forest,VL at diagnosis,"Comorbidity
+≥3"
+Precision,30.5682,20.6786,42.5,Random Forest,VL at diagnosis,"Comorbidity
+≥3"
+Sensitivity,99.5893,93.4375,100.0,Random Forest,VL at diagnosis,"Comorbidity
+≥3"
+Specificity,2.0071,0.0,21.2592,Random Forest,VL at diagnosis,"Comorbidity
+≥3"
+AUPRC_value,22.6921,2.4247,100.0,Lasso regression,VL at diagnosis,"Comorbidity
+1-2"
+AUROC_value,85.8734,63.5715,100.0,Lasso regression,VL at diagnosis,"Comorbidity
+1-2"
+Accuracy,85.3677,72.1906,95.0401,Lasso regression,VL at diagnosis,"Comorbidity
+1-2"
+NPV,99.2815,97.9393,100.0,Lasso regression,VL at diagnosis,"Comorbidity
+1-2"
+Precision,7.7827,0.0,23.6806,Lasso regression,VL at diagnosis,"Comorbidity
+1-2"
+Sensitivity,65.25,0.0,100.0,Lasso regression,VL at diagnosis,"Comorbidity
+1-2"
+Specificity,85.7759,71.9416,96.0732,Lasso regression,VL at diagnosis,"Comorbidity
+1-2"
+AUPRC_value,50.3366,22.5037,79.6048,Lasso regression,VL at diagnosis,"Comorbidity
+≥3"
+AUROC_value,63.2513,38.2011,89.15,Lasso regression,VL at diagnosis,"Comorbidity
+≥3"
+Accuracy,32.6676,21.4286,48.75,Lasso regression,VL at diagnosis,"Comorbidity
+≥3"
+NPV,41.1667,0.0,100.0,Lasso regression,VL at diagnosis,"Comorbidity
+≥3"
+Precision,30.7745,20.6786,44.1146,Lasso regression,VL at diagnosis,"Comorbidity
+≥3"
+Sensitivity,98.1853,80.0,100.0,Lasso regression,VL at diagnosis,"Comorbidity
+≥3"
+Specificity,4.4408,0.0,20.9893,Lasso regression,VL at diagnosis,"Comorbidity
+≥3"
+AUPRC_value,22.9065,2.4848,100.0,Ridge regression,VL at diagnosis,"Comorbidity
+1-2"
+AUROC_value,85.7681,62.2562,100.0,Ridge regression,VL at diagnosis,"Comorbidity
+1-2"
+Accuracy,86.0409,74.8932,93.9667,Ridge regression,VL at diagnosis,"Comorbidity
+1-2"
+NPV,99.2636,97.9358,100.0,Ridge regression,VL at diagnosis,"Comorbidity
+1-2"
+Precision,7.595,0.0,19.1364,Ridge regression,VL at diagnosis,"Comorbidity
+1-2"
+Sensitivity,64.4667,0.0,100.0,Ridge regression,VL at diagnosis,"Comorbidity
+1-2"
+Specificity,86.4751,74.5974,94.8524,Ridge regression,VL at diagnosis,"Comorbidity
+1-2"
+AUPRC_value,51.8657,24.5472,79.9294,Ridge regression,VL at diagnosis,"Comorbidity
+≥3"
+AUROC_value,66.1014,40.2168,88.4375,Ridge regression,VL at diagnosis,"Comorbidity
+≥3"
+Accuracy,34.7764,21.9758,50.0,Ridge regression,VL at diagnosis,"Comorbidity
+≥3"
+NPV,64.15,0.0,100.0,Ridge regression,VL at diagnosis,"Comorbidity
+≥3"
+Precision,31.3022,21.1161,44.1146,Ridge regression,VL at diagnosis,"Comorbidity
+≥3"
+Sensitivity,96.7806,81.5833,100.0,Ridge regression,VL at diagnosis,"Comorbidity
+≥3"
+Specificity,8.0823,0.0,23.7765,Ridge regression,VL at diagnosis,"Comorbidity
+≥3"
+AUPRC_value,22.9722,2.5665,100.0,ElasticNet regression,VL at diagnosis,"Comorbidity
+1-2"
+AUROC_value,85.8472,62.8147,100.0,ElasticNet regression,VL at diagnosis,"Comorbidity
+1-2"
+Accuracy,86.0715,74.8746,94.2622,ElasticNet regression,VL at diagnosis,"Comorbidity
+1-2"
+NPV,99.2708,97.9422,100.0,ElasticNet regression,VL at diagnosis,"Comorbidity
+1-2"
+Precision,7.7127,0.0,19.1364,ElasticNet regression,VL at diagnosis,"Comorbidity
+1-2"
+Sensitivity,64.6667,0.0,100.0,ElasticNet regression,VL at diagnosis,"Comorbidity
+1-2"
+Specificity,86.5002,74.5974,94.9354,ElasticNet regression,VL at diagnosis,"Comorbidity
+1-2"
+AUPRC_value,51.6743,24.413,81.6075,ElasticNet regression,VL at diagnosis,"Comorbidity
+≥3"
+AUROC_value,65.8378,39.7511,87.6961,ElasticNet regression,VL at diagnosis,"Comorbidity
+≥3"
+Accuracy,34.3013,21.9758,50.0,ElasticNet regression,VL at diagnosis,"Comorbidity
+≥3"
+NPV,61.0167,0.0,100.0,ElasticNet regression,VL at diagnosis,"Comorbidity
+≥3"
+Precision,31.1415,21.1161,44.1146,ElasticNet regression,VL at diagnosis,"Comorbidity
+≥3"
+Sensitivity,96.7806,81.5833,100.0,ElasticNet regression,VL at diagnosis,"Comorbidity
+≥3"
+Specificity,7.4106,0.0,22.5315,ElasticNet regression,VL at diagnosis,"Comorbidity
+≥3"
+AUPRC_value,17.852,1.4544,67.4843,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUROC_value,85.56,68.6364,99.2258,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Accuracy,90.1447,84.0556,94.8314,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+NPV,99.0411,97.2665,100.0,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Precision,7.9408,0.0,21.6154,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Sensitivity,48.7667,0.0,100.0,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Specificity,90.8734,84.683,95.9506,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUPRC_value,57.0132,30.5226,82.4061,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUROC_value,72.7852,55.5426,89.0972,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Accuracy,39.9633,24.9913,60.5833,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+NPV,89.406,0.0,100.0,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Precision,33.3941,21.2312,48.75,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Sensitivity,97.1175,81.5833,100.0,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Specificity,15.6318,0.0,40.875,XGBoost,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUPRC_value,22.9684,1.4592,62.25,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUROC_value,84.4301,65.5837,98.7094,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Accuracy,90.234,71.1464,98.9161,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+NPV,98.8777,96.9925,100.0,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Precision,6.4931,0.0,25.0,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Sensitivity,38.6,0.0,100.0,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Specificity,91.1602,71.0256,100.0,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUPRC_value,52.9819,25.1564,79.55,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUROC_value,65.1982,40.853,86.0045,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Accuracy,30.6023,20.6786,42.1053,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+NPV,6.5,0.0,100.0,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Precision,30.2963,20.6786,42.1053,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Sensitivity,99.8,100.0,100.0,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Specificity,0.7645,0.0,8.7311,LightGBM,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUPRC_value,19.9684,2.211,85.2484,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUROC_value,86.926,70.7745,99.7013,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Accuracy,90.3379,81.6889,96.6964,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+NPV,99.0374,97.2434,100.0,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Precision,9.097,0.0,33.3333,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Sensitivity,50.0167,0.0,100.0,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Specificity,91.0837,81.4761,97.584,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUPRC_value,57.496,27.3154,82.0809,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUROC_value,73.1714,49.5833,90.5872,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Accuracy,32.5214,20.6786,48.0,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+NPV,28.8833,0.0,100.0,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Precision,30.8857,20.6786,43.3333,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Sensitivity,99.0798,85.7143,100.0,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Specificity,3.9105,0.0,23.5294,Random Forest,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUPRC_value,24.286,2.1357,100.0,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUROC_value,87.9323,69.541,100.0,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Accuracy,85.8535,73.7096,95.4812,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+NPV,99.2695,97.9002,100.0,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Precision,7.8373,0.0,25.5556,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Sensitivity,65.1833,0.0,100.0,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Specificity,86.2813,73.6538,96.3827,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUPRC_value,49.9502,22.3846,79.0619,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUROC_value,65.5693,44.2096,86.3042,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Accuracy,34.8996,22.8934,50.0,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+NPV,65.9643,0.0,100.0,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Precision,31.4456,21.4286,45.4871,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Sensitivity,97.1734,80.0,100.0,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Specificity,8.1259,0.0,28.1078,Lasso regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUPRC_value,23.622,2.2826,100.0,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUROC_value,88.2151,69.0185,100.0,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Accuracy,86.2765,74.4137,94.1536,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+NPV,99.3094,97.9611,100.0,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Precision,8.057,0.0,18.4801,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Sensitivity,66.2167,0.0,100.0,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Specificity,86.6744,74.3902,94.9552,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUPRC_value,53.548,23.8942,81.8973,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUROC_value,69.1666,49.3269,86.8456,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Accuracy,38.4703,25.5163,55.0758,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+NPV,83.6119,0.0,100.0,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Precision,32.6861,22.8934,45.817,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Sensitivity,96.5226,80.0,100.0,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Specificity,13.5862,0.0,35.5147,Ridge regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUPRC_value,24.0889,2.1707,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUROC_value,88.2196,69.3915,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Accuracy,86.2518,74.3102,94.3573,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+NPV,99.3017,97.9577,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Precision,8.0569,0.0,21.1667,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Sensitivity,65.3,0.0,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+Specificity,86.6553,74.6799,95.3986,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+1-2"
+AUPRC_value,53.2478,23.8287,83.4927,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUROC_value,68.8253,49.3269,87.5156,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Accuracy,37.8226,24.475,55.0758,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+NPV,79.4619,0.0,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Precision,32.472,22.6282,45.817,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Sensitivity,96.6655,80.0,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+Specificity,12.5765,0.0,35.5147,ElasticNet regression,VL at diagnosis + 2 days,"Comorbidity
+≥3"
+AUPRC_value,42.2939,19.6939,70.9115,XGBoost,Without VL information,"Age
+60-79"
+AUROC_value,81.0739,62.1079,96.0825,XGBoost,Without VL information,"Age
+60-79"
+Accuracy,68.1608,52.6966,83.184,XGBoost,Without VL information,"Age
+60-79"
+NPV,98.208,95.082,100.0,XGBoost,Without VL information,"Age
+60-79"
+Precision,14.2456,6.4481,22.8056,XGBoost,Without VL information,"Age
+60-79"
+Sensitivity,79.7278,38.75,100.0,XGBoost,Without VL information,"Age
+60-79"
+Specificity,67.4028,50.2306,85.9555,XGBoost,Without VL information,"Age
+60-79"
+AUPRC_value,51.2912,6.25,100.0,XGBoost,Without VL information,"Age
+≥80"
+AUROC_value,68.6107,12.9464,100.0,XGBoost,Without VL information,"Age
+≥80"
+Accuracy,50.1542,18.25,83.8636,XGBoost,Without VL information,"Age
+≥80"
+NPV,81.1147,0.0,100.0,XGBoost,Without VL information,"Age
+≥80"
+Precision,24.6905,0.0,71.0417,XGBoost,Without VL information,"Age
+≥80"
+Sensitivity,67.1667,0.0,100.0,XGBoost,Without VL information,"Age
+≥80"
+Specificity,44.6781,0.0,94.7222,XGBoost,Without VL information,"Age
+≥80"
+AUPRC_value,41.6899,23.1571,67.3633,LightGBM,Without VL information,"Age
+60-79"
+AUROC_value,79.5767,61.8455,93.3769,LightGBM,Without VL information,"Age
+60-79"
+Accuracy,49.2194,4.4435,73.2464,LightGBM,Without VL information,"Age
+60-79"
+NPV,82.4995,0.0,100.0,LightGBM,Without VL information,"Age
+60-79"
+Precision,10.5328,4.4435,17.8063,LightGBM,Without VL information,"Age
+60-79"
+Sensitivity,86.7333,57.1429,100.0,LightGBM,Without VL information,"Age
+60-79"
+Specificity,46.9303,0.0,72.998,LightGBM,Without VL information,"Age
+60-79"
+AUPRC_value,50.721,6.25,100.0,LightGBM,Without VL information,"Age
+≥80"
+AUROC_value,67.5876,20.0,100.0,LightGBM,Without VL information,"Age
+≥80"
+Accuracy,34.593,9.125,73.9205,LightGBM,Without VL information,"Age
+≥80"
+NPV,62.5,0.0,100.0,LightGBM,Without VL information,"Age
+≥80"
+Precision,22.9744,0.0,50.0,LightGBM,Without VL information,"Age
+≥80"
+Sensitivity,89.6667,0.0,100.0,LightGBM,Without VL information,"Age
+≥80"
+Specificity,19.0466,0.0,66.6667,LightGBM,Without VL information,"Age
+≥80"
+AUPRC_value,40.1308,16.2825,66.8714,Random Forest,Without VL information,"Age
+60-79"
+AUROC_value,78.5319,58.15,94.7388,Random Forest,Without VL information,"Age
+60-79"
+Accuracy,70.5743,47.6159,88.2516,Random Forest,Without VL information,"Age
+60-79"
+NPV,97.7765,95.3488,100.0,Random Forest,Without VL information,"Age
+60-79"
+Precision,14.9824,6.4479,29.3214,Random Forest,Without VL information,"Age
+60-79"
+Sensitivity,73.8813,40.0,100.0,Random Forest,Without VL information,"Age
+60-79"
+Specificity,70.3374,45.6251,89.0661,Random Forest,Without VL information,"Age
+60-79"
+AUPRC_value,50.6685,6.25,100.0,Random Forest,Without VL information,"Age
+≥80"
+AUROC_value,67.3561,20.0,100.0,Random Forest,Without VL information,"Age
+≥80"
+Accuracy,40.0498,9.6528,78.9444,Random Forest,Without VL information,"Age
+≥80"
+NPV,73.5393,0.0,100.0,Random Forest,Without VL information,"Age
+≥80"
+Precision,23.12,0.0,55.25,Random Forest,Without VL information,"Age
+≥80"
+Sensitivity,82.0,0.0,100.0,Random Forest,Without VL information,"Age
+≥80"
+Specificity,28.3968,0.0,94.0625,Random Forest,Without VL information,"Age
+≥80"
+AUPRC_value,42.1852,19.4091,71.0534,Lasso regression,Without VL information,"Age
+60-79"
+AUROC_value,80.6117,61.9517,95.8893,Lasso regression,Without VL information,"Age
+60-79"
+Accuracy,67.8912,46.9393,84.6028,Lasso regression,Without VL information,"Age
+60-79"
+NPV,98.0008,95.2087,100.0,Lasso regression,Without VL information,"Age
+60-79"
+Precision,13.909,6.1188,25.0,Lasso regression,Without VL information,"Age
+60-79"
+Sensitivity,77.3937,41.3571,100.0,Lasso regression,Without VL information,"Age
+60-79"
+Specificity,67.2615,45.0759,86.6061,Lasso regression,Without VL information,"Age
+60-79"
+AUPRC_value,52.7671,6.25,100.0,Lasso regression,Without VL information,"Age
+≥80"
+AUROC_value,70.3878,17.5,100.0,Lasso regression,Without VL information,"Age
+≥80"
+Accuracy,32.2672,0.0,73.9205,Lasso regression,Without VL information,"Age
+≥80"
+NPV,53.8714,0.0,100.0,Lasso regression,Without VL information,"Age
+≥80"
+Precision,22.3853,0.0,50.0,Lasso regression,Without VL information,"Age
+≥80"
+Sensitivity,85.5,0.0,100.0,Lasso regression,Without VL information,"Age
+≥80"
+Specificity,17.7256,0.0,75.0,Lasso regression,Without VL information,"Age
+≥80"
+AUPRC_value,41.8862,19.5158,71.0607,Ridge regression,Without VL information,"Age
+60-79"
+AUROC_value,80.7337,62.5758,95.7258,Ridge regression,Without VL information,"Age
+60-79"
+Accuracy,68.045,49.3031,83.7422,Ridge regression,Without VL information,"Age
+60-79"
+NPV,98.0336,95.5537,100.0,Ridge regression,Without VL information,"Age
+60-79"
+Precision,13.9737,6.1188,25.0,Ridge regression,Without VL information,"Age
+60-79"
+Sensitivity,77.646,42.8571,100.0,Ridge regression,Without VL information,"Age
+60-79"
+Specificity,67.4051,46.8966,85.291,Ridge regression,Without VL information,"Age
+60-79"
+AUPRC_value,52.2825,6.25,100.0,Ridge regression,Without VL information,"Age
+≥80"
+AUROC_value,70.4405,14.881,100.0,Ridge regression,Without VL information,"Age
+≥80"
+Accuracy,32.27,9.6528,71.4318,Ridge regression,Without VL information,"Age
+≥80"
+NPV,55.4048,0.0,100.0,Ridge regression,Without VL information,"Age
+≥80"
+Precision,22.0874,0.0,50.0,Ridge regression,Without VL information,"Age
+≥80"
+Sensitivity,86.3333,0.0,100.0,Ridge regression,Without VL information,"Age
+≥80"
+Specificity,17.1522,0.0,75.0,Ridge regression,Without VL information,"Age
+≥80"
+AUPRC_value,42.4412,20.8421,71.0607,ElasticNet regression,Without VL information,"Age
+60-79"
+AUROC_value,80.6908,62.0576,95.7258,ElasticNet regression,Without VL information,"Age
+60-79"
+Accuracy,68.6685,49.3031,87.1442,ElasticNet regression,Without VL information,"Age
+60-79"
+NPV,98.0118,95.3298,100.0,ElasticNet regression,Without VL information,"Age
+60-79"
+Precision,14.3335,6.3791,25.4861,ElasticNet regression,Without VL information,"Age
+60-79"
+Sensitivity,77.1937,41.3571,100.0,ElasticNet regression,Without VL information,"Age
+60-79"
+Specificity,68.0933,46.8966,88.8575,ElasticNet regression,Without VL information,"Age
+60-79"
+AUPRC_value,52.6911,6.25,100.0,ElasticNet regression,Without VL information,"Age
+≥80"
+AUROC_value,70.6381,17.5,100.0,ElasticNet regression,Without VL information,"Age
+≥80"
+Accuracy,31.7825,9.125,68.4167,ElasticNet regression,Without VL information,"Age
+≥80"
+NPV,55.5714,0.0,100.0,ElasticNet regression,Without VL information,"Age
+≥80"
+Precision,21.3473,0.0,50.0,ElasticNet regression,Without VL information,"Age
+≥80"
+Sensitivity,86.3333,0.0,100.0,ElasticNet regression,Without VL information,"Age
+≥80"
+Specificity,16.4256,0.0,73.3036,ElasticNet regression,Without VL information,"Age
+≥80"
+AUPRC_value,40.3841,16.3272,68.9926,XGBoost,VL at symptom onset,"Age
+60-79"
+AUROC_value,81.1912,61.2451,95.4512,XGBoost,VL at symptom onset,"Age
+60-79"
+Accuracy,71.9379,59.6846,85.38,XGBoost,VL at symptom onset,"Age
+60-79"
+NPV,97.8006,95.0015,100.0,XGBoost,VL at symptom onset,"Age
+60-79"
+Precision,15.0218,6.1202,27.7885,XGBoost,VL at symptom onset,"Age
+60-79"
+Sensitivity,73.6377,35.3571,100.0,XGBoost,VL at symptom onset,"Age
+60-79"
+Specificity,71.8123,58.2465,86.0024,XGBoost,VL at symptom onset,"Age
+60-79"
+AUPRC_value,51.5551,6.25,100.0,XGBoost,VL at symptom onset,"Age
+≥80"
+AUROC_value,66.3553,1.7857,100.0,XGBoost,VL at symptom onset,"Age
+≥80"
+Accuracy,53.376,7.9167,89.4722,XGBoost,VL at symptom onset,"Age
+≥80"
+NPV,87.5675,0.0,100.0,XGBoost,VL at symptom onset,"Age
+≥80"
+Precision,27.0048,0.0,88.125,XGBoost,VL at symptom onset,"Age
+≥80"
+Sensitivity,68.3333,0.0,100.0,XGBoost,VL at symptom onset,"Age
+≥80"
+Specificity,48.406,0.0,100.0,XGBoost,VL at symptom onset,"Age
+≥80"
+AUPRC_value,41.9882,21.844,67.9088,LightGBM,VL at symptom onset,"Age
+60-79"
+AUROC_value,79.2311,62.4274,93.2553,LightGBM,VL at symptom onset,"Age
+60-79"
+Accuracy,55.9068,4.3844,89.6528,LightGBM,VL at symptom onset,"Age
+60-79"
+NPV,82.3506,0.0,100.0,LightGBM,VL at symptom onset,"Age
+60-79"
+Precision,13.8775,4.3844,36.0552,LightGBM,VL at symptom onset,"Age
+60-79"
+Sensitivity,81.6675,30.8333,100.0,LightGBM,VL at symptom onset,"Age
+60-79"
+Specificity,54.368,0.0,91.7393,LightGBM,VL at symptom onset,"Age
+60-79"
+AUPRC_value,49.9741,6.25,100.0,LightGBM,VL at symptom onset,"Age
+≥80"
+AUROC_value,67.8954,23.9286,100.0,LightGBM,VL at symptom onset,"Age
+≥80"
+Accuracy,42.8525,3.9583,88.8889,LightGBM,VL at symptom onset,"Age
+≥80"
+NPV,63.6598,0.0,100.0,LightGBM,VL at symptom onset,"Age
+≥80"
+Precision,23.5311,0.0,84.1667,LightGBM,VL at symptom onset,"Age
+≥80"
+Sensitivity,73.9167,0.0,100.0,LightGBM,VL at symptom onset,"Age
+≥80"
+Specificity,34.0997,0.0,100.0,LightGBM,VL at symptom onset,"Age
+≥80"
+AUPRC_value,34.7373,12.9513,67.2919,Random Forest,VL at symptom onset,"Age
+60-79"
+AUROC_value,77.8379,58.6021,94.3871,Random Forest,VL at symptom onset,"Age
+60-79"
+Accuracy,72.608,50.6305,86.425,Random Forest,VL at symptom onset,"Age
+60-79"
+NPV,97.5705,95.3658,100.0,Random Forest,VL at symptom onset,"Age
+60-79"
+Precision,15.2881,6.3458,29.2953,Random Forest,VL at symptom onset,"Age
+60-79"
+Sensitivity,70.7726,41.3571,100.0,Random Forest,VL at symptom onset,"Age
+60-79"
+Specificity,72.7045,48.883,88.0048,Random Forest,VL at symptom onset,"Age
+60-79"
+AUPRC_value,49.0951,8.3333,100.0,Random Forest,VL at symptom onset,"Age
+≥80"
+AUROC_value,70.6229,7.1429,100.0,Random Forest,VL at symptom onset,"Age
+≥80"
+Accuracy,42.4118,9.6528,80.0,Random Forest,VL at symptom onset,"Age
+≥80"
+NPV,77.6107,0.0,100.0,Random Forest,VL at symptom onset,"Age
+≥80"
+Precision,24.5582,0.0,66.6667,Random Forest,VL at symptom onset,"Age
+≥80"
+Sensitivity,81.25,0.0,100.0,Random Forest,VL at symptom onset,"Age
+≥80"
+Specificity,31.6234,0.0,94.0625,Random Forest,VL at symptom onset,"Age
+≥80"
+AUPRC_value,36.7167,12.1555,71.9653,Lasso regression,VL at symptom onset,"Age
+60-79"
+AUROC_value,80.2618,61.7966,95.967,Lasso regression,VL at symptom onset,"Age
+60-79"
+Accuracy,67.3315,46.7234,85.2942,Lasso regression,VL at symptom onset,"Age
+60-79"
+NPV,97.9834,95.2907,100.0,Lasso regression,VL at symptom onset,"Age
+60-79"
+Precision,13.8228,5.7658,25.4861,Lasso regression,VL at symptom onset,"Age
+60-79"
+Sensitivity,77.5187,41.3571,100.0,Lasso regression,VL at symptom onset,"Age
+60-79"
+Specificity,66.6677,44.1003,87.7049,Lasso regression,VL at symptom onset,"Age
+60-79"
+AUPRC_value,51.4646,8.3333,100.0,Lasso regression,VL at symptom onset,"Age
+≥80"
+AUROC_value,70.2315,3.5714,100.0,Lasso regression,VL at symptom onset,"Age
+≥80"
+Accuracy,32.9952,0.0,76.4583,Lasso regression,VL at symptom onset,"Age
+≥80"
+NPV,55.6429,0.0,100.0,Lasso regression,VL at symptom onset,"Age
+≥80"
+Precision,22.3146,0.0,50.0,Lasso regression,VL at symptom onset,"Age
+≥80"
+Sensitivity,84.8333,0.0,100.0,Lasso regression,VL at symptom onset,"Age
+≥80"
+Specificity,18.7852,0.0,75.0,Lasso regression,VL at symptom onset,"Age
+≥80"
+AUPRC_value,37.669,13.4598,70.2794,Ridge regression,VL at symptom onset,"Age
+60-79"
+AUROC_value,80.7099,61.6224,96.1214,Ridge regression,VL at symptom onset,"Age
+60-79"
+Accuracy,68.1412,47.3687,83.9571,Ridge regression,VL at symptom onset,"Age
+60-79"
+NPV,98.0154,95.3298,100.0,Ridge regression,VL at symptom onset,"Age
+60-79"
+Precision,13.9164,5.9241,23.7557,Ridge regression,VL at symptom onset,"Age
+60-79"
+Sensitivity,77.4099,41.3571,100.0,Ridge regression,VL at symptom onset,"Age
+60-79"
+Specificity,67.5326,44.9876,86.5,Ridge regression,VL at symptom onset,"Age
+60-79"
+AUPRC_value,49.6089,7.7083,100.0,Ridge regression,VL at symptom onset,"Age
+≥80"
+AUROC_value,66.9683,0.0,100.0,Ridge regression,VL at symptom onset,"Age
+≥80"
+Accuracy,32.0299,9.125,68.4167,Ridge regression,VL at symptom onset,"Age
+≥80"
+NPV,54.2381,0.0,100.0,Ridge regression,VL at symptom onset,"Age
+≥80"
+Precision,21.2067,0.0,50.0,Ridge regression,VL at symptom onset,"Age
+≥80"
+Sensitivity,84.5,0.0,100.0,Ridge regression,VL at symptom onset,"Age
+≥80"
+Specificity,17.5058,0.0,73.3036,Ridge regression,VL at symptom onset,"Age
+≥80"
+AUPRC_value,38.2449,13.3076,70.9556,ElasticNet regression,VL at symptom onset,"Age
+60-79"
+AUROC_value,80.6594,61.6518,96.173,ElasticNet regression,VL at symptom onset,"Age
+60-79"
+Accuracy,68.6641,47.3687,85.4623,ElasticNet regression,VL at symptom onset,"Age
+60-79"
+NPV,98.0126,95.3298,100.0,ElasticNet regression,VL at symptom onset,"Age
+60-79"
+Precision,14.1391,5.967,24.5905,ElasticNet regression,VL at symptom onset,"Age
+60-79"
+Sensitivity,77.1365,41.3571,100.0,ElasticNet regression,VL at symptom onset,"Age
+60-79"
+Specificity,68.0952,44.9876,87.3235,ElasticNet regression,VL at symptom onset,"Age
+60-79"
+AUPRC_value,50.1256,7.7083,100.0,ElasticNet regression,VL at symptom onset,"Age
+≥80"
+AUROC_value,67.7207,3.5714,100.0,ElasticNet regression,VL at symptom onset,"Age
+≥80"
+Accuracy,32.1751,9.125,68.4167,ElasticNet regression,VL at symptom onset,"Age
+≥80"
+NPV,54.7143,0.0,100.0,ElasticNet regression,VL at symptom onset,"Age
+≥80"
+Precision,21.3608,0.0,50.0,ElasticNet regression,VL at symptom onset,"Age
+≥80"
+Sensitivity,85.0,0.0,100.0,ElasticNet regression,VL at symptom onset,"Age
+≥80"
+Specificity,17.5161,0.0,73.3036,ElasticNet regression,VL at symptom onset,"Age
+≥80"
+AUPRC_value,44.4741,19.8852,73.467,XGBoost,VL at diagnosis,"Age
+60-79"
+AUROC_value,85.0804,69.3697,97.5727,XGBoost,VL at diagnosis,"Age
+60-79"
+Accuracy,77.734,66.6324,87.6263,XGBoost,VL at diagnosis,"Age
+60-79"
+NPV,98.2084,95.5484,100.0,XGBoost,VL at diagnosis,"Age
+60-79"
+Precision,18.8541,8.4698,31.7045,XGBoost,VL at diagnosis,"Age
+60-79"
+Sensitivity,77.2254,46.25,100.0,XGBoost,VL at diagnosis,"Age
+60-79"
+Specificity,77.7644,66.2871,88.0244,XGBoost,VL at diagnosis,"Age
+60-79"
+AUPRC_value,51.6295,7.7083,100.0,XGBoost,VL at diagnosis,"Age
+≥80"
+AUROC_value,70.3776,14.4643,100.0,XGBoost,VL at diagnosis,"Age
+≥80"
+Accuracy,64.7197,22.375,100.0,XGBoost,VL at diagnosis,"Age
+≥80"
+NPV,87.1234,23.75,100.0,XGBoost,VL at diagnosis,"Age
+≥80"
+Precision,30.7976,0.0,88.125,XGBoost,VL at diagnosis,"Age
+≥80"
+Sensitivity,59.25,0.0,100.0,XGBoost,VL at diagnosis,"Age
+≥80"
+Specificity,63.6396,11.875,100.0,XGBoost,VL at diagnosis,"Age
+≥80"
+AUPRC_value,44.3418,18.5884,69.1879,LightGBM,VL at diagnosis,"Age
+60-79"
+AUROC_value,84.1209,64.9408,96.6204,LightGBM,VL at diagnosis,"Age
+60-79"
+Accuracy,67.9826,4.5428,89.8515,LightGBM,VL at diagnosis,"Age
+60-79"
+NPV,91.2097,0.0,100.0,LightGBM,VL at diagnosis,"Age
+60-79"
+Precision,16.7865,4.5428,34.9242,LightGBM,VL at diagnosis,"Age
+60-79"
+Sensitivity,78.5821,37.8571,100.0,LightGBM,VL at diagnosis,"Age
+60-79"
+Specificity,67.3682,0.0,91.8107,LightGBM,VL at diagnosis,"Age
+60-79"
+AUPRC_value,49.8062,6.25,100.0,LightGBM,VL at diagnosis,"Age
+≥80"
+AUROC_value,68.8482,17.5,100.0,LightGBM,VL at diagnosis,"Age
+≥80"
+Accuracy,54.7234,10.3125,100.0,LightGBM,VL at diagnosis,"Age
+≥80"
+NPV,77.2142,0.0,100.0,LightGBM,VL at diagnosis,"Age
+≥80"
+Precision,26.4723,0.0,71.0417,LightGBM,VL at diagnosis,"Age
+≥80"
+Sensitivity,65.3333,0.0,100.0,LightGBM,VL at diagnosis,"Age
+≥80"
+Specificity,50.631,0.0,100.0,LightGBM,VL at diagnosis,"Age
+≥80"
+AUPRC_value,40.2033,13.737,74.9866,Random Forest,VL at diagnosis,"Age
+60-79"
+AUROC_value,82.5763,61.9874,96.7466,Random Forest,VL at diagnosis,"Age
+60-79"
+Accuracy,75.5449,58.6663,87.3357,Random Forest,VL at diagnosis,"Age
+60-79"
+NPV,97.9853,95.4702,100.0,Random Forest,VL at diagnosis,"Age
+60-79"
+Precision,17.4374,7.0771,31.5483,Random Forest,VL at diagnosis,"Age
+60-79"
+Sensitivity,74.6607,41.3571,100.0,Random Forest,VL at diagnosis,"Age
+60-79"
+Specificity,75.5831,56.8366,88.2133,Random Forest,VL at diagnosis,"Age
+60-79"
+AUPRC_value,51.6271,7.7083,100.0,Random Forest,VL at diagnosis,"Age
+≥80"
+AUROC_value,71.8301,25.0,100.0,Random Forest,VL at diagnosis,"Age
+≥80"
+Accuracy,44.5554,13.3482,80.0,Random Forest,VL at diagnosis,"Age
+≥80"
+NPV,78.529,0.0,100.0,Random Forest,VL at diagnosis,"Age
+≥80"
+Precision,25.0858,0.0,63.5,Random Forest,VL at diagnosis,"Age
+≥80"
+Sensitivity,79.0833,0.0,100.0,Random Forest,VL at diagnosis,"Age
+≥80"
+Specificity,35.1261,0.0,87.5,Random Forest,VL at diagnosis,"Age
+≥80"
+AUPRC_value,41.0709,14.7151,73.1419,Lasso regression,VL at diagnosis,"Age
+60-79"
+AUROC_value,82.4805,63.6177,96.4031,Lasso regression,VL at diagnosis,"Age
+60-79"
+Accuracy,68.5419,48.632,85.2183,Lasso regression,VL at diagnosis,"Age
+60-79"
+NPV,98.1065,95.1978,100.0,Lasso regression,VL at diagnosis,"Age
+60-79"
+Precision,14.4372,6.4849,28.3,Lasso regression,VL at diagnosis,"Age
+60-79"
+Sensitivity,78.8071,50.0,100.0,Lasso regression,VL at diagnosis,"Age
+60-79"
+Specificity,67.8967,47.1919,85.3622,Lasso regression,VL at diagnosis,"Age
+60-79"
+AUPRC_value,53.4595,8.3333,100.0,Lasso regression,VL at diagnosis,"Age
+≥80"
+AUROC_value,73.4188,17.5,100.0,Lasso regression,VL at diagnosis,"Age
+≥80"
+Accuracy,37.7041,9.6528,75.3788,Lasso regression,VL at diagnosis,"Age
+≥80"
+NPV,69.7286,0.0,100.0,Lasso regression,VL at diagnosis,"Age
+≥80"
+Precision,24.0963,0.0,58.6429,Lasso regression,VL at diagnosis,"Age
+≥80"
+Sensitivity,84.8333,0.0,100.0,Lasso regression,VL at diagnosis,"Age
+≥80"
+Specificity,24.9253,0.0,73.3036,Lasso regression,VL at diagnosis,"Age
+≥80"
+AUPRC_value,41.0291,14.1827,74.36,Ridge regression,VL at diagnosis,"Age
+60-79"
+AUROC_value,82.6504,63.3189,96.6188,Ridge regression,VL at diagnosis,"Age
+60-79"
+Accuracy,70.1537,52.5058,84.1265,Ridge regression,VL at diagnosis,"Age
+60-79"
+NPV,98.02,95.1807,100.0,Ridge regression,VL at diagnosis,"Age
+60-79"
+Precision,14.6916,6.7203,27.4373,Ridge regression,VL at diagnosis,"Age
+60-79"
+Sensitivity,77.344,46.25,100.0,Ridge regression,VL at diagnosis,"Age
+60-79"
+Specificity,69.722,50.7054,85.2181,Ridge regression,VL at diagnosis,"Age
+60-79"
+AUPRC_value,54.0809,8.3333,100.0,Ridge regression,VL at diagnosis,"Age
+≥80"
+AUROC_value,73.3035,17.5,100.0,Ridge regression,VL at diagnosis,"Age
+≥80"
+Accuracy,39.2257,9.6528,76.5455,Ridge regression,VL at diagnosis,"Age
+≥80"
+NPV,73.9667,0.0,100.0,Ridge regression,VL at diagnosis,"Age
+≥80"
+Precision,24.2752,0.0,60.0,Ridge regression,VL at diagnosis,"Age
+≥80"
+Sensitivity,84.75,0.0,100.0,Ridge regression,VL at diagnosis,"Age
+≥80"
+Specificity,26.5218,0.0,69.1667,Ridge regression,VL at diagnosis,"Age
+≥80"
+AUPRC_value,41.0651,14.3364,73.1346,ElasticNet regression,VL at diagnosis,"Age
+60-79"
+AUROC_value,82.5545,63.3405,96.4961,ElasticNet regression,VL at diagnosis,"Age
+60-79"
+Accuracy,70.2772,52.1922,83.7939,ElasticNet regression,VL at diagnosis,"Age
+60-79"
+NPV,97.9865,95.2381,100.0,ElasticNet regression,VL at diagnosis,"Age
+60-79"
+Precision,14.7386,6.7759,27.4373,ElasticNet regression,VL at diagnosis,"Age
+60-79"
+Sensitivity,77.019,46.25,100.0,ElasticNet regression,VL at diagnosis,"Age
+60-79"
+Specificity,69.871,50.9171,85.5668,ElasticNet regression,VL at diagnosis,"Age
+60-79"
+AUPRC_value,54.0845,8.3333,100.0,ElasticNet regression,VL at diagnosis,"Age
+≥80"
+AUROC_value,73.2917,17.5,100.0,ElasticNet regression,VL at diagnosis,"Age
+≥80"
+Accuracy,38.9726,11.7708,76.5455,ElasticNet regression,VL at diagnosis,"Age
+≥80"
+NPV,73.9667,0.0,100.0,ElasticNet regression,VL at diagnosis,"Age
+≥80"
+Precision,24.1452,0.0,60.0,ElasticNet regression,VL at diagnosis,"Age
+≥80"
+Sensitivity,84.75,0.0,100.0,ElasticNet regression,VL at diagnosis,"Age
+≥80"
+Specificity,26.1412,0.0,69.1667,ElasticNet regression,VL at diagnosis,"Age
+≥80"
+AUPRC_value,46.6994,22.3186,72.6512,XGBoost,VL at diagnosis + 2 days,"Age
+60-79"
+AUROC_value,87.4141,72.2672,97.1585,XGBoost,VL at diagnosis + 2 days,"Age
+60-79"
+Accuracy,74.9162,64.1444,84.6802,XGBoost,VL at diagnosis + 2 days,"Age
+60-79"
+NPV,98.5785,96.2108,100.0,XGBoost,VL at diagnosis + 2 days,"Age
+60-79"
+Precision,17.707,8.3333,31.9136,XGBoost,VL at diagnosis + 2 days,"Age
+60-79"
+Sensitivity,82.3913,50.0,100.0,XGBoost,VL at diagnosis + 2 days,"Age
+60-79"
+Specificity,74.4203,62.7047,84.4645,XGBoost,VL at diagnosis + 2 days,"Age
+60-79"
+AUPRC_value,54.403,8.3333,100.0,XGBoost,VL at diagnosis + 2 days,"Age
+≥80"
+AUROC_value,72.3173,21.25,100.0,XGBoost,VL at diagnosis + 2 days,"Age
+≥80"
+Accuracy,60.7449,25.0,95.25,XGBoost,VL at diagnosis + 2 days,"Age
+≥80"
+NPV,88.0035,50.0,100.0,XGBoost,VL at diagnosis + 2 days,"Age
+≥80"
+Precision,27.8806,0.0,71.0417,XGBoost,VL at diagnosis + 2 days,"Age
+≥80"
+Sensitivity,61.75,0.0,100.0,XGBoost,VL at diagnosis + 2 days,"Age
+≥80"
+Specificity,58.5043,19.375,94.7222,XGBoost,VL at diagnosis + 2 days,"Age
+≥80"
+AUPRC_value,44.6684,19.0025,68.8585,LightGBM,VL at diagnosis + 2 days,"Age
+60-79"
+AUROC_value,85.6858,68.2179,96.7588,LightGBM,VL at diagnosis + 2 days,"Age
+60-79"
+Accuracy,73.5847,31.8841,91.3107,LightGBM,VL at diagnosis + 2 days,"Age
+60-79"
+NPV,96.2202,94.8748,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+60-79"
+Precision,18.6155,6.7203,36.3636,LightGBM,VL at diagnosis + 2 days,"Age
+60-79"
+Sensitivity,77.2468,30.8333,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+60-79"
+Specificity,73.3567,27.3706,92.1394,LightGBM,VL at diagnosis + 2 days,"Age
+60-79"
+AUPRC_value,51.1104,8.5,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+≥80"
+AUROC_value,70.357,20.3571,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+≥80"
+Accuracy,60.3969,18.25,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+≥80"
+NPV,83.285,0.0,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+≥80"
+Precision,28.0036,0.0,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+≥80"
+Sensitivity,56.5,0.0,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+≥80"
+Specificity,60.1501,0.0,100.0,LightGBM,VL at diagnosis + 2 days,"Age
+≥80"
+AUPRC_value,44.4044,13.8814,73.8137,Random Forest,VL at diagnosis + 2 days,"Age
+60-79"
+AUROC_value,85.375,67.6429,97.4051,Random Forest,VL at diagnosis + 2 days,"Age
+60-79"
+Accuracy,76.4164,58.838,87.959,Random Forest,VL at diagnosis + 2 days,"Age
+60-79"
+NPV,98.1551,95.8417,100.0,Random Forest,VL at diagnosis + 2 days,"Age
+60-79"
+Precision,18.1484,7.2685,31.8182,Random Forest,VL at diagnosis + 2 days,"Age
+60-79"
+Sensitivity,76.7044,46.25,100.0,Random Forest,VL at diagnosis + 2 days,"Age
+60-79"
+Specificity,76.3808,57.5426,88.5112,Random Forest,VL at diagnosis + 2 days,"Age
+60-79"
+AUPRC_value,51.1444,10.0,100.0,Random Forest,VL at diagnosis + 2 days,"Age
+≥80"
+AUROC_value,71.0171,17.5,100.0,Random Forest,VL at diagnosis + 2 days,"Age
+≥80"
+Accuracy,47.9821,13.3482,85.5208,Random Forest,VL at diagnosis + 2 days,"Age
+≥80"
+NPV,79.421,0.0,100.0,Random Forest,VL at diagnosis + 2 days,"Age
+≥80"
+Precision,25.2171,0.0,66.6667,Random Forest,VL at diagnosis + 2 days,"Age
+≥80"
+Sensitivity,72.0833,0.0,100.0,Random Forest,VL at diagnosis + 2 days,"Age
+≥80"
+Specificity,40.7778,0.0,86.6518,Random Forest,VL at diagnosis + 2 days,"Age
+≥80"
+AUPRC_value,41.7462,15.2743,72.5788,Lasso regression,VL at diagnosis + 2 days,"Age
+60-79"
+AUROC_value,83.8906,67.9285,96.5217,Lasso regression,VL at diagnosis + 2 days,"Age
+60-79"
+Accuracy,69.7217,49.7149,85.5951,Lasso regression,VL at diagnosis + 2 days,"Age
+60-79"
+NPV,98.1152,95.1807,100.0,Lasso regression,VL at diagnosis + 2 days,"Age
+60-79"
+Precision,14.8702,6.7204,26.7095,Lasso regression,VL at diagnosis + 2 days,"Age
+60-79"
+Sensitivity,78.3016,41.3571,100.0,Lasso regression,VL at diagnosis + 2 days,"Age
+60-79"
+Specificity,69.1941,47.6899,88.1368,Lasso regression,VL at diagnosis + 2 days,"Age
+60-79"
+AUPRC_value,53.6096,9.125,100.0,Lasso regression,VL at diagnosis + 2 days,"Age
+≥80"
+AUROC_value,73.9591,25.0,100.0,Lasso regression,VL at diagnosis + 2 days,"Age
+≥80"
+Accuracy,42.3164,5.9375,79.899,Lasso regression,VL at diagnosis + 2 days,"Age
+≥80"
+NPV,75.9869,0.0,100.0,Lasso regression,VL at diagnosis + 2 days,"Age
+≥80"
+Precision,25.3855,0.0,63.5,Lasso regression,VL at diagnosis + 2 days,"Age
+≥80"
+Sensitivity,84.5,0.0,100.0,Lasso regression,VL at diagnosis + 2 days,"Age
+≥80"
+Specificity,30.802,0.0,75.0,Lasso regression,VL at diagnosis + 2 days,"Age
+≥80"
+AUPRC_value,43.5911,14.3708,72.6346,Ridge regression,VL at diagnosis + 2 days,"Age
+60-79"
+AUROC_value,84.4748,69.3984,96.5077,Ridge regression,VL at diagnosis + 2 days,"Age
+60-79"
+Accuracy,71.5762,53.7978,85.5288,Ridge regression,VL at diagnosis + 2 days,"Age
+60-79"
+NPV,98.2021,95.5178,100.0,Ridge regression,VL at diagnosis + 2 days,"Age
+60-79"
+Precision,15.6283,6.9611,26.9848,Ridge regression,VL at diagnosis + 2 days,"Age
+60-79"
+Sensitivity,78.4917,41.3571,100.0,Ridge regression,VL at diagnosis + 2 days,"Age
+60-79"
+Specificity,71.1316,52.0991,86.383,Ridge regression,VL at diagnosis + 2 days,"Age
+60-79"
+AUPRC_value,53.6504,8.3333,100.0,Ridge regression,VL at diagnosis + 2 days,"Age
+≥80"
+AUROC_value,74.1851,34.375,100.0,Ridge regression,VL at diagnosis + 2 days,"Age
+≥80"
+Accuracy,44.7835,14.4792,79.899,Ridge regression,VL at diagnosis + 2 days,"Age
+≥80"
+NPV,82.3393,0.0,100.0,Ridge regression,VL at diagnosis + 2 days,"Age
+≥80"
+Precision,26.4259,0.0,60.0,Ridge regression,VL at diagnosis + 2 days,"Age
+≥80"
+Sensitivity,85.1667,0.0,100.0,Ridge regression,VL at diagnosis + 2 days,"Age
+≥80"
+Specificity,33.3152,0.0,77.625,Ridge regression,VL at diagnosis + 2 days,"Age
+≥80"
+AUPRC_value,43.6099,14.397,72.5676,ElasticNet regression,VL at diagnosis + 2 days,"Age
+60-79"
+AUROC_value,84.3943,69.5221,96.5549,ElasticNet regression,VL at diagnosis + 2 days,"Age
+60-79"
+Accuracy,71.5296,54.1247,85.0682,ElasticNet regression,VL at diagnosis + 2 days,"Age
+60-79"
+NPV,98.1528,95.5442,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Age
+60-79"
+Precision,15.5356,6.8355,26.9848,ElasticNet regression,VL at diagnosis + 2 days,"Age
+60-79"
+Sensitivity,77.9321,41.3571,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Age
+60-79"
+Specificity,71.1175,52.2957,86.0716,ElasticNet regression,VL at diagnosis + 2 days,"Age
+60-79"
+AUPRC_value,53.7351,8.3333,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Age
+≥80"
+AUROC_value,74.3898,27.0833,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Age
+≥80"
+Accuracy,43.9982,13.3482,82.6136,ElasticNet regression,VL at diagnosis + 2 days,"Age
+≥80"
+NPV,80.3226,0.0,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Age
+≥80"
+Precision,26.3957,0.0,60.0,ElasticNet regression,VL at diagnosis + 2 days,"Age
+≥80"
+Sensitivity,85.4167,0.0,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Age
+≥80"
+Specificity,32.2941,0.0,83.0,ElasticNet regression,VL at diagnosis + 2 days,"Age
+≥80"
+AUPRC_value,35.5405,1.2812,75.0,XGBoost,Without VL information,"Vaccination
+2 dose"
+AUROC_value,90.1363,63.6686,99.5171,XGBoost,Without VL information,"Vaccination
+2 dose"
+Accuracy,95.5347,90.9288,98.8307,XGBoost,Without VL information,"Vaccination
+2 dose"
+NPV,99.6524,98.5507,100.0,XGBoost,Without VL information,"Vaccination
+2 dose"
+Precision,14.7913,0.0,50.0,XGBoost,Without VL information,"Vaccination
+2 dose"
+Sensitivity,45.1667,0.0,100.0,XGBoost,Without VL information,"Vaccination
+2 dose"
+Specificity,95.8283,91.0796,98.8442,XGBoost,Without VL information,"Vaccination
+2 dose"
+AUPRC_value,34.174,0.9948,100.0,XGBoost,Without VL information,"Vaccination
+3 dose"
+AUROC_value,87.1083,27.6059,100.0,XGBoost,Without VL information,"Vaccination
+3 dose"
+Accuracy,98.3903,96.2243,100.0,XGBoost,Without VL information,"Vaccination
+3 dose"
+NPV,99.4026,98.1025,100.0,XGBoost,Without VL information,"Vaccination
+3 dose"
+Precision,11.95,0.0,100.0,XGBoost,Without VL information,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,XGBoost,Without VL information,"Vaccination
+3 dose"
+Specificity,98.9726,97.1263,100.0,XGBoost,Without VL information,"Vaccination
+3 dose"
+AUPRC_value,42.8529,1.2812,75.0,LightGBM,Without VL information,"Vaccination
+2 dose"
+AUROC_value,92.2983,69.1852,99.3997,LightGBM,Without VL information,"Vaccination
+2 dose"
+Accuracy,88.3596,50.6169,98.8307,LightGBM,Without VL information,"Vaccination
+2 dose"
+NPV,99.7713,98.5395,100.0,LightGBM,Without VL information,"Vaccination
+2 dose"
+Precision,13.5369,0.0,50.0,LightGBM,Without VL information,"Vaccination
+2 dose"
+Sensitivity,52.8333,0.0,100.0,LightGBM,Without VL information,"Vaccination
+2 dose"
+Specificity,88.4737,50.6169,98.8307,LightGBM,Without VL information,"Vaccination
+2 dose"
+AUPRC_value,35.3193,1.4485,88.125,LightGBM,Without VL information,"Vaccination
+3 dose"
+AUROC_value,89.7322,78.2965,100.0,LightGBM,Without VL information,"Vaccination
+3 dose"
+Accuracy,93.5584,70.7283,100.0,LightGBM,Without VL information,"Vaccination
+3 dose"
+NPV,99.466,98.1025,100.0,LightGBM,Without VL information,"Vaccination
+3 dose"
+Precision,10.9182,0.0,76.25,LightGBM,Without VL information,"Vaccination
+3 dose"
+Sensitivity,24.0,0.0,100.0,LightGBM,Without VL information,"Vaccination
+3 dose"
+Specificity,94.059,70.4704,100.0,LightGBM,Without VL information,"Vaccination
+3 dose"
+AUPRC_value,36.1003,1.3893,83.75,Random Forest,Without VL information,"Vaccination
+2 dose"
+AUROC_value,90.6239,63.2244,99.7701,Random Forest,Without VL information,"Vaccination
+2 dose"
+Accuracy,94.837,87.3649,98.7886,Random Forest,Without VL information,"Vaccination
+2 dose"
+NPV,99.6962,98.5507,100.0,Random Forest,Without VL information,"Vaccination
+2 dose"
+Precision,14.0354,0.0,50.0,Random Forest,Without VL information,"Vaccination
+2 dose"
+Sensitivity,47.8333,0.0,100.0,Random Forest,Without VL information,"Vaccination
+2 dose"
+Specificity,95.0758,87.2562,98.7811,Random Forest,Without VL information,"Vaccination
+2 dose"
+AUPRC_value,32.332,1.5864,100.0,Random Forest,Without VL information,"Vaccination
+3 dose"
+AUROC_value,87.7375,74.8197,100.0,Random Forest,Without VL information,"Vaccination
+3 dose"
+Accuracy,95.6081,85.019,100.0,Random Forest,Without VL information,"Vaccination
+3 dose"
+NPV,99.3831,98.0827,100.0,Random Forest,Without VL information,"Vaccination
+3 dose"
+Precision,6.9601,0.0,50.0,Random Forest,Without VL information,"Vaccination
+3 dose"
+Sensitivity,16.0,0.0,100.0,Random Forest,Without VL information,"Vaccination
+3 dose"
+Specificity,96.1825,85.3326,100.0,Random Forest,Without VL information,"Vaccination
+3 dose"
+AUPRC_value,34.6128,1.5142,75.0,Lasso regression,Without VL information,"Vaccination
+2 dose"
+AUROC_value,91.319,67.3356,99.5171,Lasso regression,Without VL information,"Vaccination
+2 dose"
+Accuracy,94.1347,84.8575,98.7269,Lasso regression,Without VL information,"Vaccination
+2 dose"
+NPV,99.7104,98.5507,100.0,Lasso regression,Without VL information,"Vaccination
+2 dose"
+Precision,13.26,0.0,50.0,Lasso regression,Without VL information,"Vaccination
+2 dose"
+Sensitivity,48.3333,0.0,100.0,Lasso regression,Without VL information,"Vaccination
+2 dose"
+Specificity,94.3576,84.6624,98.7811,Lasso regression,Without VL information,"Vaccination
+2 dose"
+AUPRC_value,33.9441,0.6556,100.0,Lasso regression,Without VL information,"Vaccination
+3 dose"
+AUROC_value,84.2168,31.3903,100.0,Lasso regression,Without VL information,"Vaccination
+3 dose"
+Accuracy,96.6059,87.457,100.0,Lasso regression,Without VL information,"Vaccination
+3 dose"
+NPV,99.3975,98.1025,100.0,Lasso regression,Without VL information,"Vaccination
+3 dose"
+Precision,8.6083,0.0,50.0,Lasso regression,Without VL information,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,Lasso regression,Without VL information,"Vaccination
+3 dose"
+Specificity,97.1804,87.457,100.0,Lasso regression,Without VL information,"Vaccination
+3 dose"
+AUPRC_value,34.603,1.4485,75.0,Ridge regression,Without VL information,"Vaccination
+2 dose"
+AUROC_value,90.8758,63.7593,99.5171,Ridge regression,Without VL information,"Vaccination
+2 dose"
+Accuracy,93.9546,82.7448,98.7269,Ridge regression,Without VL information,"Vaccination
+2 dose"
+NPV,99.6986,98.5507,100.0,Ridge regression,Without VL information,"Vaccination
+2 dose"
+Precision,13.2505,0.0,50.0,Ridge regression,Without VL information,"Vaccination
+2 dose"
+Sensitivity,47.8333,0.0,100.0,Ridge regression,Without VL information,"Vaccination
+2 dose"
+Specificity,94.1875,82.5299,98.7737,Ridge regression,Without VL information,"Vaccination
+2 dose"
+AUPRC_value,33.9319,0.694,100.0,Ridge regression,Without VL information,"Vaccination
+3 dose"
+AUROC_value,83.3683,35.0729,100.0,Ridge regression,Without VL information,"Vaccination
+3 dose"
+Accuracy,96.5778,85.8747,100.0,Ridge regression,Without VL information,"Vaccination
+3 dose"
+NPV,99.3982,98.1025,100.0,Ridge regression,Without VL information,"Vaccination
+3 dose"
+Precision,8.775,0.0,50.0,Ridge regression,Without VL information,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,Ridge regression,Without VL information,"Vaccination
+3 dose"
+Specificity,97.153,86.1629,100.0,Ridge regression,Without VL information,"Vaccination
+3 dose"
+AUPRC_value,34.6066,1.4485,75.0,ElasticNet regression,Without VL information,"Vaccination
+2 dose"
+AUROC_value,90.9408,63.7593,99.5171,ElasticNet regression,Without VL information,"Vaccination
+2 dose"
+Accuracy,94.0084,82.8729,98.7269,ElasticNet regression,Without VL information,"Vaccination
+2 dose"
+NPV,99.6983,98.5507,100.0,ElasticNet regression,Without VL information,"Vaccination
+2 dose"
+Precision,13.4247,0.0,50.0,ElasticNet regression,Without VL information,"Vaccination
+2 dose"
+Sensitivity,47.8333,0.0,100.0,ElasticNet regression,Without VL information,"Vaccination
+2 dose"
+Specificity,94.2427,82.6757,98.7737,ElasticNet regression,Without VL information,"Vaccination
+2 dose"
+AUPRC_value,33.8918,0.6556,100.0,ElasticNet regression,Without VL information,"Vaccination
+3 dose"
+AUROC_value,82.9115,31.3903,100.0,ElasticNet regression,Without VL information,"Vaccination
+3 dose"
+Accuracy,96.6931,86.8737,100.0,ElasticNet regression,Without VL information,"Vaccination
+3 dose"
+NPV,99.3981,98.1025,100.0,ElasticNet regression,Without VL information,"Vaccination
+3 dose"
+Precision,8.6083,0.0,50.0,ElasticNet regression,Without VL information,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,ElasticNet regression,Without VL information,"Vaccination
+3 dose"
+Specificity,97.2682,86.8092,100.0,ElasticNet regression,Without VL information,"Vaccination
+3 dose"
+AUPRC_value,38.1221,1.7534,85.7292,XGBoost,VL at symptom onset,"Vaccination
+2 dose"
+AUROC_value,91.8838,68.6673,99.7701,XGBoost,VL at symptom onset,"Vaccination
+2 dose"
+Accuracy,95.7803,90.8249,98.8442,XGBoost,VL at symptom onset,"Vaccination
+2 dose"
+NPV,99.6645,98.5507,100.0,XGBoost,VL at symptom onset,"Vaccination
+2 dose"
+Precision,16.6984,0.0,50.0,XGBoost,VL at symptom onset,"Vaccination
+2 dose"
+Sensitivity,46.1667,0.0,100.0,XGBoost,VL at symptom onset,"Vaccination
+2 dose"
+Specificity,96.0699,90.8249,98.8442,XGBoost,VL at symptom onset,"Vaccination
+2 dose"
+AUPRC_value,34.8605,0.7463,100.0,XGBoost,VL at symptom onset,"Vaccination
+3 dose"
+AUROC_value,84.5012,37.393,100.0,XGBoost,VL at symptom onset,"Vaccination
+3 dose"
+Accuracy,98.1808,96.0905,100.0,XGBoost,VL at symptom onset,"Vaccination
+3 dose"
+NPV,99.4018,98.0927,100.0,XGBoost,VL at symptom onset,"Vaccination
+3 dose"
+Precision,10.1167,0.0,76.25,XGBoost,VL at symptom onset,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,XGBoost,VL at symptom onset,"Vaccination
+3 dose"
+Specificity,98.7614,96.4807,100.0,XGBoost,VL at symptom onset,"Vaccination
+3 dose"
+AUPRC_value,48.3755,1.6129,75.0,LightGBM,VL at symptom onset,"Vaccination
+2 dose"
+AUROC_value,93.3631,75.2016,99.4279,LightGBM,VL at symptom onset,"Vaccination
+2 dose"
+Accuracy,88.2372,51.8167,98.7886,LightGBM,VL at symptom onset,"Vaccination
+2 dose"
+NPV,99.7634,98.5794,100.0,LightGBM,VL at symptom onset,"Vaccination
+2 dose"
+Precision,13.1551,0.0,50.0,LightGBM,VL at symptom onset,"Vaccination
+2 dose"
+Sensitivity,51.8333,0.0,100.0,LightGBM,VL at symptom onset,"Vaccination
+2 dose"
+Specificity,88.3597,51.5823,98.7811,LightGBM,VL at symptom onset,"Vaccination
+2 dose"
+AUPRC_value,34.5174,1.4706,88.125,LightGBM,VL at symptom onset,"Vaccination
+3 dose"
+AUROC_value,88.9366,75.2076,100.0,LightGBM,VL at symptom onset,"Vaccination
+3 dose"
+Accuracy,93.3847,70.678,99.6374,LightGBM,VL at symptom onset,"Vaccination
+3 dose"
+NPV,99.4806,98.0927,100.0,LightGBM,VL at symptom onset,"Vaccination
+3 dose"
+Precision,9.1344,0.0,50.0,LightGBM,VL at symptom onset,"Vaccination
+3 dose"
+Sensitivity,26.0,0.0,100.0,LightGBM,VL at symptom onset,"Vaccination
+3 dose"
+Specificity,93.8622,70.5563,100.0,LightGBM,VL at symptom onset,"Vaccination
+3 dose"
+AUPRC_value,33.6442,1.7264,100.0,Random Forest,VL at symptom onset,"Vaccination
+2 dose"
+AUROC_value,90.6476,57.7687,100.0,Random Forest,VL at symptom onset,"Vaccination
+2 dose"
+Accuracy,94.8512,87.5393,98.8307,Random Forest,VL at symptom onset,"Vaccination
+2 dose"
+NPV,99.6708,98.5179,100.0,Random Forest,VL at symptom onset,"Vaccination
+2 dose"
+Precision,13.531,0.0,50.0,Random Forest,VL at symptom onset,"Vaccination
+2 dose"
+Sensitivity,47.0,0.0,100.0,Random Forest,VL at symptom onset,"Vaccination
+2 dose"
+Specificity,95.1189,87.5393,98.8442,Random Forest,VL at symptom onset,"Vaccination
+2 dose"
+AUPRC_value,33.3993,1.4918,100.0,Random Forest,VL at symptom onset,"Vaccination
+3 dose"
+AUROC_value,86.5357,68.4569,100.0,Random Forest,VL at symptom onset,"Vaccination
+3 dose"
+Accuracy,96.4277,88.8791,100.0,Random Forest,VL at symptom onset,"Vaccination
+3 dose"
+NPV,99.3876,98.0827,100.0,Random Forest,VL at symptom onset,"Vaccination
+3 dose"
+Precision,7.4671,0.0,50.0,Random Forest,VL at symptom onset,"Vaccination
+3 dose"
+Sensitivity,16.0,0.0,100.0,Random Forest,VL at symptom onset,"Vaccination
+3 dose"
+Specificity,97.009,88.8791,100.0,Random Forest,VL at symptom onset,"Vaccination
+3 dose"
+AUPRC_value,33.0488,1.5637,100.0,Lasso regression,VL at symptom onset,"Vaccination
+2 dose"
+AUROC_value,91.1339,64.5926,100.0,Lasso regression,VL at symptom onset,"Vaccination
+2 dose"
+Accuracy,93.9413,83.3977,98.7886,Lasso regression,VL at symptom onset,"Vaccination
+2 dose"
+NPV,99.7105,98.5507,100.0,Lasso regression,VL at symptom onset,"Vaccination
+2 dose"
+Precision,13.3176,0.0,50.0,Lasso regression,VL at symptom onset,"Vaccination
+2 dose"
+Sensitivity,48.3333,0.0,100.0,Lasso regression,VL at symptom onset,"Vaccination
+2 dose"
+Specificity,94.1631,83.3127,98.7737,Lasso regression,VL at symptom onset,"Vaccination
+2 dose"
+AUPRC_value,31.7163,0.6761,100.0,Lasso regression,VL at symptom onset,"Vaccination
+3 dose"
+AUROC_value,83.1489,30.6343,100.0,Lasso regression,VL at symptom onset,"Vaccination
+3 dose"
+Accuracy,95.9967,84.6991,100.0,Lasso regression,VL at symptom onset,"Vaccination
+3 dose"
+NPV,99.3959,98.1025,100.0,Lasso regression,VL at symptom onset,"Vaccination
+3 dose"
+Precision,8.575,0.0,50.0,Lasso regression,VL at symptom onset,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,Lasso regression,VL at symptom onset,"Vaccination
+3 dose"
+Specificity,96.5697,84.6991,100.0,Lasso regression,VL at symptom onset,"Vaccination
+3 dose"
+AUPRC_value,33.564,1.5616,100.0,Ridge regression,VL at symptom onset,"Vaccination
+2 dose"
+AUROC_value,90.7174,60.8642,100.0,Ridge regression,VL at symptom onset,"Vaccination
+2 dose"
+Accuracy,93.7283,84.1281,98.7269,Ridge regression,VL at symptom onset,"Vaccination
+2 dose"
+NPV,99.6983,98.5507,100.0,Ridge regression,VL at symptom onset,"Vaccination
+2 dose"
+Precision,12.8162,0.0,50.0,Ridge regression,VL at symptom onset,"Vaccination
+2 dose"
+Sensitivity,47.8333,0.0,100.0,Ridge regression,VL at symptom onset,"Vaccination
+2 dose"
+Specificity,93.9599,83.9297,98.7737,Ridge regression,VL at symptom onset,"Vaccination
+2 dose"
+AUPRC_value,33.2178,0.7089,100.0,Ridge regression,VL at symptom onset,"Vaccination
+3 dose"
+AUROC_value,82.7192,34.6611,100.0,Ridge regression,VL at symptom onset,"Vaccination
+3 dose"
+Accuracy,96.4571,87.3423,100.0,Ridge regression,VL at symptom onset,"Vaccination
+3 dose"
+NPV,99.398,98.0927,100.0,Ridge regression,VL at symptom onset,"Vaccination
+3 dose"
+Precision,8.4111,0.0,50.0,Ridge regression,VL at symptom onset,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,Ridge regression,VL at symptom onset,"Vaccination
+3 dose"
+Specificity,97.0324,87.2864,100.0,Ridge regression,VL at symptom onset,"Vaccination
+3 dose"
+AUPRC_value,33.255,1.5616,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+2 dose"
+AUROC_value,90.717,60.2963,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+2 dose"
+Accuracy,93.8867,84.5264,98.7269,ElasticNet regression,VL at symptom onset,"Vaccination
+2 dose"
+NPV,99.6985,98.5507,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+2 dose"
+Precision,13.0354,0.0,50.0,ElasticNet regression,VL at symptom onset,"Vaccination
+2 dose"
+Sensitivity,47.8333,0.0,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+2 dose"
+Specificity,94.1202,84.4325,98.7737,ElasticNet regression,VL at symptom onset,"Vaccination
+2 dose"
+AUPRC_value,33.0825,0.6733,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+3 dose"
+AUROC_value,82.4113,31.6423,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+3 dose"
+Accuracy,96.5933,87.6977,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+3 dose"
+NPV,99.3983,98.0927,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+3 dose"
+Precision,8.4069,0.0,50.0,ElasticNet regression,VL at symptom onset,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+3 dose"
+Specificity,97.1688,87.6977,100.0,ElasticNet regression,VL at symptom onset,"Vaccination
+3 dose"
+AUPRC_value,46.9736,2.0533,100.0,XGBoost,VL at diagnosis,"Vaccination
+2 dose"
+AUROC_value,92.4873,57.8313,100.0,XGBoost,VL at diagnosis,"Vaccination
+2 dose"
+Accuracy,94.9279,84.809,100.0,XGBoost,VL at diagnosis,"Vaccination
+2 dose"
+NPV,99.596,98.4726,100.0,XGBoost,VL at diagnosis,"Vaccination
+2 dose"
+Precision,18.0266,0.0,100.0,XGBoost,VL at diagnosis,"Vaccination
+2 dose"
+Sensitivity,42.1667,0.0,100.0,XGBoost,VL at diagnosis,"Vaccination
+2 dose"
+Specificity,95.2749,85.2852,100.0,XGBoost,VL at diagnosis,"Vaccination
+2 dose"
+AUPRC_value,36.2742,1.1104,100.0,XGBoost,VL at diagnosis,"Vaccination
+3 dose"
+AUROC_value,88.9015,60.5569,100.0,XGBoost,VL at diagnosis,"Vaccination
+3 dose"
+Accuracy,97.9435,94.0383,100.0,XGBoost,VL at diagnosis,"Vaccination
+3 dose"
+NPV,99.4303,98.0583,100.0,XGBoost,VL at diagnosis,"Vaccination
+3 dose"
+Precision,12.5595,0.0,100.0,XGBoost,VL at diagnosis,"Vaccination
+3 dose"
+Sensitivity,19.6667,0.0,100.0,XGBoost,VL at diagnosis,"Vaccination
+3 dose"
+Specificity,98.4974,94.0639,100.0,XGBoost,VL at diagnosis,"Vaccination
+3 dose"
+AUPRC_value,53.2329,1.695,100.0,LightGBM,VL at diagnosis,"Vaccination
+2 dose"
+AUROC_value,93.9916,68.0341,100.0,LightGBM,VL at diagnosis,"Vaccination
+2 dose"
+Accuracy,89.7461,55.599,98.7269,LightGBM,VL at diagnosis,"Vaccination
+2 dose"
+NPV,99.6856,98.4304,100.0,LightGBM,VL at diagnosis,"Vaccination
+2 dose"
+Precision,11.4644,0.0,50.0,LightGBM,VL at diagnosis,"Vaccination
+2 dose"
+Sensitivity,48.5,0.0,100.0,LightGBM,VL at diagnosis,"Vaccination
+2 dose"
+Specificity,89.95,55.1015,98.7883,LightGBM,VL at diagnosis,"Vaccination
+2 dose"
+AUPRC_value,36.8821,1.289,100.0,LightGBM,VL at diagnosis,"Vaccination
+3 dose"
+AUROC_value,91.4009,57.1735,100.0,LightGBM,VL at diagnosis,"Vaccination
+3 dose"
+Accuracy,94.1096,72.1782,100.0,LightGBM,VL at diagnosis,"Vaccination
+3 dose"
+NPV,99.4815,98.0827,100.0,LightGBM,VL at diagnosis,"Vaccination
+3 dose"
+Precision,9.0461,0.0,50.0,LightGBM,VL at diagnosis,"Vaccination
+3 dose"
+Sensitivity,26.0,0.0,100.0,LightGBM,VL at diagnosis,"Vaccination
+3 dose"
+Specificity,94.5882,71.9266,100.0,LightGBM,VL at diagnosis,"Vaccination
+3 dose"
+AUPRC_value,44.8602,1.851,100.0,Random Forest,VL at diagnosis,"Vaccination
+2 dose"
+AUROC_value,92.7692,63.1325,100.0,Random Forest,VL at diagnosis,"Vaccination
+2 dose"
+Accuracy,94.285,84.8835,98.8643,Random Forest,VL at diagnosis,"Vaccination
+2 dose"
+NPV,99.71,98.5507,100.0,Random Forest,VL at diagnosis,"Vaccination
+2 dose"
+Precision,14.0895,0.0,58.75,Random Forest,VL at diagnosis,"Vaccination
+2 dose"
+Sensitivity,48.3333,0.0,100.0,Random Forest,VL at diagnosis,"Vaccination
+2 dose"
+Specificity,94.5093,84.8835,98.8442,Random Forest,VL at diagnosis,"Vaccination
+2 dose"
+AUPRC_value,34.6281,1.3692,100.0,Random Forest,VL at diagnosis,"Vaccination
+3 dose"
+AUROC_value,89.3881,68.0007,100.0,Random Forest,VL at diagnosis,"Vaccination
+3 dose"
+Accuracy,96.5814,88.9336,100.0,Random Forest,VL at diagnosis,"Vaccination
+3 dose"
+NPV,99.3978,98.0744,100.0,Random Forest,VL at diagnosis,"Vaccination
+3 dose"
+Precision,8.3326,0.0,50.0,Random Forest,VL at diagnosis,"Vaccination
+3 dose"
+Sensitivity,17.0,0.0,100.0,Random Forest,VL at diagnosis,"Vaccination
+3 dose"
+Specificity,97.1527,88.9336,100.0,Random Forest,VL at diagnosis,"Vaccination
+3 dose"
+AUPRC_value,43.6151,2.1295,100.0,Lasso regression,VL at diagnosis,"Vaccination
+2 dose"
+AUROC_value,93.3522,69.2102,100.0,Lasso regression,VL at diagnosis,"Vaccination
+2 dose"
+Accuracy,92.5942,82.1441,98.7727,Lasso regression,VL at diagnosis,"Vaccination
+2 dose"
+NPV,99.6844,98.5507,100.0,Lasso regression,VL at diagnosis,"Vaccination
+2 dose"
+Precision,12.2107,0.0,50.0,Lasso regression,VL at diagnosis,"Vaccination
+2 dose"
+Sensitivity,46.3333,0.0,100.0,Lasso regression,VL at diagnosis,"Vaccination
+2 dose"
+Specificity,92.8293,82.0368,98.7645,Lasso regression,VL at diagnosis,"Vaccination
+2 dose"
+AUPRC_value,36.2264,0.8765,100.0,Lasso regression,VL at diagnosis,"Vaccination
+3 dose"
+AUROC_value,87.9294,39.8109,100.0,Lasso regression,VL at diagnosis,"Vaccination
+3 dose"
+Accuracy,95.6729,86.8403,100.0,Lasso regression,VL at diagnosis,"Vaccination
+3 dose"
+NPV,99.4484,98.1025,100.0,Lasso regression,VL at diagnosis,"Vaccination
+3 dose"
+Precision,11.0169,0.0,100.0,Lasso regression,VL at diagnosis,"Vaccination
+3 dose"
+Sensitivity,23.0,0.0,100.0,Lasso regression,VL at diagnosis,"Vaccination
+3 dose"
+Specificity,96.1896,86.903,100.0,Lasso regression,VL at diagnosis,"Vaccination
+3 dose"
+AUPRC_value,44.5993,2.2375,100.0,Ridge regression,VL at diagnosis,"Vaccination
+2 dose"
+AUROC_value,93.2715,66.8734,100.0,Ridge regression,VL at diagnosis,"Vaccination
+2 dose"
+Accuracy,93.2689,84.3552,98.8031,Ridge regression,VL at diagnosis,"Vaccination
+2 dose"
+NPV,99.687,98.5701,100.0,Ridge regression,VL at diagnosis,"Vaccination
+2 dose"
+Precision,14.1487,0.0,71.0417,Ridge regression,VL at diagnosis,"Vaccination
+2 dose"
+Sensitivity,46.8333,0.0,100.0,Ridge regression,VL at diagnosis,"Vaccination
+2 dose"
+Specificity,93.5109,84.2708,98.8442,Ridge regression,VL at diagnosis,"Vaccination
+2 dose"
+AUPRC_value,36.4203,1.1111,100.0,Ridge regression,VL at diagnosis,"Vaccination
+3 dose"
+AUROC_value,88.2076,53.75,100.0,Ridge regression,VL at diagnosis,"Vaccination
+3 dose"
+Accuracy,96.2559,90.1093,100.0,Ridge regression,VL at diagnosis,"Vaccination
+3 dose"
+NPV,99.4329,98.0927,100.0,Ridge regression,VL at diagnosis,"Vaccination
+3 dose"
+Precision,10.612,0.0,100.0,Ridge regression,VL at diagnosis,"Vaccination
+3 dose"
+Sensitivity,21.1667,0.0,100.0,Ridge regression,VL at diagnosis,"Vaccination
+3 dose"
+Specificity,96.7931,90.1093,100.0,Ridge regression,VL at diagnosis,"Vaccination
+3 dose"
+AUPRC_value,44.7825,2.2812,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+2 dose"
+AUROC_value,93.5044,68.0232,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+2 dose"
+Accuracy,93.1446,84.8104,98.7727,ElasticNet regression,VL at diagnosis,"Vaccination
+2 dose"
+NPV,99.6866,98.5606,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+2 dose"
+Precision,13.5223,0.0,58.75,ElasticNet regression,VL at diagnosis,"Vaccination
+2 dose"
+Sensitivity,46.8333,0.0,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+2 dose"
+Specificity,93.3852,84.7163,98.7883,ElasticNet regression,VL at diagnosis,"Vaccination
+2 dose"
+AUPRC_value,36.249,1.0802,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+3 dose"
+AUROC_value,88.0673,52.4257,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+3 dose"
+Accuracy,96.2061,89.6838,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+3 dose"
+NPV,99.4318,98.0927,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+3 dose"
+Precision,10.6598,0.0,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+3 dose"
+Sensitivity,21.6667,0.0,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+3 dose"
+Specificity,96.7433,89.6838,100.0,ElasticNet regression,VL at diagnosis,"Vaccination
+3 dose"
+AUPRC_value,52.9456,2.4908,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUROC_value,94.8401,72.5955,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Accuracy,92.6992,85.4325,99.4207,XGBoost,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+NPV,99.7071,98.5606,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Precision,11.9878,0.0,58.75,XGBoost,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Sensitivity,49.5,0.0,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Specificity,92.9089,85.4325,99.4722,XGBoost,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUPRC_value,39.8445,1.7264,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUROC_value,91.9573,70.2801,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Accuracy,96.2641,92.181,99.1905,XGBoost,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+NPV,99.5371,98.1132,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Precision,11.1103,0.0,76.25,XGBoost,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Sensitivity,29.8333,0.0,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Specificity,96.6856,92.5562,100.0,XGBoost,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUPRC_value,56.0861,3.078,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUROC_value,95.4349,74.2216,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Accuracy,91.2197,75.7147,98.7886,LightGBM,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+NPV,99.7624,98.5915,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Precision,11.8334,0.0,50.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Sensitivity,51.8333,0.0,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Specificity,91.3634,75.396,98.7811,LightGBM,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUPRC_value,36.7745,1.1406,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUROC_value,90.731,61.568,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Accuracy,95.0111,82.5538,99.6374,LightGBM,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+NPV,99.486,98.0827,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Precision,8.5394,0.0,50.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Sensitivity,26.5,0.0,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Specificity,95.486,82.3965,100.0,LightGBM,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUPRC_value,49.8388,2.4375,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUROC_value,95.1054,71.7759,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Accuracy,93.6888,85.284,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+NPV,99.6837,98.5179,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Precision,14.3007,0.0,88.125,Random Forest,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Sensitivity,47.5,0.0,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Specificity,93.9364,85.108,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUPRC_value,36.7624,1.6667,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUROC_value,92.7153,75.2184,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Accuracy,96.5483,89.6695,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+NPV,99.3973,98.0927,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Precision,10.0825,0.0,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Sensitivity,17.5,0.0,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Specificity,97.1214,90.0937,100.0,Random Forest,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUPRC_value,46.3304,2.6471,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUROC_value,94.7665,74.2516,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Accuracy,92.219,82.0368,98.7104,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+NPV,99.6959,98.5507,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Precision,12.6807,0.0,50.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Sensitivity,47.8333,0.0,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Specificity,92.4407,82.0368,98.7737,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUPRC_value,35.2142,1.2619,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUROC_value,90.6867,55.0072,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Accuracy,95.349,88.294,99.1706,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+NPV,99.4302,98.1025,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Precision,7.6025,0.0,50.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Sensitivity,21.5,0.0,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Specificity,95.8811,88.294,100.0,Lasso regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUPRC_value,48.4318,3.0089,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUROC_value,95.365,76.4878,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Accuracy,92.8262,84.3237,98.7104,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+NPV,99.7094,98.5606,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Precision,13.9718,0.0,55.25,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Sensitivity,48.8333,0.0,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Specificity,93.0397,84.2358,98.7342,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUPRC_value,37.1617,1.7241,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUROC_value,92.1421,72.1737,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Accuracy,96.0108,90.322,99.6318,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+NPV,99.4513,98.1025,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Precision,10.1883,0.0,76.25,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Sensitivity,22.5,0.0,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Specificity,96.5284,90.678,100.0,Ridge regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUPRC_value,49.1953,3.0089,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUROC_value,95.361,76.4878,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Accuracy,92.6356,84.1456,98.7104,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+NPV,99.7088,98.5606,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Precision,13.7691,0.0,55.25,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Sensitivity,48.8333,0.0,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+Specificity,92.8468,84.1325,98.7342,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+2 dose"
+AUPRC_value,37.0686,1.612,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+AUROC_value,91.7451,70.0925,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Accuracy,95.8981,90.1261,99.2068,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+NPV,99.442,98.1025,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Precision,9.1173,0.0,50.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Sensitivity,21.5,0.0,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
+Specificity,96.4234,90.4614,100.0,ElasticNet regression,VL at diagnosis + 2 days,"Vaccination
+3 dose"
